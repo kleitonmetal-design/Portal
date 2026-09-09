@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ISO/IEC 27001:2022 Lead Implementer Simulator — Simulado 2</title>
+    <style>
+      :root{
+        --bg:#eef1f5; --card:#ffffff; --ink:#1f2937; --muted:#6b7280;
+        --border:#e2e5eb; --primary:#2b3a8f; --primary-2:#3b4db8;
+        --good:#15803d; --good-bg:#dcfce7; --bad:#b91c1c; --bad-bg:#fee2e2;
+        --accent:#2b3a8f; --submit:#1a8a4a; --submit-2:#157a40;
+      }
+      *{box-sizing:border-box}
+      body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+      .shell{max-width:1080px;margin:0 auto;padding:16px 16px 60px}
+      .topbar{background:#fff;border:1px solid var(--border);border-radius:12px 12px 0 0;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+      .topbar .examname{font-weight:700}
+      .topbar .examname span{color:var(--primary)}
+      .loggedas{background:#fde68a;padding:3px 10px;border-radius:6px;font-size:.82rem;font-weight:700}
+      .toolbar{background:#fff;border-left:1px solid var(--border);border-right:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+      .navbtn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center}
+      .navbtn:disabled{opacity:.4;cursor:not-allowed}
+      .qcounter{font-weight:700;font-size:1.02rem;margin-right:6px}
+      .bookmarkbtn{border:1px solid var(--border);background:#fff;border-radius:8px;padding:8px 14px;font-size:.88rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px}
+      .bookmarkbtn.active{background:#fef3c7;border-color:#f59e0b;color:#92400e}
+      .spacer{flex:1}
+      .timer{font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:6px}
+      .timer.low{color:var(--bad)}
+      .timer.ok{color:#374151}
+      .pausebtn{border:1px solid var(--border);background:#fff;border-radius:8px;padding:9px 14px;font-size:.88rem;font-weight:600;cursor:pointer}
+      .submitbtn{background:var(--submit);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:.9rem;font-weight:700;cursor:pointer}
+      .submitbtn:hover{background:var(--submit-2)}
+      .filterbar{background:#fff;border-left:1px solid var(--border);border-right:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:16px;font-size:.9rem}
+      .filterbar label{display:flex;align-items:center;gap:5px;cursor:pointer}
+      .gridwrap{background:#fff;border-left:1px solid var(--border);border-right:1px solid var(--border);padding:14px 20px;max-height:150px;overflow-y:auto}
+      .grid{display:flex;flex-wrap:wrap;gap:8px}
+      .gridnum{width:42px;height:34px;border-radius:6px;border:1px solid var(--border);background:#fff;font-size:.85rem;font-weight:700;cursor:pointer;color:var(--ink);position:relative}
+      .gridnum.current{background:var(--primary);color:#fff;border-color:var(--primary)}
+      .gridnum.answered:not(.current){background:#e7ebfd;border-color:#c7d0f5}
+      .gridnum.locked{opacity:.35;cursor:not-allowed;background:#f3f4f6}
+      .gridnum.bookmarked::after{content:'';position:absolute;top:2px;right:2px;width:6px;height:6px;border-radius:50%;background:#f59e0b}
+      .main{background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 12px 12px;padding:24px 20px 20px}
+      .qtext{font-weight:700;font-size:1.05rem;margin-bottom:18px}
+      .opt{display:flex;align-items:flex-start;gap:12px;border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px;cursor:pointer}
+      .opt:hover{border-color:var(--accent)}
+      .opt.answered{background:#eef1ff;border-color:var(--primary)}
+      .opt input{margin-top:3px;flex-shrink:0}
+      .footer-actions{margin-top:20px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+      .btn{display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:#fff;border:none;border-radius:10px;padding:12px 22px;font-size:1rem;font-weight:600;cursor:pointer}
+      .btn:hover{background:var(--primary-2)}
+      .btn:disabled{background:#9ca3af;cursor:not-allowed}
+      .btn.secondary{background:#fff;color:var(--primary);border:1.5px solid var(--primary)}
+      .btn.secondary:hover{background:#eef2f7}
+      .btn.gray{background:#f3f4f6;color:#374151;border:1px solid var(--border)}
+      .btn.gray:hover{background:#e5e7eb}
+      .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+      h1{font-size:1.4rem;margin:0 0 4px}
+      .sub{color:var(--muted);margin:0 0 20px;font-size:.95rem}
+      .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0 22px}
+      .stat-box{border:1px solid var(--border);border-radius:12px;padding:16px}
+      .stat-box .num{font-size:1.8rem;font-weight:700}
+      .stat-box .label{color:var(--muted);font-size:.85rem}
+      .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.8rem;font-weight:700}
+      .pill.good{background:var(--good-bg);color:var(--good)}
+      .pill.bad{background:var(--bad-bg);color:var(--bad)}
+      .review-list{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
+      .review-chip{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff}
+      .review-chip.ok{background:var(--good)}
+      .review-chip.no{background:var(--bad)}
+      .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+      .bar-label{width:250px;flex-shrink:0;font-size:.85rem;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      .bar-track{flex:1;height:16px;background:var(--border);border-radius:999px;overflow:hidden}
+      .bar-fill{height:100%;border-radius:999px}
+      .bar-pct{width:110px;flex-shrink:0;font-size:.82rem;color:var(--muted);text-align:right}
+      .section-title{font-size:.95rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.03em;margin:22px 0 10px}
+      ul.plain{margin:0;padding-left:0;list-style:none}
+      ul.plain li{padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;font-size:.92rem}
+      ul.plain li:last-child{border-bottom:none}
+      .overlay-note{background:#eef1ff;border:1px solid #c7d0f5;color:#2b3a8f;border-radius:10px;padding:10px 14px;font-size:.85rem;margin-bottom:18px}
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div id="app"></div>
+    </div>
+    <script type="application/json" id="questions-data">[{"id": 1, "text": "1. Qual é a definição mais abrangente de \"segurança da informação\" no contexto da ISO 27001:2022, considerando seus pilares fundamentais?", "options": [{"id": "a", "text": "a) A proteção de ativos de hardware e software contra ataques cibernéticos e falhas."}, {"id": "b", "text": "b) A preservação da confidencialidade, integridade e disponibilidade da informação."}, {"id": "c", "text": "c) O cumprimento de todas as leis de privacidade de dados em nível internacional."}], "correct_option": "b", "domain": "Cenário 1: A empresa \"TechSolution\", especializada em desenvolvimento de software, está começando a entender a ISO 27001 para proteger suas propriedades intelectuais e dados de clientes.", "theme": "organizacional"}, {"id": 2, "text": "2. Para a TechSolution, a \"confidencialidade\" é essencial para proteger seus algoritmos proprietários. Qual é a essência deste princípio?", "options": [{"id": "a", "text": "a) Garantir que a informação seja acessível e utilizável por pessoas autorizadas quando necessário."}, {"id": "b", "text": "b) Assegurar que a informação esteja completa e não tenha sido alterada ou destruída indevidamente."}, {"id": "c", "text": "c) Proteger a informação contra divulgação não autorizada."}], "correct_option": "c", "domain": "Cenário 1: A empresa \"TechSolution\", especializada em desenvolvimento de software, está começando a entender a ISO 27001 para proteger suas propriedades intelectuais e dados de clientes.", "theme": "organizacional"}, {"id": 3, "text": "3. Um dos gerentes da TechSolution questiona a necessidade de um SGSI, achando que basta comprar um bom antivírus. Conforme a ABNT NBR ISO/IEC 27001:2022 (Introdução, 0.1), o SGSI baseia-se primariamente em qual processo?", "options": [{"id": "a", "text": "a) A implementação de tecnologias de segurança de ponta."}, {"id": "b", "text": "b) Um processo de gestão de riscos contínuo para a informação."}, {"id": "c", "text": "c) A contratação de especialistas externos em cibersegurança."}], "correct_option": "b", "domain": "Cenário 1: A empresa \"TechSolution\", especializada em desenvolvimento de software, está começando a entender a ISO 27001 para proteger suas propriedades intelectuais e dados de clientes.", "theme": "organizacional"}, {"id": 4, "text": "4. A ABNT NBR ISO/IEC 27001:2022 estabelece que a adoção de um SGSI é uma \"decisão estratégica\". O que essa característica implica para a HealthData Corp.?", "options": [{"id": "a", "text": "a) A decisão pode ser tomada pelo departamento de TI independentemente da direção estratégica da empresa."}, {"id": "b", "text": "b) A implementação do SGSI deve ser alinhada aos objetivos de negócio da empresa e integrada à sua estrutura de administração."}, {"id": "c", "text": "c) A certificação ISO 27001 é um diferencial de marketing, mas não afeta a operação diária."}], "correct_option": "b", "domain": "Cenário 2: A \"HealthData Corp.\" gerencia um grande volume de prontuários eletrônicos e está explorando a ISO 27001 para fortalecer a proteção dos dados dos pacientes.", "theme": "organizacional"}, {"id": 5, "text": "5. A \"integridade\" dos dados de prontuários é crítica para a HealthData Corp. O que garante a integridade?", "options": [{"id": "a", "text": "a) A não divulgação da informação a pessoas não autorizadas."}, {"id": "b", "text": "b) A propriedade de que a informação é completa, precisa e protegida contra modificações indevidas."}, {"id": "c", "text": "c) O acesso contínuo à informação por parte dos médicos autorizados."}], "correct_option": "b", "domain": "Cenário 2: A \"HealthData Corp.\" gerencia um grande volume de prontuários eletrônicos e está explorando a ISO 27001 para fortalecer a proteção dos dados dos pacientes.", "theme": "pessoas"}, {"id": 6, "text": "6. Para a HealthData Corp., garantir que os médicos autorizados tenham acesso aos prontuários dos pacientes a qualquer momento é um exemplo de qual pilar da segurança da informação?", "options": [{"id": "a", "text": "a) Confidencialidade."}, {"id": "b", "text": "b) Integridade."}, {"id": "c", "text": "c) Disponibilidade."}], "correct_option": "c", "domain": "Cenário 2: A \"HealthData Corp.\" gerencia um grande volume de prontuários eletrônicos e está explorando a ISO 27001 para fortalecer a proteção dos dados dos pacientes.", "theme": "organizacional"}, {"id": 7, "text": "7. A ABNT NBR ISO/IEC 27001:2022, em sua introdução (0.2), menciona a compatibilidade com outras normas de sistemas de gestão por meio do \"Anexo SL\". Qual o benefício disso para a Educação Online Global, que já possui um SGQ ISO 9001?", "options": [{"id": "a", "text": "a) A ISO 9001 cobre automaticamente todos os requisitos da ISO 27001, eliminando a necessidade de nova implementação."}, {"id": "b", "text": "b) Facilita a integração de processos e a gestão de múltiplos sistemas em uma única estrutura, otimizando recursos."}, {"id": "c", "text": "c) Permite que a organização escolha quais requisitos da ISO 27001 ela deseja implementar, sem impacto na certificação."}], "correct_option": "b", "domain": "Cenário 3: A \"Educação Online Global\" está implementando a ISO 27001 para proteger dados de estudantes e garantir a continuidade de seus serviços de plataforma.", "theme": "organizacional"}, {"id": 8, "text": "8. O Anexo A da ABNT NBR ISO/IEC 27001:2022 é considerado normativo. Qual é o papel prático deste anexo?", "options": [{"id": "a", "text": "a) Ele fornece um conjunto de requisitos obrigatórios que a organização deve seguir ao pé da letra."}, {"id": "b", "text": "b) Ele oferece uma referência de controles de segurança da informação que devem ser considerados e tratados na Declaração de Aplicabilidade."}, {"id": "c", "text": "c) Ele define a metodologia para a avaliação de riscos, sem apresentar exemplos de controles."}], "correct_option": "b", "domain": "Cenário 3: A \"Educação Online Global\" está implementando a ISO 27001 para proteger dados de estudantes e garantir a continuidade de seus serviços de plataforma.", "theme": "organizacional"}, {"id": 9, "text": "9. A \"Educação Online Global\" deve \"reter informação documentada\" dos objetivos da segurança da informação (ABNT NBR ISO/IEC 27001:2022, 6.2 g)). O que isso implica?", "options": [{"id": "a", "text": "a) Que os objetivos devem ser memorizados pela alta direção."}, {"id": "b", "text": "b) Que os objetivos devem ser registrados em um formato controlável para evidência e rastreamento."}, {"id": "c", "text": "c) Que apenas os auditores externos precisam ter acesso a esses objetivos."}], "correct_option": "b", "domain": "Cenário 3: A \"Educação Online Global\" está implementando a ISO 27001 para proteger dados de estudantes e garantir a continuidade de seus serviços de plataforma.", "theme": "organizacional"}, {"id": 10, "text": "10. A ABNT NBR ISO/IEC 27001:2022 (Introdução, 0.1) enfatiza que a segurança da informação deve ser considerada no projeto de processos, sistemas e controles. Este conceito é conhecido como:", "options": [{"id": "a", "text": "a) Segurança reativa."}, {"id": "b", "text": "b) Segurança por design."}, {"id": "c", "text": "c) Segurança por compliance."}], "correct_option": "b", "domain": "Cenário 4: A \"FinTech Solutions\" está desenvolvendo um novo aplicativo de pagamentos e busca integrar a segurança desde as primeiras fases do projeto.", "theme": "organizacional"}, {"id": 11, "text": "11. A ABNT NBR ISO/IEC 27000 é uma norma de referência crucial para a \"FinTech Solutions\". Qual sua principal função para a compreensão da ISO 27001?", "options": [{"id": "a", "text": "a) Fornecer uma lista detalhada de todas as vulnerabilidades de segurança existentes."}, {"id": "b", "text": "b) Estabelecer os requisitos técnicos para a implementação de firewalls e sistemas de detecção de intrusão."}, {"id": "c", "text": "c) Descrever a visão geral e o vocabulário do sistema de gestão da segurança da informação."}], "correct_option": "c", "domain": "Cenário 4: A \"FinTech Solutions\" está desenvolvendo um novo aplicativo de pagamentos e busca integrar a segurança desde as primeiras fases do projeto.", "theme": "organizacional"}, {"id": 12, "text": "12. No contexto de um SGSI para a \"FinTech Solutions\", o que representa um \"risco de segurança da informação\"?", "options": [{"id": "a", "text": "a) Um evento que já ocorreu e resultou em perda financeira."}, {"id": "b", "text": "b) O efeito da incerteza nos objetivos da segurança da informação."}, {"id": "c", "text": "c) Uma fraqueza em um sistema ou processo que pode ser explorada."}], "correct_option": "b", "domain": "Cenário 4: A \"FinTech Solutions\" está desenvolvendo um novo aplicativo de pagamentos e busca integrar a segurança desde as primeiras fases do projeto.", "theme": "organizacional"}, {"id": 13, "text": "13. A Seção 1 da ABNT NBR ISO/IEC 27001:2022 especifica que a norma se aplica a todas as organizações, \"independentemente do tipo, tamanho ou natureza\". O que esta afirmação significa?", "options": [{"id": "a", "text": "a) A norma deve ser aplicada igualmente a qualquer organização sem qualquer adaptação."}, {"id": "b", "text": "b) A norma é universalmente adaptável, mas a forma de implementação deve ser adequada ao contexto específico de cada organização."}, {"id": "c", "text": "c) Organizações de pequeno porte podem obter isenção de alguns requisitos da norma."}], "correct_option": "b", "domain": "Cenário 5: A \"Logística Inteligente\" é uma empresa de transporte e armazenamento, implementando a ISO 27001 para proteger seus dados de carga e logística.", "theme": "organizacional"}, {"id": 14, "text": "14. A \"Logística Inteligente\" precisa determinar as \"necessidades e expectativas das partes interessadas\" (ABNT NBR ISO/IEC 27001:2022, 4.2). Quais são os requisitos que podem ser considerados neste contexto?", "options": [{"id": "a", "text": "a) Apenas os requisitos internos definidos pela alta direção da empresa."}, {"id": "b", "text": "b) Somente os requisitos técnicos relacionados à infraestrutura de TI da organização."}, {"id": "c", "text": "c) Requisitos legais, regulamentares, contratuais e as expectativas de segurança dos stakeholders."}], "correct_option": "c", "domain": "Cenário 5: A \"Logística Inteligente\" é uma empresa de transporte e armazenamento, implementando a ISO 27001 para proteger seus dados de carga e logística.", "theme": "organizacional"}, {"id": 15, "text": "15. Conforme a ISO 27001:2022 (Seção 6.1.3 c), a \"Logística Inteligente\" deve comparar os controles que ela determinou com os do Anexo A. Qual o propósito dessa comparação?", "options": [{"id": "a", "text": "a) Para garantir que todos os controles do Anexo A sejam implementados, mesmo que não sejam relevantes."}, {"id": "b", "text": "b) Para verificar se nenhum controle necessário foi omitido."}, {"id": "c", "text": "c) Para substituir todos os controles internos pelos controles do Anexo A."}], "correct_option": "b", "domain": "Cenário 5: A \"Logística Inteligente\" é uma empresa de transporte e armazenamento, implementando a ISO 27001 para proteger seus dados de carga e logística.", "theme": "organizacional"}, {"id": 16, "text": "16. A ABNT NBR ISO/IEC 27001:2022 (Seção 4.4) exige que a \"SmartCity Solutions\" estabeleça, implemente, mantenha e **melhore continuamente** um SGSI. O que significa \"manter\" o SGSI?", "options": [{"id": "a", "text": "a) Fazer alterações no SGSI apenas em resposta a incidentes."}, {"id": "b", "text": "b) Assegurar que o SGSI continue a operar de forma eficaz e que seus controles e processos estejam atualizados e funcionando."}, {"id": "c", "text": "c) Guardar toda a documentação do SGSI em um local seguro."}], "correct_option": "b", "domain": "Cenário 6: A \"SmartCity Solutions\" está implementando um SGSI para gerenciar a segurança de sua infraestrutura urbana inteligente.", "theme": "organizacional"}, {"id": 17, "text": "17. A Alta Direção da \"SmartCity Solutions\" deve demonstrar seu comprometimento (Seção 5.1). Qual é um exemplo prático desse comprometimento?", "options": [{"id": "a", "text": "a) Deixar todas as decisões de segurança para os especialistas de TI."}, {"id": "b", "text": "b) Assegurar que os recursos necessários para o SGSI estejam disponíveis."}, {"id": "c", "text": "c) Participar apenas da reunião inicial de kickoff do projeto."}], "correct_option": "b", "domain": "Cenário 6: A \"SmartCity Solutions\" está implementando um SGSI para gerenciar a segurança de sua infraestrutura urbana inteligente.", "theme": "organizacional"}, {"id": 18, "text": "18. Ao determinar o escopo do SGSI (Seção 4.3), a \"DataGuardians Inc.\" deve considerar as \"questões internas e externas\" referenciadas na Seção 4.1. Qual o propósito dessa consideração?", "options": [{"id": "a", "text": "a) Limitar o escopo do SGSI apenas às questões financeiras da organização."}, {"id": "b", "text": "b) Assegurar que o SGSI seja relevante e eficaz para o contexto operacional e estratégico da organização."}, {"id": "c", "text": "c) Ignorar as questões externas, focando apenas nos controles internos."}], "correct_option": "b", "domain": "Cenário 7: A \"DataGuardians Inc.\" está definindo o escopo de seu SGSI, que inclui diferentes departamentos e serviços.", "theme": "organizacional"}, {"id": 19, "text": "19. O escopo do SGSI da \"DataGuardians Inc.\" deve estar disponível como \"informação documentada\" (Seção 4.3). Por que isso é importante?", "options": [{"id": "a", "text": "a) Apenas para satisfazer uma formalidade regulatória."}, {"id": "b", "text": "b) Para fornecer clareza e transparência sobre os limites e a aplicabilidade do SGSI, tanto interna quanto externamente."}, {"id": "c", "text": "c) Para que a organização possa alterá-lo secretamente a qualquer momento."}], "correct_option": "b", "domain": "Cenário 7: A \"DataGuardians Inc.\" está definindo o escopo de seu SGSI, que inclui diferentes departamentos e serviços.", "theme": "organizacional"}, {"id": 20, "text": "20. A política de segurança da informação da \"CloudSecure Providers\" (Seção 5.2) deve:", "options": [{"id": "a", "text": "a) Ser um documento longo e detalhado que especifica todas as configurações de segurança."}, {"id": "b", "text": "b) Ser apropriada ao propósito da organização e incluir o comprometimento com a melhoria contínua do SGSI."}, {"id": "c", "text": "c) Ser acessível apenas aos membros da equipe de gestão de segurança."}], "correct_option": "b", "domain": "Cenário 8: A \"CloudSecure Providers\" está elaborando sua política de segurança da informação e definindo objetivos.", "theme": "organizacional"}, {"id": 21, "text": "21. Os objetivos da segurança da informação da \"CloudSecure Providers\" (Seção 6.2) devem ser \"consistentes com a política da segurança da informação\". Qual a razão disso?", "options": [{"id": "a", "text": "a) Para garantir que os objetivos sejam difíceis de atingir e, assim, motivar a equipe."}, {"id": "b", "text": "b) Para assegurar que os objetivos estratégicos de segurança estejam alinhados às diretrizes e princípios estabelecidos na política."}, {"id": "c", "text": "c) Para que a política seja apenas uma formalidade, sem impacto nos objetivos."}], "correct_option": "b", "domain": "Cenário 8: A \"CloudSecure Providers\" está elaborando sua política de segurança da informação e definindo objetivos.", "theme": "organizacional"}, {"id": 22, "text": "22. A ABNT NBR ISO/IEC 27001:2022 (0.1) destaca que \"É importante que um sistema de gestão da segurança da informação seja parte de, e esteja integrado com, os processos da organização\". Qual a implicação disso para a \"Analytics Insights Corp.\"?", "options": [{"id": "a", "text": "a) A segurança da informação deve ser tratada como um processo separado, com sua própria equipe e budget."}, {"id": "b", "text": "b) A segurança da informação não pode ser uma iniciativa isolada, mas deve ser incorporada aos processos de negócio e à governança da empresa."}, {"id": "c", "text": "c) A integração é opcional e depende da maturidade da organização em segurança."}], "correct_option": "b", "domain": "Cenário 9: A \"Analytics Insights Corp.\" está revisando seus processos para integrar melhor a segurança da informação.", "theme": "organizacional"}, {"id": 23, "text": "23. A \"Analytics Insights Corp.\" deve determinar as necessidades e expectativas das partes interessadas (Seção 4.2). O que significa a nota que os \"requisitos das partes interessadas podem incluir requisitos legais e regulamentares, bem como obrigações contratuais\"?", "options": [{"id": "a", "text": "a) Que a organização só precisa considerar os requisitos que já estão em vigor."}, {"id": "b", "text": "b) Que esses requisitos são mandatórios e devem ser endereçados pelo SGSI para garantir a conformidade."}, {"id": "c", "text": "c) Que a organização pode escolher quais requisitos legais ou contratuais ela deseja atender."}], "correct_option": "b", "domain": "Cenário 9: A \"Analytics Insights Corp.\" está revisando seus processos para integrar melhor a segurança da informação.", "theme": "organizacional"}, {"id": 24, "text": "24. A ABNT NBR ISO/IEC 27001:2022 (Seção 1) afirma que a exclusão de quaisquer requisitos das Seções 4 a 10 não é aceitável para a conformidade. O que isso significa para a \"ConnectIT\"?", "options": [{"id": "a", "text": "a) A ConnectIT pode decidir quais requisitos são relevantes para ela e excluir os demais."}, {"id": "b", "text": "b) Todos os requisitos das Seções 4 a 10 devem ser abordados e implementados para alcançar a certificação, sem exceção."}, {"id": "c", "text": "c) A ConnectIT deve justificar apenas as exclusões de controles do Anexo A."}], "correct_option": "b", "domain": "Cenário 10: Uma startup recém-criada, \"ConnectIT\", pretende implementar a ISO 27001.", "theme": "organizacional"}, {"id": 25, "text": "25. A \"ConnectIT\" precisa estabelecer um SGSI (Seção 4.4). O que essa seção exige em relação aos processos dentro do SGSI?", "options": [{"id": "a", "text": "a) Apenas que os processos de segurança da informação sejam criados, independentemente de outros processos organizacionais."}, {"id": "b", "text": "b) Que o SGSI inclua os processos necessários e suas interações, de acordo com os requisitos da norma."}, {"id": "c", "text": "c) Que a documentação dos processos seja mínima para garantir agilidade na startup."}], "correct_option": "b", "domain": "Cenário 10: Uma startup recém-criada, \"ConnectIT\", pretende implementar a ISO 27001.", "theme": "organizacional"}, {"id": 26, "text": "26. Para demonstrar liderança e comprometimento (Seção 5.1), a Alta Direção da TechGrow deve:", "options": [{"id": "a", "text": "a) Apenas aprovar os documentos finais do SGSI."}, {"id": "b", "text": "b) Orientar e apoiar pessoas a contribuir para a eficácia do sistema de gestão da segurança da informação."}, {"id": "c", "text": "c) Delegar completamente a gestão da segurança a um gerente de TI."}], "correct_option": "b", "domain": "Cenário 11: A empresa \"TechGrow\" está na fase de planejamento de seu SGSI e a Alta Direção está definindo os papéis e responsabilidades.", "theme": "organizacional"}, {"id": 27, "text": "27. A política de segurança da informação da TechGrow (Seção 5.2) deve incluir o \"comprometimento de satisfazer os requisitos aplicáveis, relacionados com a segurança da informação\". Isso significa:", "options": [{"id": "a", "text": "a) Que a política deve listar todos os requisitos legais e regulamentares em vigor."}, {"id": "b", "text": "b) Que a política deve expressar a intenção da organização em cumprir com as obrigações pertinentes à segurança da informação."}, {"id": "c", "text": "c) Que a organização pode escolher quais requisitos aplicar."}], "correct_option": "b", "domain": "Cenário 11: A empresa \"TechGrow\" está na fase de planejamento de seu SGSI e a Alta Direção está definindo os papéis e responsabilidades.", "theme": "organizacional"}, {"id": 28, "text": "28. Ao planejar as ações para abordar riscos e oportunidades (Seção 6.1.1), a \"DataSafe Analytics\" deve considerar principalmente qual objetivo?", "options": [{"id": "a", "text": "a) Reduzir os custos de implementação de controles de segurança."}, {"id": "b", "text": "b) Assegurar que o SGSI possa alcançar seus resultados pretendidos, prevenir ou reduzir efeitos indesejados e alcançar a melhoria contínua."}, {"id": "c", "text": "c) Identificar apenas as ameaças externas que a organização enfrenta."}], "correct_option": "b", "domain": "Cenário 12: A \"DataSafe Analytics\" está avaliando riscos e oportunidades para seu SGSI.", "theme": "organizacional"}, {"id": 29, "text": "29. A \"DataSafe Analytics\" deve \"estabelecer e manter critérios para realizar as avaliações de riscos de segurança da informação\" (Seção 6.1.2 a) 2)). Qual a importância disso?", "options": [{"id": "a", "text": "a) Para garantir que as avaliações de risco sejam feitas de forma rápida e informal."}, {"id": "b", "text": "b) Para assegurar que as avaliações de riscos produzam resultados comparáveis, válidos e consistentes."}, {"id": "c", "text": "c) Para que a organização não precise documentar o processo de avaliação de riscos."}], "correct_option": "b", "domain": "Cenário 12: A \"DataSafe Analytics\" está avaliando riscos e oportunidades para seu SGSI.", "theme": "organizacional"}, {"id": 30, "text": "30. A Declaração de Aplicabilidade (SoA) da \"HealthCloud Services\" (Seção 6.1.3 d)) deve conter, entre outros, \"se os controles necessários são implementados ou não\". O que isso indica?", "options": [{"id": "a", "text": "a) Apenas uma lista de controles que a organização pretende implementar no futuro."}, {"id": "b", "text": "b) O status atual de implementação de cada controle selecionado."}, {"id": "c", "text": "c) Uma lista de controles que a organização decidiu não implementar."}], "correct_option": "b", "domain": "Cenário 13: A \"HealthCloud Services\" está elaborando sua Declaração de Aplicabilidade (SoA).", "theme": "organizacional"}, {"id": 31, "text": "31. A Alta Direção da \"HealthCloud Services\" precisa aprovar o plano de tratamento de riscos da segurança da informação e a aceitação dos riscos residuais (Seção 6.1.3 f)). Qual o propósito dessa aprovação?", "options": [{"id": "a", "text": "a) Apenas para que a alta direção seja informada, sem responsabilidade."}, {"id": "b", "text": "b) Garante que os riscos residuais sejam aceitos e que o plano de tratamento seja endossado pelos proprietários dos riscos e pela alta direção."}, {"id": "c", "text": "c) Para que a organização possa evitar a responsabilidade por incidentes futuros."}], "correct_option": "b", "domain": "Cenário 13: A \"HealthCloud Services\" está elaborando sua Declaração de Aplicabilidade (SoA).", "theme": "organizacional"}, {"id": 32, "text": "32. Quando a \"Sistemas Digitais\" determinar a necessidade de mudanças no SGSI, como essas mudanças devem ser conduzidas, conforme a Seção 6.3?", "options": [{"id": "a", "text": "a) De forma urgente e sem planejamento detalhado."}, {"id": "b", "text": "b) De uma forma planejada, com controle e consideração de impactos."}, {"id": "c", "text": "c) Por meio de discussões informais entre os funcionários impactados."}], "correct_option": "b", "domain": "Cenário 14: A \"Sistemas Digitais\" está planejando as mudanças em seu SGSI.", "theme": "organizacional"}, {"id": 33, "text": "33. A política de segurança da informação da \"Sistemas Digitais\" (Seção 5.2) deve \"fornecer a estrutura para estabelecer os objetivos de segurança da informação\". O que isso significa?", "options": [{"id": "a", "text": "a) A política deve definir os objetivos de segurança da informação de forma explícita."}, {"id": "b", "text": "b) A política deve estabelecer as diretrizes e os princípios a partir dos quais os objetivos de segurança serão desenvolvidos."}, {"id": "c", "text": "c) Os objetivos de segurança da informação são independentes da política."}], "correct_option": "b", "domain": "Cenário 14: A \"Sistemas Digitais\" está planejando as mudanças em seu SGSI.", "theme": "organizacional"}, {"id": 34, "text": "34. A \"InfraSecure Tech\" deve determinar e prover os recursos necessários (Seção 7.1) para estabelecer, implementar, manter e melhorar continuamente o SGSI. Quais são os recursos essenciais?", "options": [{"id": "a", "text": "a) Apenas o software de segurança e o hardware de rede."}, {"id": "b", "text": "b) Pessoal competente, infraestrutura, ambiente, tecnologia e recursos financeiros."}, {"id": "c", "text": "c) Um programa de treinamento anual para todos os funcionários."}], "correct_option": "b", "domain": "Cenário 15: A \"InfraSecure Tech\" está implementando seu SGSI e focando nos recursos e na competência do pessoal.", "theme": "organizacional"}, {"id": 35, "text": "35. Para garantir a \"competência\" do pessoal (Seção 7.2), a \"InfraSecure Tech\" deve:", "options": [{"id": "a", "text": "a) Contratar apenas funcionários com certificações de segurança da informação."}, {"id": "b", "text": "b) Assegurar que as pessoas são competentes com base em educação, treinamento ou experiência, e tomar ações para adquirir essa competência."}, {"id": "c", "text": "c) Realizar testes de QI para todos os novos contratados."}], "correct_option": "b", "domain": "Cenário 15: A \"InfraSecure Tech\" está implementando seu SGSI e focando nos recursos e na competência do pessoal.", "theme": "organizacional"}, {"id": 36, "text": "36. Ao criar e atualizar a informação documentada (Seção 7.5.2), a \"Documenta Fácil Ltda.\" deve assegurar, de forma apropriada:", "options": [{"id": "a", "text": "a) Que todos os documentos sejam impressos em papel timbrado da empresa."}, {"id": "b", "text": "b) Identificação e descrição (título, data, autor), formato e meio, e análise crítica e aprovação para pertinência e adequação."}, {"id": "c", "text": "c) Que a informação documentada seja acessível apenas à alta direção, em formato digital."}], "correct_option": "b", "domain": "Cenário 16: A \"Documenta Fácil Ltda.\" está implementando seu SGSI, com foco na gestão da informação documentada.", "theme": "organizacional"}, {"id": 37, "text": "37. O controle da informação documentada (Seção 7.5.3) para a \"Documenta Fácil Ltda.\" deve assegurar que ela esteja:", "options": [{"id": "a", "text": "a) Guardada em um cofre, com acesso limitado a poucos indivíduos."}, {"id": "b", "text": "b) Disponível e adequada para o uso, onde e quando necessário, e protegida adequadamente."}, {"id": "c", "text": "c) Publicada em um portal interno sem controle de versão ou acesso."}], "correct_option": "b", "domain": "Cenário 16: A \"Documenta Fácil Ltda.\" está implementando seu SGSI, com foco na gestão da informação documentada.", "theme": "organizacional"}, {"id": 38, "text": "38. O Controle 5.9 do Anexo A exige um \"Inventário de informações e outros ativos associados\". Qual o objetivo deste inventário para a \"Gestão de Ativos Digitais\"?", "options": [{"id": "a", "text": "a) Apenas para fins contábeis e fiscais da empresa."}, {"id": "b", "text": "b) Desenvolver e manter um inventário completo de informações e ativos, incluindo seus proprietários."}, {"id": "c", "text": "c) Registrar apenas os ativos de hardware, ignorando informações."}], "correct_option": "b", "domain": "Cenário 17: A \"Gestão de Ativos Digitais\" está implementando controles organizacionais do Anexo A.", "theme": "organizacional"}, {"id": 39, "text": "39. O Controle 5.10 do Anexo A aborda o \"Uso aceitável de informações e outros ativos associados\". O que a \"Gestão de Ativos Digitais\" deve implementar?", "options": [{"id": "a", "text": "a) Uma política flexível que permite qualquer uso, desde que não haja dano intencional."}, {"id": "b", "text": "b) Regras e procedimentos para o uso aceitável e manuseio de informações e ativos."}, {"id": "c", "text": "c) Uma proibição total de uso de ativos pessoais para fins de trabalho."}], "correct_option": "b", "domain": "Cenário 17: A \"Gestão de Ativos Digitais\" está implementando controles organizacionais do Anexo A.", "theme": "organizacional"}, {"id": 40, "text": "40. O Controle 5.12 do Anexo A exige a \"Classificação das informações\". Como a \"Gestão de Ativos Digitais\" deve classificar suas informações?", "options": [{"id": "a", "text": "a) Exclusivamente como \"dados públicos\" ou \"dados restritos\"."}, {"id": "b", "text": "b) De acordo com as necessidades de segurança da informação da organização, baseadas na confidencialidade, integridade, disponibilidade e requisitos das partes interessadas relevantes."}, {"id": "c", "text": "c) Pelo volume de armazenamento que a informação ocupa."}], "correct_option": "b", "domain": "Cenário 17: A \"Gestão de Ativos Digitais\" está implementando controles organizacionais do Anexo A.", "theme": "organizacional"}, {"id": 41, "text": "41. O Controle 6.2 do Anexo A trata dos \"Termos e condições de contratação\". O que deve ser declarado nos contratos de trabalho?", "options": [{"id": "a", "text": "a) Apenas o salário e os benefícios do pessoal."}, {"id": "b", "text": "b) As responsabilidades do pessoal e da organização para a segurança da informação."}, {"id": "c", "text": "c) A lista completa de controles de segurança que o funcionário deve seguir."}], "correct_option": "b", "domain": "Cenário 18: A \"Recursos Humanos Seguros\" está implementando controles de pessoas do Anexo A.", "theme": "pessoas"}, {"id": 42, "text": "42. O Controle 6.4 do Anexo A, \"Processo disciplinar\", exige que a \"Recursos Humanos Seguros\" tenha um processo formalizado e comunicado para que finalidade?", "options": [{"id": "a", "text": "a) Para premiar os funcionários que seguem as políticas de segurança."}, {"id": "b", "text": "b) Para tomar ações contra o pessoal e outras partes interessadas que violarem a política da segurança da informação."}, {"id": "c", "text": "c) Para registrar todas as reclamações dos funcionários contra as políticas."}], "correct_option": "b", "domain": "Cenário 18: A \"Recursos Humanos Seguros\" está implementando controles de pessoas do Anexo A.", "theme": "organizacional"}, {"id": 43, "text": "43. O Controle 6.5 do Anexo A aborda as \"Responsabilidades após encerramento ou mudança da contratação\". O que a \"Recursos Humanos Seguros\" deve fazer?", "options": [{"id": "a", "text": "a) Desconsiderar as responsabilidades de segurança após o término do vínculo empregatício."}, {"id": "b", "text": "b) Definir, aplicar e comunicar as responsabilidades de segurança da informação que permaneçam válidas."}, {"id": "c", "text": "c) Apenas garantir a devolução de equipamentos da empresa."}], "correct_option": "b", "domain": "Cenário 18: A \"Recursos Humanos Seguros\" está implementando controles de pessoas do Anexo A.", "theme": "pessoas"}, {"id": 44, "text": "44. O Controle 7.1 do Anexo A, \"Perímetros de segurança física\", deve ser usado para:", "options": [{"id": "a", "text": "a) Criar zonas de acesso restrito apenas para a alta direção."}, {"id": "b", "text": "b) Proteger áreas que contenham informações e outros ativos associados contra acessos não autorizados."}, {"id": "c", "text": "c) Apenas para fins de estética e organização do ambiente de trabalho."}], "correct_option": "b", "domain": "Cenário 19: A \"Segurança Física e Lógica\" está implementando controles físicos e tecnológicos do Anexo A.", "theme": "organizacional"}, {"id": 45, "text": "45. O Controle 7.7 do Anexo A exige \"Mesa limpa e tela limpa\". O que a \"Segurança Física e Lógica\" deve definir e aplicar?", "options": [{"id": "a", "text": "a) Regras de organização geral do ambiente de trabalho, sem impacto na segurança."}, {"id": "b", "text": "b) Regras de mesa limpa para documentos impressos e mídia removível, e regras de tela limpa para recursos de tratamento de informações."}, {"id": "c", "text": "c) Uma política que permite deixar documentos confidenciais na mesa para facilitar o trabalho."}], "correct_option": "b", "domain": "Cenário 19: A \"Segurança Física e Lógica\" está implementando controles físicos e tecnológicos do Anexo A.", "theme": "fisico"}, {"id": 46, "text": "46. O Controle 8.2 do Anexo A trata dos \"Direitos de acessos privilegiados\". O que a \"Segurança Física e Lógica\" deve fazer?", "options": [{"id": "a", "text": "a) Conceder direitos privilegiados a todos os usuários que solicitarem."}, {"id": "b", "text": "b) Restringir e gerenciar a atribuição e o uso de direitos de acessos privilegiados."}, {"id": "c", "text": "c) Apenas auditar o uso de acessos privilegiados anualmente."}], "correct_option": "b", "domain": "Cenário 19: A \"Segurança Física e Lógica\" está implementando controles físicos e tecnológicos do Anexo A.", "theme": "organizacional"}, {"id": 47, "text": "47. O Controle 8.7 do Anexo A, \"Proteção contra malware\", exige que a \"CyberProtection Solutions\":", "options": [{"id": "a", "text": "a) Confie exclusivamente em sistemas antivírus automáticos."}, {"id": "b", "text": "b) Implemente proteção contra malware apoiada pela conscientização adequada do usuário."}, {"id": "c", "text": "c) Bloqueie completamente o acesso à internet em todos os sistemas para evitar malware."}], "correct_option": "b", "domain": "Cenário 20: A \"CyberProtection Solutions\" está implementando controles tecnológicos do Anexo A, com foco na proteção contra ameaças.", "theme": "tecnologico"}, {"id": 48, "text": "48. O Controle 8.9 do Anexo A, \"Gestão de configuração\", exige que as configurações (hardware, software, serviços, redes) sejam:", "options": [{"id": "a", "text": "a) Definidas e deixadas no padrão de fábrica para simplificar."}, {"id": "b", "text": "b) Estabelecidas, documentadas, implementadas, monitoradas e analisadas criticamente."}, {"id": "c", "text": "c) Mantidas secretas para evitar que invasores as explorem."}], "correct_option": "b", "domain": "Cenário 20: A \"CyberProtection Solutions\" está implementando controles tecnológicos do Anexo A, com foco na proteção contra ameaças.", "theme": "tecnologico"}, {"id": 49, "text": "49. O Controle 8.12 do Anexo A, \"Prevenção de vazamento de dados\", exige que a \"CyberProtection Solutions\" faça o quê?", "options": [{"id": "a", "text": "a) Apenas monitorar a internet para identificar dados vazados."}, {"id": "b", "text": "b) Aplicar medidas de prevenção de vazamento de dados a sistemas, redes e dispositivos que tratem informações sensíveis."}, {"id": "c", "text": "c) Aceitar que vazamentos são inevitáveis e focar apenas na resposta."}], "correct_option": "b", "domain": "Cenário 20: A \"CyberProtection Solutions\" está implementando controles tecnológicos do Anexo A, com foco na proteção contra ameaças.", "theme": "tecnologico"}, {"id": 50, "text": "50. A ABNT NBR ISO/IEC 27001:2022 (Seção 8.1) exige que a \"Serviços em Nuvem Confiáveis\" planeje, implemente e controle os processos necessários. Isso inclui:", "options": [{"id": "a", "text": "a) Criar novos processos para cada nova tecnologia implementada."}, {"id": "b", "text": "b) Estabelecer critérios para os processos e implementar controles de acordo com esses critérios, com informação documentada para gerar confiança."}, {"id": "c", "text": "c) Apenas documentar os processos existentes, sem criar novos controles."}], "correct_option": "b", "domain": "Cenário 21: A \"Serviços em Nuvem Confiáveis\" está gerenciando a operação do SGSI.", "theme": "organizacional"}, {"id": 51, "text": "51. A \"Serviços em Nuvem Confiáveis\" deve realizar avaliações de riscos da segurança da informação a intervalos planejados, ou quando mudanças significativas ocorrerem (ABNT NBR ISO/IEC 27001:2022, 8.2). Qual o objetivo principal?", "options": [{"id": "a", "text": "a) Para justificar a compra de novos softwares de segurança."}, {"id": "b", "text": "b) Para garantir que o SGSI permaneça relevante e eficaz diante de um ambiente de risco em constante mudança."}, {"id": "c", "text": "c) Para que a organização não precise documentar as mudanças."}], "correct_option": "b", "domain": "Cenário 21: A \"Serviços em Nuvem Confiáveis\" está gerenciando a operação do SGSI.", "theme": "organizacional"}, {"id": 52, "text": "52. A \"Serviços em Nuvem Confiáveis\" terceiriza alguns serviços relevantes para o SGSI. O que a Seção 8.1 exige para esses serviços terceirizados?", "options": [{"id": "a", "text": "a) A responsabilidade pela segurança é inteiramente transferida para o provedor terceirizado."}, {"id": "b", "text": "b) A organização deve assegurar que esses processos, produtos ou serviços terceirizados sejam controlados."}, {"id": "c", "text": "c) A organização pode ignorar a segurança desses serviços, pois não estão em sua infraestrutura."}], "correct_option": "b", "domain": "Cenário 21: A \"Serviços em Nuvem Confiáveis\" está gerenciando a operação do SGSI.", "theme": "organizacional"}, {"id": 53, "text": "53. O Controle 5.23 do Anexo A, \"Segurança da informação para uso de serviços em nuvem\", exige que a \"Serviços em Nuvem Confiáveis\" estabeleça processos para:", "options": [{"id": "a", "text": "a) Apenas o uso e o monitoramento dos serviços em nuvem."}, {"id": "b", "text": "b) Aquisição, uso, gestão e saída de serviços em nuvem, de acordo com os requisitos de segurança da informação."}, {"id": "c", "text": "c) Apenas garantir que o contrato com o provedor de nuvem contenha cláusulas de segurança."}], "correct_option": "b", "domain": "Cenário 21: A \"Serviços em Nuvem Confiáveis\" está gerenciando a operação do SGSI.", "theme": "organizacional"}, {"id": 54, "text": "54. A ABNT NBR ISO/IEC 27001:2022 (Seção 9.1) exige que a \"DataInsights Monitoramento\" determine \"o que precisa ser monitorado e medido\". Isso inclui:", "options": [{"id": "a", "text": "a) Apenas o número de acessos diários ao sistema."}, {"id": "b", "text": "b) Controles e processos da segurança da informação, com métodos que produzam resultados válidos."}, {"id": "c", "text": "c) Somente o feedback dos funcionários sobre a usabilidade dos sistemas."}], "correct_option": "b", "domain": "Cenário 22: A \"DataInsights Monitoramento\" está desenvolvendo seu processo de monitoramento e medição para o SGSI.", "theme": "organizacional"}, {"id": 55, "text": "55. Qual o principal objetivo de determinar \"quem\" deve analisar e avaliar os resultados do monitoramento e medição (Seção 9.1 f))?", "options": [{"id": "a", "text": "a) Atribuir a responsabilidade para um único indivíduo, independentemente de suas qualificações."}, {"id": "b", "text": "b) Assegurar que a análise seja realizada por pessoal qualificado e que as decisões possam ser tomadas com base em informações precisas."}, {"id": "c", "text": "c) Limitar o número de pessoas com acesso aos dados de monitoramento."}], "correct_option": "b", "domain": "Cenário 22: A \"DataInsights Monitoramento\" está desenvolvendo seu processo de monitoramento e medição para o SGSI.", "theme": "organizacional"}, {"id": 56, "text": "56. A ABNT NBR ISO/IEC 27001:2022 (Seção 9.2.1) estabelece que o propósito das auditorias internas é prover informações sobre:", "options": [{"id": "a", "text": "a) A conformidade do SGSI apenas com os requisitos de outras normas."}, {"id": "b", "text": "b) Se o SGSI está em conformidade com os próprios requisitos da organização e os da norma, e se está efetivamente implementado e mantido."}, {"id": "c", "text": "c) As habilidades de negociação dos auditores internos."}], "correct_option": "b", "domain": "Cenário 23: A \"Auditoria Confiável Ltda.\" está planejando e executando auditorias internas.", "theme": "organizacional"}, {"id": 57, "text": "57. Ao selecionar auditores para as auditorias internas (Seção 9.2.2 b)), a \"Auditoria Confiável Ltda.\" deve assegurar:", "options": [{"id": "a", "text": "a) Que os auditores sejam os próprios responsáveis pelos processos auditados para maior conhecimento."}, {"id": "b", "text": "b) A objetividade e imparcialidade do processo de auditoria."}, {"id": "c", "text": "c) Que os auditores sejam treinados apenas uma vez, sem atualizações."}], "correct_option": "b", "domain": "Cenário 23: A \"Auditoria Confiável Ltda.\" está planejando e executando auditorias internas.", "theme": "organizacional"}, {"id": 58, "text": "58. Quais são os principais \"inputs\" que a Alta Direção da \"GovSec Solutions\" deve considerar na análise crítica (Seção 9.3.2)?", "options": [{"id": "a", "text": "a) Apenas o orçamento anual do departamento de TI."}, {"id": "b", "text": "b) Situação das ações anteriores, mudanças no contexto, feedback de desempenho (não conformidades, monitoramento, auditorias, objetivos), avaliação de riscos e oportunidades de melhoria."}, {"id": "c", "text": "c) Exclusivamente os relatórios de incidentes de segurança, sem considerar a proatividade."}], "correct_option": "b", "domain": "Cenário 24: A \"GovSec Solutions\" está se preparando para a análise crítica pela Direção de seu SGSI.", "theme": "organizacional"}, {"id": 59, "text": "59. Os \"resultados\" da análise crítica pela Direção (Seção 9.3.3) devem incluir decisões relativas a quê?", "options": [{"id": "a", "text": "a) Apenas as contratações para o próximo ano."}, {"id": "b", "text": "b) Oportunidades para melhoria contínua e quaisquer necessidades de mudanças do SGSI."}, {"id": "c", "text": "c) A manutenção do SGSI exatamente como está, sem alterações."}], "correct_option": "b", "domain": "Cenário 24: A \"GovSec Solutions\" está se preparando para a análise crítica pela Direção de seu SGSI.", "theme": "organizacional"}, {"id": 60, "text": "60. O Controle 8.15 do Anexo A, referente a \"Log\", exige que a \"Sistemas Integrados de Segurança\":", "options": [{"id": "a", "text": "a) Registre apenas logs de erros graves."}, {"id": "b", "text": "b) Produza, armazene, proteja e analise logs que registrem atividades, exceções, falhas e outros eventos relevantes."}, {"id": "c", "text": "c) Apague os logs regularmente para evitar o armazenamento excessivo de dados."}], "correct_option": "b", "domain": "Cenário 25: A \"Sistemas Integrados de Segurança\" está revisando sua implementação de controles de monitoramento e logs.", "theme": "tecnologico"}, {"id": 61, "text": "61. O Controle 8.16 do Anexo A, \"Atividades de monitoramento\", exige que a \"Sistemas Integrados de Segurança\" monitore:", "options": [{"id": "a", "text": "a) Apenas a performance dos usuários no sistema."}, {"id": "b", "text": "b) Redes, sistemas e aplicações por comportamentos anômalos e tome ações apropriadas para avaliar possíveis incidentes de segurança da informação."}, {"id": "c", "text": "c) Exclusivamente o consumo de energia dos equipamentos de TI."}], "correct_option": "b", "domain": "Cenário 25: A \"Sistemas Integrados de Segurança\" está revisando sua implementação de controles de monitoramento e logs.", "theme": "tecnologico"}, {"id": 62, "text": "62. A \"Avaliação de Performance SGSI\" deve reter \"informação documentada\" como evidência dos resultados do monitoramento e medição (ABNT NBR ISO/IEC 27001:2022, 9.1). Por que isso é crucial?", "options": [{"id": "a", "text": "a) Apenas para fins de arquivamento legal, sem uso prático."}, {"id": "b", "text": "b) Para demonstrar que as atividades de avaliação foram realizadas, os resultados obtidos e as conclusões tiradas, apoiando a tomada de decisões e a melhoria."}, {"id": "c", "text": "c) Para que a gerência possa ignorar os resultados desfavoráveis sem rastreabilidade."}], "correct_option": "b", "domain": "Cenário 26: A \"Avaliação de Performance SGSI\" está concluindo a avaliação de desempenho de seu SGSI.", "theme": "organizacional"}, {"id": 63, "text": "63. O que significa avaliar a \"pertinência\" do SGSI na análise crítica pela Direção (ABNT NBR ISO/IEC 27001:2022, 9.3.1)?", "options": [{"id": "a", "text": "a) Se o SGSI é relevante para o propósito da organização e seu contexto atual."}, {"id": "b", "text": "b) Se o SGSI é o mais avançado tecnologicamente disponível no mercado."}, {"id": "c", "text": "c) Se o SGSI foi implementado dentro do orçamento previsto."}], "correct_option": "a", "domain": "Cenário 26: A \"Avaliação de Performance SGSI\" está concluindo a avaliação de desempenho de seu SGSI.", "theme": "organizacional"}, {"id": 64, "text": "64. De acordo com a ABNT NBR ISO/IEC 27001:2022 (Seção 10.1), o que a \"Evolução Contínua Ltda.\" deve melhorar continuamente?", "options": [{"id": "a", "text": "a) Apenas o número de funcionários dedicados à segurança."}, {"id": "b", "text": "b) A pertinência, a adequação e a eficácia do sistema de gestão da segurança da informação."}, {"id": "c", "text": "c) Apenas os resultados financeiros da organização."}], "correct_option": "b", "domain": "Cenário 27: A \"Evolução Contínua Ltda.\" está focada em manter seu SGSI sempre aprimorado.", "theme": "organizacional"}, {"id": 65, "text": "65. Quando uma não conformidade ocorre (ABNT NBR ISO/IEC 27001:2022, 10.2), a \"Evolução Contínua Ltda.\" deve reagir a ela. Qual uma ação obrigatória?", "options": [{"id": "a", "text": "a) Desconsiderar a não conformidade se ela não causar impacto imediato."}, {"id": "b", "text": "b) Tomar ações para controlá-la e corrigi-la, e lidar com as consequências."}, {"id": "c", "text": "c) Transferir a responsabilidade pela não conformidade para um terceiro."}], "correct_option": "b", "domain": "Cenário 27: A \"Evolução Contínua Ltda.\" está focada em manter seu SGSI sempre aprimorado.", "theme": "organizacional"}, {"id": 66, "text": "66. Após a não conformidade ter sido controlada e corrigida, a \"Correção Eficaz S.A.\" (ABNT NBR ISO/IEC 27001:2022, 10.2 b)) deve:", "options": [{"id": "a", "text": "a) Apenas documentar a correção e arquivar o caso."}, {"id": "b", "text": "b) Avaliar a necessidade de ações para eliminar as causas da não conformidade, a fim de evitar sua repetição ou ocorrência em outro lugar."}, {"id": "c", "text": "c) Informar apenas os envolvidos diretos sobre a correção."}], "correct_option": "b", "domain": "Cenário 28: A \"Correção Eficaz S.A.\" identificou uma não conformidade e está trabalhando para resolvê-la.", "theme": "organizacional"}, {"id": 67, "text": "67. Qual a finalidade de \"analisar criticamente a eficácia de quaisquer ações corretivas tomadas\" (ABNT NBR ISO/IEC 27001:2022, 10.2 d))?", "options": [{"id": "a", "text": "a) Para validar o trabalho da equipe de segurança sem a necessidade de resultados práticos."}, {"id": "b", "text": "b) Para assegurar que as ações implementadas resolveram a não conformidade e foram eficazes em prevenir sua recorrência."}, {"id": "c", "text": "c) Para determinar quem será responsabilizado pela não conformidade inicial."}], "correct_option": "b", "domain": "Cenário 28: A \"Correção Eficaz S.A.\" identificou uma não conformidade e está trabalhando para resolvê-la.", "theme": "organizacional"}, {"id": 68, "text": "68. O Controle 5.27 do Anexo A, \"Aprendizado com incidentes de segurança da informação\", exige que o conhecimento adquirido com incidentes seja usado para:", "options": [{"id": "a", "text": "a) Excluir os controles de segurança que falharam no incidente."}, {"id": "b", "text": "b) Fortalecer e melhorar os controles da segurança da informação."}, {"id": "c", "text": "c) Apenas documentar o incidente para fins de seguro."}], "correct_option": "b", "domain": "Cenário 29: A \"Aprendizado com Incidentes S.A.\" teve um incidente de segurança e está no processo de aprendizado e melhoria.", "theme": "organizacional"}, {"id": 69, "text": "69. A \"Aprendizado com Incidentes S.A.\" deve reter \"informação documentada\" sobre a natureza das não conformidades e os resultados das ações corretivas (ABNT NBR ISO/IEC 27001:2022, 10.2 f) e g)). Qual o propósito disso?", "options": [{"id": "a", "text": "a) Apenas para fins de auditoria interna, sem contribuir para a melhoria real."}, {"id": "b", "text": "b) Para fornecer evidências da aplicação do ciclo de melhoria contínua e facilitar a análise para futuras otimizações."}, {"id": "c", "text": "c) Para que a gerência possa ocultar os problemas passados."}], "correct_option": "b", "domain": "Cenário 29: A \"Aprendizado com Incidentes S.A.\" teve um incidente de segurança e está no processo de aprendizado e melhoria.", "theme": "organizacional"}, {"id": 70, "text": "70. Se a \"Gestão de Mudanças Segura\" identificar que um de seus processos não está mais alinhado com os objetivos do SGSI, o que a ABNT NBR ISO/IEC 27001:2022 (10.2 e)) sugere?", "options": [{"id": "a", "text": "a) Ignorar o desalinhamento e focar em outras áreas."}, {"id": "b", "text": "b) Realizar mudanças no sistema de gestão da segurança da informação, quando necessário, para realinhar os processos."}, {"id": "c", "text": "c) Reestruturar completamente toda a organização."}], "correct_option": "b", "domain": "Cenário 30: A \"Gestão de Mudanças Segura\" está revendo seu SGSI.", "theme": "tecnologico"}, {"id": 71, "text": "71. Qual é a relação fundamental entre a \"Melhoria contínua\" (Seção 10.1) e os \"Objetivos da segurança da informação\" (Seção 6.2)?", "options": [{"id": "a", "text": "a) Não há relação direta, pois são processos separados."}, {"id": "b", "text": "b) A melhoria contínua visa garantir que o SGSI evolua para continuar a alcançar e otimizar os objetivos de segurança da informação."}, {"id": "c", "text": "c) Os objetivos da segurança da informação são definidos apenas uma vez e não são afetados pela melhoria contínua."}], "correct_option": "b", "domain": "Cenário 30: A \"Gestão de Mudanças Segura\" está revendo seu SGSI.", "theme": "organizacional"}, {"id": 72, "text": "72. O que a \"Melhoria contínua\" (Seção 10.1) do SGSI da \"Gestão de Mudanças Segura\" busca aprimorar em termos de \"pertinência\"?", "options": [{"id": "a", "text": "a) A velocidade de execução dos processos do SGSI."}, {"id": "b", "text": "b) A relevância e adequação do SGSI aos propósitos e contexto da organização."}, {"id": "c", "text": "c) O número de pessoas envolvidas na gestão do SGSI."}], "correct_option": "b", "domain": "Cenário 30: A \"Gestão de Mudanças Segura\" está revendo seu SGSI.", "theme": "organizacional"}, {"id": 73, "text": "73. Em uma auditoria de certificação, o que a \"Certificação Final Solutions\" precisará demonstrar em relação à sua política de segurança da informação (ABNT NBR ISO/IEC 27001:2022, 5.2)?", "options": [{"id": "a", "text": "a) Apenas que a política foi redigida por um especialista externo."}, {"id": "b", "text": "b) Que a política é apropriada ao propósito da organização, documentada, comunicada e inclui o comprometimento com a melhoria contínua."}, {"id": "c", "text": "c) Que a política é a mais complexa e detalhada do mercado."}], "correct_option": "b", "domain": "Cenário 31: A \"Certificação Final Solutions\" está se preparando para a auditoria externa de certificação ISO 27001.", "theme": "organizacional"}, {"id": 74, "text": "74. Qual a importância da \"informação documentada\" sobre a \"competência\" do pessoal (ABNT NBR ISO/IEC 27001:2022, 7.2) para a auditoria de certificação?", "options": [{"id": "a", "text": "a) É apenas um requisito burocrático que os auditores tendem a ignorar."}, {"id": "b", "text": "b) Serve como evidência de que a organização garante que seu pessoal é qualificado para as tarefas relacionadas à segurança da informação."}, {"id": "c", "text": "c) É utilizada para comparar os salários dos funcionários com os do mercado."}], "correct_option": "b", "domain": "Cenário 31: A \"Certificação Final Solutions\" está se preparando para a auditoria externa de certificação ISO 27001.", "theme": "organizacional"}, {"id": 75, "text": "75. O cliente da \"Qualidade e Conformidade Consultoria\" deve apresentar \"informação documentada dos resultados das avaliações de riscos da segurança da informação\" (ABNT NBR ISO/IEC 27001:2022, 8.2). O que o auditor buscará nisso?", "options": [{"id": "a", "text": "a) Uma lista de riscos sem nenhuma análise ou tratamento."}, {"id": "b", "text": "b) Evidências de que as avaliações foram realizadas conforme os critérios estabelecidos, os riscos identificados, analisados, avaliados e seus resultados documentados."}, {"id": "c", "text": "c) Apenas um resumo geral dos riscos mais importantes."}], "correct_option": "b", "domain": "Cenário 32: A \"Qualidade e Conformidade Consultoria\" está auxiliando um cliente a preparar-se para a auditoria de certificação.", "theme": "organizacional"}, {"id": 76, "text": "76. Em relação à \"Análise crítica pela Direção\" (ABNT NBR ISO/IEC 27001:2022, 9.3), qual evidência o auditor buscará como parte da preparação para a certificação?", "options": [{"id": "a", "text": "a) Apenas a presença da alta direção na reunião de análise crítica."}, {"id": "b", "text": "b) Informação documentada dos resultados da análise crítica, incluindo decisões sobre oportunidades de melhoria e necessidades de mudanças no SGSI."}, {"id": "c", "text": "c) Um plano de ação futuro, mesmo que a análise crítica ainda não tenha ocorrido."}], "correct_option": "b", "domain": "Cenário 32: A \"Qualidade e Conformidade Consultoria\" está auxiliando um cliente a preparar-se para a auditoria de certificação.", "theme": "organizacional"}, {"id": 77, "text": "77. A \"Sistemas Auditáveis Inc.\" deve demonstrar ao auditor que o SGSI é \"melhorado continuamente\" (ABNT NBR ISO/IEC 27001:2022, 10.1). Qual a melhor forma de evidenciar isso?", "options": [{"id": "a", "text": "a) Apresentando um plano de melhoria detalhado que será implementado no futuro."}, {"id": "b", "text": "b) Através da análise de resultados de monitoramento, auditorias, ações corretivas e análises críticas da Direção, mostrando um ciclo de aprimoramento."}, {"id": "c", "text": "c) Uma declaração verbal do CEO sobre o compromisso com a melhoria."}], "correct_option": "b", "domain": "Cenário 33: A \"Sistemas Auditáveis Inc.\" está finalizando a preparação para sua auditoria.", "theme": "organizacional"}, {"id": 78, "text": "78. A ABNT NBR ISO/IEC 27001:2022 (Seção 8.1) exige que a organização controle \"processos, produtos ou serviços terceirizados que são relevantes para o sistema de gestão da segurança da informação\". Por que isso é fundamental para uma auditoria de certificação?", "options": [{"id": "a", "text": "a) Porque a organização pode transferir a responsabilidade pela segurança para o terceiro."}, {"id": "b", "text": "b) Porque o auditor precisa ter certeza de que a segurança da informação é mantida mesmo em serviços externos."}, {"id": "c", "text": "c) Porque a organização precisa apenas garantir que o terceiro possua uma ISO 27001."}], "correct_option": "b", "domain": "Cenário 33: A \"Sistemas Auditáveis Inc.\" está finalizando a preparação para sua auditoria.", "theme": "organizacional"}, {"id": 79, "text": "79. O Controle 5.16 do Anexo A trata da \"Gestão de identidade\". O que a \"Tecnologia de Controle de Acesso\" deve implementar?", "options": [{"id": "a", "text": "a) Um processo para criar novas identidades para cada novo projeto."}, {"id": "b", "text": "b) O gerenciamento do ciclo de vida completo das identidades, desde sua criação até a desativação."}, {"id": "c", "text": "c) Um sistema que permite aos usuários gerenciar suas próprias identidades de forma autônoma."}], "correct_option": "b", "domain": "Cenário 34: A \"Tecnologia de Controle de Acesso\" está implementando controles para gerenciar acesso e identidade.", "theme": "organizacional"}, {"id": 80, "text": "80. O Controle 5.18 do Anexo A aborda os \"Direitos de acesso\". O que a \"Tecnologia de Controle de Acesso\" deve fazer?", "options": [{"id": "a", "text": "a) Conceder direitos de acesso amplos por padrão e restringi-los apenas quando necessário."}, {"id": "b", "text": "b) Provisionar, analisar criticamente, modificar e remover os direitos de acesso de acordo com as políticas e regras da organização."}, {"id": "c", "text": "c) Apenas documentar os direitos de acesso, sem processo de revisão."}], "correct_option": "b", "domain": "Cenário 34: A \"Tecnologia de Controle de Acesso\" está implementando controles para gerenciar acesso e identidade.", "theme": "organizacional"}]</script>
+    <script>
+      const ALL_QUESTIONS = JSON.parse(document.getElementById('questions-data').textContent);
+      const CONFIG = {"examTitle": "ISO/IEC 27001:2022 Lead Implementer Simulator — Simulado 2", "examSubtitle": "Formato em blocos de 10 questões, com pausa e acompanhamento de desempenho.", "totalSeconds": 10800};
+      const BLOCK_SIZE = 10;
+      const TOTAL = ALL_QUESTIONS.length;
+      const TOTAL_BLOCKS = Math.ceil(TOTAL / BLOCK_SIZE);
+      const TOTAL_SECONDS = CONFIG.totalSeconds;
+
+      const state = {
+        view: 'intro', // intro | exam | pause | confirmSubmit | manualPause | final
+        current: 1, // 1-indexed question number
+        maxUnlocked: BLOCK_SIZE,
+        answers: {}, // qid -> letter
+        bookmarks: new Set(),
+        filter: 'all', // all | bookmarked | unanswered
+        secondsLeft: TOTAL_SECONDS,
+        timerId: null,
+        pauseBlockIndex: null, // which block the pause screen refers to (0-indexed)
+      };
+
+      const byId = (i) => ALL_QUESTIONS[i - 1];
+
+      const THEME_META = {
+        organizacional: { label: '📁 Controles Organizacionais', controls: 37, order: 1 },
+        pessoas:        { label: '👥 Controles de Pessoas',       controls: 8,  order: 2 },
+        fisico:         { label: '🏢 Controles Físicos',          controls: 14, order: 3 },
+        tecnologico:    { label: '💻 Controles Tecnológicos',     controls: 34, order: 4 },
+      };
+      const THEME_ORDER = ['organizacional', 'pessoas', 'fisico', 'tecnologico'];
+
+      function computeStatsForQuestions(qs) {
+        let correct = 0;
+        const perQuestion = [];
+        qs.forEach(q => {
+          const chosen = state.answers[q.id];
+          const isCorrect = chosen === q.correct_option;
+          if (isCorrect) correct++;
+          perQuestion.push({ id: q.id, correct: isCorrect, answered: chosen !== undefined });
+        });
+        return { correct, total: qs.length, perQuestion };
+      }
+
+      function computeDomainBreakdown(qs) {
+        const byTheme = {};
+        THEME_ORDER.forEach(k => { byTheme[k] = { correct: 0, total: 0 }; });
+        qs.forEach(q => {
+          const key = THEME_META[q.theme] ? q.theme : 'organizacional';
+          byTheme[key].total++;
+          if (state.answers[q.id] === q.correct_option) byTheme[key].correct++;
+        });
+        return byTheme;
+      }
+
+      function barChartHTML(byDomain) {
+        return THEME_ORDER.map(k => {
+          const meta = THEME_META[k];
+          const d = byDomain[k] || { correct: 0, total: 0 };
+          const pct = d.total ? Math.round((d.correct / d.total) * 100) : 0;
+          const color = d.total === 0 ? '#cbd5e1' : (pct >= 70 ? '#15803d' : (pct >= 50 ? '#d97706' : '#b91c1c'));
+          const countLabel = d.total ? `${d.correct}/${d.total} (${pct}%)` : 'sem dados ainda';
+          return `
+            <div class="bar-row">
+              <div class="bar-label" title="${escapeHtml(meta.label)} · ${meta.controls} controles">${escapeHtml(meta.label)}</div>
+              <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+              <div class="bar-pct">${countLabel}</div>
+            </div>`;
+        }).join('');
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+
+      function fmtTime(totalSec) {
+        const s = Math.max(0, totalSec);
+        const h = Math.floor(s / 3600);
+        const m = Math.floor((s % 3600) / 60);
+        const sec = Math.floor(s % 60);
+        const pad = (n) => String(n).padStart(2, '0');
+        return `${pad(h)}:${pad(m)}:${pad(sec)}`;
+      }
+
+      function startTimer() {
+        if (state.timerId) return;
+        state.timerId = setInterval(() => {
+          if (state.view !== 'exam') return; // ticks only while actively answering
+          state.secondsLeft--;
+          if (state.secondsLeft <= 0) {
+            state.secondsLeft = 0;
+            clearInterval(state.timerId);
+            state.timerId = null;
+            state.view = 'final';
+            render();
+            return;
+          }
+          const el = document.getElementById('timer-display');
+          if (el) el.textContent = fmtTime(state.secondsLeft);
+        }, 1000);
+      }
+
+      function render() {
+        const app = document.getElementById('app');
+        if (state.view === 'intro') app.innerHTML = renderIntro();
+        else if (state.view === 'exam') app.innerHTML = renderExamChrome() + renderExamBody();
+        else if (state.view === 'pause') app.innerHTML = renderExamChrome(true) + renderPause();
+        else if (state.view === 'confirmSubmit') app.innerHTML = renderExamChrome(true) + renderConfirmSubmit();
+        else if (state.view === 'manualPause') app.innerHTML = renderExamChrome(true) + renderManualPause();
+        else if (state.view === 'final') app.innerHTML = renderFinal();
+        attachHandlers();
+        window.scrollTo(0, 0);
+      }
+
+      function renderIntro() {
+        return `
+          <div class="card">
+            <h1>${escapeHtml(CONFIG.examTitle)}</h1>
+            <p class="sub">${escapeHtml(CONFIG.examSubtitle)}</p>
+            <ul class="plain">
+              <li><span>Total de questões</span><strong>${TOTAL}</strong></li>
+              <li><span>Tempo total</span><strong>${fmtTime(TOTAL_SECONDS)}</strong></li>
+              <li><span>Nota de aprovação</span><strong>70%</strong></li>
+              <li><span>Pausas</span><strong>a cada ${BLOCK_SIZE} questões, com resultado parcial</strong></li>
+            </ul>
+            <div class="footer-actions" style="justify-content:flex-end">
+              <button class="btn" id="start-btn">Iniciar Simulado</button>
+            </div>
+          </div>`;
+      }
+
+      function renderExamChrome(disabled) {
+        const pct = TOTAL_SECONDS ? state.secondsLeft / TOTAL_SECONDS : 1;
+        const timerCls = pct < 0.1 ? 'timer low' : 'timer ok';
+        return `
+          <div class="topbar">
+            <div class="examname">Exam: <span>${escapeHtml(CONFIG.examTitle)}</span></div>
+            <div class="loggedas">Logged in as: Student</div>
+          </div>
+          <div class="toolbar">
+            <button class="navbtn" id="prev-q-btn" ${disabled || state.current <= 1 ? 'disabled' : ''}>&lsaquo;</button>
+            <span class="qcounter">Question ${state.current} of ${TOTAL}</span>
+            <button class="navbtn" id="next-q-btn-top" ${disabled || state.current >= state.maxUnlocked ? 'disabled' : ''}>&rsaquo;</button>
+            <button class="bookmarkbtn ${state.bookmarks.has(state.current) ? 'active' : ''}" id="bookmark-btn" ${disabled ? 'disabled' : ''}>🔖 Bookmark</button>
+            <div class="spacer"></div>
+            <div class="${timerCls}">🕐 <span id="timer-display">${fmtTime(state.secondsLeft)}</span></div>
+            <button class="pausebtn" id="manual-pause-btn" ${disabled ? 'disabled' : ''}>⏸ Pause Exam</button>
+            <button class="submitbtn" id="submit-exam-btn" ${disabled ? 'disabled' : ''}>✓ SUBMIT EXAM</button>
+          </div>
+          <div class="filterbar">
+            Show:
+            <label><input type="radio" name="filter" value="all" ${state.filter==='all'?'checked':''} ${disabled?'disabled':''}> All</label>
+            <label><input type="radio" name="filter" value="bookmarked" ${state.filter==='bookmarked'?'checked':''} ${disabled?'disabled':''}> Bookmarked</label>
+            <label><input type="radio" name="filter" value="unanswered" ${state.filter==='unanswered'?'checked':''} ${disabled?'disabled':''}> Unanswered</label>
+          </div>
+          <div class="gridwrap">
+            <div class="grid">${renderGrid(disabled)}</div>
+          </div>`;
+      }
+
+      function renderGrid(disabled) {
+        let nums = [];
+        for (let i = 1; i <= TOTAL; i++) nums.push(i);
+        if (state.filter === 'bookmarked') nums = nums.filter(i => state.bookmarks.has(i));
+        if (state.filter === 'unanswered') nums = nums.filter(i => i <= state.maxUnlocked && state.answers[byId(i).id] === undefined);
+        if (nums.length === 0) return `<span class="sub">Nenhuma questão nesse filtro.</span>`;
+        return nums.map(i => {
+          const locked = i > state.maxUnlocked;
+          const answered = state.answers[byId(i).id] !== undefined;
+          let cls = 'gridnum';
+          if (i === state.current) cls += ' current';
+          else if (answered) cls += ' answered';
+          if (locked) cls += ' locked';
+          if (state.bookmarks.has(i)) cls += ' bookmarked';
+          return `<button type="button" class="${cls}" data-goto="${i}" ${locked || disabled ? 'disabled' : ''} title="${locked ? 'Bloqueada até concluir o bloco anterior' : ''}">${i}</button>`;
+        }).join('');
+      }
+
+      function renderExamBody() {
+        const q = byId(state.current);
+        const isLastGlobal = state.current === TOTAL;
+        const optionsHtml = q.options.map(opt => {
+          const checked = state.answers[q.id] === opt.id ? 'checked' : '';
+          const cls = state.answers[q.id] === opt.id ? 'opt answered' : 'opt';
+          return `
+            <label class="${cls}">
+              <input type="radio" name="q_${q.id}" value="${opt.id}" ${checked} data-qid="${q.id}" data-opt="${opt.id}">
+              <span>${escapeHtml(opt.text)}</span>
+            </label>`;
+        }).join('');
+
+        const nextControls = isLastGlobal
+          ? `<span class="sub" style="margin:0">Última questão — use SUBMIT EXAM para finalizar.</span>`
+          : `<button class="btn gray" id="skip-q-btn">Skip Question &rsaquo;</button>
+             <button class="btn" id="next-q-btn">Go To Next Question &rsaquo;</button>`;
+
+        return `
+          <div class="main">
+            <div class="qtext">${escapeHtml(q.text)}</div>
+            ${optionsHtml}
+            <div class="footer-actions">
+              <span></span>
+              <div style="display:flex;gap:10px">${nextControls}</div>
+            </div>
+          </div>`;
+      }
+
+      function renderPause() {
+        const blockIndex = state.pauseBlockIndex;
+        const start = blockIndex * BLOCK_SIZE;
+        const qs = ALL_QUESTIONS.slice(start, start + BLOCK_SIZE);
+        const blockStats = computeStatsForQuestions(qs);
+        const answeredSoFar = ALL_QUESTIONS.slice(0, start + BLOCK_SIZE);
+        const cumStats = computeStatsForQuestions(answeredSoFar);
+        const cumPct = Math.round((cumStats.correct / cumStats.total) * 100);
+        const byDomain = computeDomainBreakdown(answeredSoFar);
+        const isLastBlock = (start + BLOCK_SIZE) >= TOTAL;
+
+        const reviewChips = blockStats.perQuestion.map((p, i) => {
+          const num = start + i + 1;
+          return `<div class="review-chip ${p.correct ? 'ok' : 'no'}" title="Questão ${num}">${num}</div>`;
+        }).join('');
+
+        return `
+          <div class="main">
+            <h1>Exame Pausado</h1>
+            <p class="sub">Bloco ${blockIndex + 1} de ${TOTAL_BLOCKS} concluído (questões ${start+1}–${start+qs.length}).</p>
+
+            <div class="section-title">Resultado provisório · últimas ${qs.length} perguntas</div>
+            <div class="stat-grid">
+              <div class="stat-box">
+                <div class="num">${blockStats.correct}/${blockStats.total}</div>
+                <div class="label">Acertos neste bloco</div>
+              </div>
+              <div class="stat-box">
+                <div class="num">${Math.round((blockStats.correct/blockStats.total)*100)}%</div>
+                <div class="label">Aproveitamento do bloco</div>
+              </div>
+            </div>
+            <div class="review-list">${reviewChips}</div>
+
+            <div class="section-title">Resultado acumulado · ${cumStats.total} respondidas</div>
+            <div class="stat-grid">
+              <div class="stat-box">
+                <div class="num">${cumStats.correct}/${cumStats.total}</div>
+                <div class="label">Acertos no total</div>
+              </div>
+              <div class="stat-box">
+                <div class="num">${cumPct}% <span class="pill ${cumPct>=70?'good':'bad'}">${cumPct>=70?'No caminho da aprovação':'Abaixo de 70%'}</span></div>
+                <div class="label">Aproveitamento acumulado</div>
+              </div>
+            </div>
+
+            <div class="section-title">Acertos por domínio (acumulado)</div>
+            ${barChartHTML(byDomain)}
+
+            <div class="footer-actions">
+              <span></span>
+              ${isLastBlock
+                ? `<button class="btn" id="final-btn">Ver Resultado Final</button>`
+                : `<button class="btn" id="continue-btn">Continuar (próximas ${Math.min(BLOCK_SIZE, TOTAL - (start+BLOCK_SIZE))} perguntas)</button>`}
+            </div>
+          </div>`;
+      }
+
+      function renderConfirmSubmit() {
+        return `
+          <div class="main">
+            <h1>Finalizar o simulado?</h1>
+            <p class="sub">Você respondeu ${Object.keys(state.answers).length} de ${TOTAL} questões. Questões não respondidas contam como erradas no resultado final.</p>
+            <div class="footer-actions">
+              <button class="btn gray" id="cancel-submit-btn">Voltar ao exame</button>
+              <button class="btn" id="confirm-submit-btn">Confirmar e Ver Resultado</button>
+            </div>
+          </div>`;
+      }
+
+      function renderManualPause() {
+        return `
+          <div class="main">
+            <h1>Exame Pausado Manualmente</h1>
+            <p class="sub">O cronômetro está parado. Clique em retomar para continuar de onde parou.</p>
+            <div class="footer-actions">
+              <span></span>
+              <button class="btn" id="resume-btn">Retomar Exame</button>
+            </div>
+          </div>`;
+      }
+
+      function renderFinal() {
+        const all = ALL_QUESTIONS;
+        const stats = computeStatsForQuestions(all.filter(q => state.answers[q.id] !== undefined || true));
+        const pct = Math.round((stats.correct / stats.total) * 100);
+        const approved = pct >= 70;
+        const byDomain = computeDomainBreakdown(all);
+
+        return `
+          <div class="card">
+            <h1>Resultado Final</h1>
+            <p class="sub">${escapeHtml(CONFIG.examTitle)}</p>
+            <div class="stat-grid">
+              <div class="stat-box">
+                <div class="num">${stats.correct}/${stats.total}</div>
+                <div class="label">Acertos totais</div>
+              </div>
+              <div class="stat-box">
+                <div class="num">${pct}% <span class="pill ${approved?'good':'bad'}">${approved?'APROVADO':'NÃO APROVADO'}</span></div>
+                <div class="label">Nota final (corte: 70%)</div>
+              </div>
+            </div>
+
+            <div class="section-title">Acertos por domínio</div>
+            ${barChartHTML(byDomain)}
+
+            <div class="footer-actions">
+              <span></span>
+              <button class="btn secondary" id="retake-btn">Refazer Simulado</button>
+            </div>
+          </div>`;
+      }
+
+      function advance() {
+        // called from Next/Skip: moves from state.current forward by 1, triggering pause at 10-boundaries
+        const leaving = state.current;
+        if (leaving % BLOCK_SIZE === 0 && leaving < TOTAL) {
+          state.pauseBlockIndex = (leaving / BLOCK_SIZE) - 1;
+          state.view = 'pause';
+          render();
+          return;
+        }
+        if (leaving < TOTAL) {
+          state.current = leaving + 1;
+          render();
+        }
+      }
+
+      function attachHandlers() {
+        const startBtn = document.getElementById('start-btn');
+        if (startBtn) startBtn.onclick = () => {
+          state.view = 'exam'; state.current = 1; state.maxUnlocked = BLOCK_SIZE;
+          render(); startTimer();
+        };
+
+        document.querySelectorAll('input[type=radio][name^="q_"]').forEach(input => {
+          input.onchange = (e) => {
+            const qid = Number(e.target.dataset.qid);
+            state.answers[qid] = e.target.dataset.opt;
+            render();
+          };
+        });
+
+        document.querySelectorAll('input[type=radio][name="filter"]').forEach(input => {
+          input.onchange = (e) => { state.filter = e.target.value; render(); };
+        });
+
+        document.querySelectorAll('.gridnum').forEach(btn => {
+          btn.onclick = (e) => {
+            const n = Number(e.currentTarget.dataset.goto);
+            if (n > state.maxUnlocked) return;
+            state.current = n;
+            render();
+          };
+        });
+
+        const prevBtn = document.getElementById('prev-q-btn');
+        if (prevBtn) prevBtn.onclick = () => { if (state.current > 1) { state.current--; render(); } };
+
+        const nextTopBtn = document.getElementById('next-q-btn-top');
+        if (nextTopBtn) nextTopBtn.onclick = () => { if (state.current < state.maxUnlocked) { state.current++; render(); } };
+
+        const nextBtn = document.getElementById('next-q-btn');
+        if (nextBtn) nextBtn.onclick = advance;
+        const skipBtn = document.getElementById('skip-q-btn');
+        if (skipBtn) skipBtn.onclick = advance;
+
+        const bookmarkBtn = document.getElementById('bookmark-btn');
+        if (bookmarkBtn) bookmarkBtn.onclick = () => {
+          if (state.bookmarks.has(state.current)) state.bookmarks.delete(state.current);
+          else state.bookmarks.add(state.current);
+          render();
+        };
+
+        const manualPauseBtn = document.getElementById('manual-pause-btn');
+        if (manualPauseBtn) manualPauseBtn.onclick = () => { state.view = 'manualPause'; render(); };
+        const resumeBtn = document.getElementById('resume-btn');
+        if (resumeBtn) resumeBtn.onclick = () => { state.view = 'exam'; render(); };
+
+        const submitBtn = document.getElementById('submit-exam-btn');
+        if (submitBtn) submitBtn.onclick = () => { state.view = 'confirmSubmit'; render(); };
+        const cancelSubmitBtn = document.getElementById('cancel-submit-btn');
+        if (cancelSubmitBtn) cancelSubmitBtn.onclick = () => { state.view = 'exam'; render(); };
+        const confirmSubmitBtn = document.getElementById('confirm-submit-btn');
+        if (confirmSubmitBtn) confirmSubmitBtn.onclick = () => { state.view = 'final'; render(); };
+
+        const continueBtn = document.getElementById('continue-btn');
+        if (continueBtn) continueBtn.onclick = () => {
+          state.maxUnlocked = Math.min(TOTAL, state.maxUnlocked + BLOCK_SIZE);
+          state.current = state.current + 1 > TOTAL ? TOTAL : (state.pauseBlockIndex + 1) * BLOCK_SIZE + 1;
+          state.view = 'exam';
+          render();
+        };
+
+        const finalBtn = document.getElementById('final-btn');
+        if (finalBtn) finalBtn.onclick = () => { state.view = 'final'; render(); };
+
+        const retakeBtn = document.getElementById('retake-btn');
+        if (retakeBtn) retakeBtn.onclick = () => {
+          state.view = 'intro'; state.current = 1; state.maxUnlocked = BLOCK_SIZE;
+          state.answers = {}; state.bookmarks = new Set(); state.filter = 'all';
+          state.secondsLeft = TOTAL_SECONDS;
+          render();
+        };
+      }
+
+      render();
+    </script>
+  </body>
+</html>
