@@ -150,9 +150,7 @@
         }
 
         .nav-dropdown {
-            position: absolute;
-            top: calc(100% + 4px);
-            left: 0;
+            position: fixed;
             background: rgba(20, 30, 60, 0.98);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 179, 102, 0.2);
@@ -689,6 +687,11 @@
                             `;
                         }).join('');
                     }
+
+                    // Calcular posição do dropdown (position: fixed)
+                    const rect = link.getBoundingClientRect();
+                    dropdown.style.top = (rect.bottom + 4) + 'px';
+                    dropdown.style.left = rect.left + 'px';
 
                     // Fechar outros dropdowns e remover active
                     document.querySelectorAll('.nav-dropdown').forEach(d => {
