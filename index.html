@@ -6,10 +6,17 @@
     <title>GuardianTech - Portal de Serviços</title>
     <style>
         :root {
-            --brand-start: #667eea;
-            --brand-end: #764ba2;
-            --ink: #2b2b3a;
-            --ink-soft: #666;
+            --brand-primary: #ffb366;
+            --brand-secondary: #ffc480;
+            --brand-dark: #3a3a3a;
+            --brand-light: #ffeedd;
+            --text-dark: #1a1a1a;
+            --text-gray: #9a9a9a;
+            --text-light: #ffffff;
+            --border-color: #555;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.25);
+            --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.35);
         }
 
         * {
@@ -23,246 +30,443 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, var(--brand-start) 0%, var(--brand-end) 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
             background-attachment: fixed;
             min-height: 100vh;
-            color: white;
+            color: var(--text-gray);
+            line-height: 1.6;
+            position: relative;
         }
 
-        /* Navegação fixa */
-        .site-nav {
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><radialGradient id="glow" cx="50%25" cy="50%25" r="50%25"><stop offset="0%25" style="stop-color:%23ffb366;stop-opacity:0.1" /><stop offset="100%25" style="stop-color:%23ffb366;stop-opacity:0" /></radialGradient></defs><rect fill="url(%23glow)" width="1200" height="800"/></svg>');
+            background-attachment: fixed;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        main, header, footer, .hero-section, .main-container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header & Navigation */
+        .site-header {
             position: sticky;
             top: 0;
-            z-index: 100;
-            background: rgba(30, 25, 60, 0.55);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            z-index: 1000;
+            background: rgba(42, 42, 42, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 2px solid var(--brand-primary);
+            box-shadow: var(--shadow-md);
         }
 
-        .nav-inner {
-            max-width: 1200px;
+        .header-content {
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 14px 20px;
+            padding: 16px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 20px;
+            gap: 32px;
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: white;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.2em;
-            white-space: nowrap;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .nav-links::-webkit-scrollbar {
-            display: none;
-        }
-
-        .nav-pill {
-            flex-shrink: 0;
-            display: inline-block;
-            padding: 8px 16px;
-            border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: rgba(255, 255, 255, 0.9);
-            text-decoration: none;
-            font-size: 0.9em;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .nav-pill:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        .nav-pill.active {
-            background: white;
-            color: var(--brand-end);
-            border-color: white;
-        }
-
-        /* Hero */
-        .hero {
-            text-align: center;
-            padding: 50px 20px 30px;
-        }
-
-        .hero h1 {
-            font-size: 2.4em;
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-
-        .hero p {
-            font-size: 1.05em;
-            opacity: 0.85;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px 40px;
-        }
-
-        section {
-            scroll-margin-top: 84px;
-        }
-
-        .section-title {
+        .logo-brand {
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 1.7em;
-            font-weight: 700;
-            margin: 56px 0 24px;
-        }
-
-        .section-title:first-of-type {
-            margin-top: 0;
-        }
-
-        .section-title .count {
-            font-size: 0.55em;
-            font-weight: 600;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 3px 12px;
-            border-radius: 999px;
-            opacity: 0.85;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-            gap: 24px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 14px;
-            padding: 26px;
             text-decoration: none;
-            color: var(--ink);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+            font-weight: 700;
+            font-size: 1.3em;
+            color: var(--brand-primary);
+            white-space: nowrap;
+            text-shadow: 0 2px 8px rgba(255, 179, 102, 0.2);
+        }
+
+        .nav-categories {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            flex: 1;
+            padding: 4px 0;
+        }
+
+        .nav-categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-link {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            background: rgba(255, 179, 102, 0.15);
+            color: var(--brand-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: var(--brand-primary);
+            color: #3a3a3a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 179, 102, 0.3);
+        }
+
+        .nav-link.active {
+            background: var(--brand-primary);
+            color: #3a3a3a;
+            border-color: var(--brand-secondary);
+            box-shadow: 0 8px 20px rgba(255, 179, 102, 0.4);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            padding: 80px 24px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 179, 102, 0.15), transparent);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: clamp(2.2em, 8vw, 3.5em);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+            text-shadow: 0 4px 20px rgba(255, 179, 102, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1em, 4vw, 1.3em);
+            color: var(--brand-primary);
+            margin-bottom: 32px;
+            font-weight: 600;
+            text-shadow: 0 2px 10px rgba(255, 179, 102, 0.2);
+        }
+
+        .hero-description {
+            font-size: 1.05em;
+            color: var(--text-gray);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px 60px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Loading State */
+        .loading-state {
+            text-align: center;
+            padding: 60px 24px;
+            color: white;
+            font-size: 1.1em;
+        }
+
+        /* Sections */
+        .portal-section {
+            margin-bottom: 80px;
+            scroll-margin-top: 100px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            text-shadow: 0 2px 10px rgba(255, 179, 102, 0.2);
+        }
+
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--brand-primary);
+            color: #3a3a3a;
+            font-weight: 700;
+            font-size: 0.95em;
+            min-width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            padding: 0 12px;
+            box-shadow: 0 4px 12px rgba(255, 179, 102, 0.3);
+        }
+
+        .section-underline {
+            height: 4px;
+            width: 60px;
+            background: linear-gradient(90deg, var(--brand-primary), rgba(255, 179, 102, 0.4));
+            border-radius: 2px;
+            margin-top: 16px;
+            box-shadow: 0 2px 8px rgba(255, 179, 102, 0.3);
+        }
+
+        /* Grid Layout */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+            margin-top: 20px;
+        }
+
+        /* Cards */
+        .service-card {
+            background: rgba(60, 60, 60, 0.9);
+            border-radius: 16px;
+            padding: 32px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255, 179, 102, 0.2);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             height: 100%;
-            border: 1px solid rgba(0, 0, 0, 0.04);
+            position: relative;
+            overflow: hidden;
         }
 
-        .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+            transform-origin: left;
+        }
+
+        .service-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 50px rgba(255, 179, 102, 0.2);
+            background: rgba(60, 60, 60, 0.95);
+            border-color: rgba(255, 179, 102, 0.4);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
         }
 
         .card-icon {
-            font-size: 2.6em;
-            margin-bottom: 12px;
+            width: 64px;
+            height: 64px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(255, 179, 102, 0.1);
+            padding: 8px;
+        }
+
+        .card-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .card-icon-emoji {
+            font-size: 3.2em;
+            line-height: 1;
         }
 
         .card-title {
-            font-size: 1.3em;
+            font-size: 1.4em;
             font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--ink);
+            margin-bottom: 12px;
+            color: white;
+            line-height: 1.3;
         }
 
         .card-description {
-            font-size: 0.92em;
-            color: var(--ink-soft);
-            margin-bottom: 18px;
+            font-size: 0.95em;
+            color: #c0c0c0;
+            margin-bottom: 24px;
             flex-grow: 1;
-            line-height: 1.4;
+            line-height: 1.6;
         }
 
-        .card-link {
+        .card-action {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            background: linear-gradient(135deg, var(--brand-start) 0%, var(--brand-end) 100%);
-            color: white;
-            padding: 9px 18px;
-            border-radius: 8px;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+            color: #3a3a3a;
+            padding: 12px 24px;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.9em;
-            transition: opacity 0.2s ease, transform 0.2s ease;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
             align-self: flex-start;
+            box-shadow: 0 4px 12px rgba(255, 179, 102, 0.3);
         }
 
-        .card:hover .card-link {
-            opacity: 0.9;
-            transform: translateX(3px);
+        .card-action:hover {
+            transform: translateX(6px);
+            box-shadow: 0 8px 20px rgba(255, 179, 102, 0.4);
         }
 
+        /* Footer */
         footer {
             text-align: center;
-            color: white;
-            opacity: 0.75;
-            font-size: 0.85em;
-            padding: 30px 20px 40px;
+            color: var(--text-gray);
+            font-size: 0.95em;
+            padding: 60px 24px;
+            border-top: 2px solid var(--brand-primary);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.3), transparent);
         }
 
-        .state-msg {
-            text-align: center;
-            color: white;
-            opacity: 0.85;
-            padding: 40px 0;
+        footer p {
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .header-content {
+                gap: 20px;
+            }
+
+            .hero-title {
+                font-size: 2.5em;
+            }
+
+            .section-title {
+                font-size: 1.8em;
+            }
+
+            .services-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 20px;
+            }
         }
 
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 1.9em;
+            .header-content {
+                padding: 12px 16px;
+                gap: 16px;
             }
 
-            .nav-inner {
-                gap: 12px;
+            .logo-brand {
+                font-size: 1.1em;
             }
 
-            .grid {
+            .nav-categories {
+                gap: 8px;
+            }
+
+            .nav-link {
+                padding: 8px 14px;
+                font-size: 0.85em;
+            }
+
+            .hero-section {
+                padding: 60px 16px 40px;
+            }
+
+            .hero-title {
+                font-size: 1.8em;
+            }
+
+            .section-title {
+                font-size: 1.5em;
+            }
+
+            .main-container {
+                padding: 0 16px 40px;
+            }
+
+            .services-grid {
                 grid-template-columns: 1fr;
                 gap: 16px;
+            }
+
+            .service-card {
+                padding: 24px;
             }
         }
     </style>
 </head>
 <body>
-    <nav class="site-nav">
-        <div class="nav-inner">
-            <a href="#top" class="brand">🛡️ GuardianTech</a>
-            <div id="nav-links" class="nav-links"></div>
+    <header class="site-header">
+        <div class="header-content">
+            <a href="#top" class="logo-brand">🛡️ GuardianTech Portal</a>
+            <nav class="nav-categories" id="nav-categories"></nav>
         </div>
-    </nav>
-
-    <header id="top" class="hero">
-        <h1>Portal de Serviços</h1>
-        <p>Central de Serviços e Automações</p>
     </header>
 
-    <div class="container">
+    <section class="hero-section" id="top">
+        <div class="hero-content">
+            <h1 class="hero-title">Portal de Serviços</h1>
+            <p class="hero-subtitle">Central Integrada de Ferramentas e Automações</p>
+            <p class="hero-description">Acesse todos os seus serviços e ferramentas em um só lugar. Integração em tempo real com suas plataformas favoritas.</p>
+        </div>
+    </section>
+
+    <div class="main-container">
         <div id="portal-content">
-            <p class="state-msg">Carregando links...</p>
+            <div class="loading-state">⏳ Carregando seus serviços...</div>
         </div>
 
         <footer>
-            <p>&copy; 2024 GuardianTech Consultoria. Todos os direitos reservados.</p>
+            <p>&copy; 2026 GuardianTech Consultoria. Todos os direitos reservados.</p>
         </footer>
     </div>
 
@@ -290,24 +494,86 @@
                 .replace(/(^-|-$)/g, '');
         }
 
-        function cardHtml(link) {
+        // Mapa de logos para ferramentas conhecidas
+        const logoMap = {
+            'n8n': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/n8n.svg',
+            'easypanel': 'https://raw.githubusercontent.com/easypanel-io/easypanel/main/assets/logo.svg',
+            'supabase': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/supabase.svg',
+            'github': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg',
+            'google sheets': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/googlesheets.svg',
+            'slack': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/slack.svg',
+            'grafana': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/grafana.svg',
+            'prometheus': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/prometheus.svg',
+            'docker': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/docker.svg',
+            'kubernetes': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/kubernetes.svg',
+            'postman': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/postman.svg',
+            'jira': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/jira.svg',
+            'notion': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/notion.svg',
+            'miro': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/miro.svg',
+            'figma': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/figma.svg',
+            'zapier': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/zapier.svg',
+            'make': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/make.svg',
+        };
+
+        function getLogoUrl(titulo, icone) {
+            // Tenta encontrar logo pelo nome da ferramenta
+            const ferramentaNome = String(titulo).toLowerCase();
+            for (const [key, url] of Object.entries(logoMap)) {
+                if (ferramentaNome.includes(key)) return url;
+            }
+            return null;
+        }
+
+        function getIconHtml(titulo, icone) {
+            const logoUrl = getLogoUrl(titulo, icone);
+            if (logoUrl) {
+                return `<img src="${escapeHtml(logoUrl)}" alt="${escapeHtml(titulo)}" onerror="this.outerHTML='<span class=\\'card-icon-emoji\\'>${escapeHtml(icone) || '🔗'}</span>'">`;
+            }
+            return `<span class="card-icon-emoji">${escapeHtml(icone) || '🔗'}</span>`;
+        }
+
+        function cardHtml(link, isCategory = false) {
+            const iconHtml = getIconHtml(link.titulo, link.icone);
+
+            // Se for um card de categoria (do menu), redireciona para a página da categoria
+            if (isCategory) {
+                const categoryPages = {
+                    'Sistemas': './sistemas.html',
+                    'Painéis PCI DSS': './paineis-pci.html',
+                    'Chilli Beans': './chilli-beans.html',
+                    'Simulados ISO 27001': './simulados.html'
+                };
+                const categoryUrl = categoryPages[link.categoria] || '#';
+                return `
+                    <a href="${escapeHtml(categoryUrl)}" class="service-card" data-category="${escapeHtml(link.categoria)}">
+                        <div>
+                            <div class="card-icon">${iconHtml}</div>
+                            <h3 class="card-title">${escapeHtml(link.titulo)}</h3>
+                            <p class="card-description">${escapeHtml(link.descricao)}</p>
+                        </div>
+                        <span class="card-action">Acessar →</span>
+                    </a>`;
+            }
+
+            // Caso contrário, usa a URL do link
             const url = safeUrl(link.url);
             const target = url.startsWith('http') ? ' target="_blank"' : '';
             return `
-                <a href="${escapeHtml(url)}"${target} class="card">
+                <a href="${escapeHtml(url)}"${target} class="service-card" data-category="${escapeHtml(link.categoria)}">
                     <div>
-                        <div class="card-icon">${escapeHtml(link.icone) || '🔗'}</div>
-                        <div class="card-title">${escapeHtml(link.titulo)}</div>
-                        <div class="card-description">${escapeHtml(link.descricao)}</div>
+                        <div class="card-icon">${iconHtml}</div>
+                        <h3 class="card-title">${escapeHtml(link.titulo)}</h3>
+                        <p class="card-description">${escapeHtml(link.descricao)}</p>
                     </div>
-                    <div class="card-link">Acessar →</div>
+                    <span class="card-action">Acessar →</span>
                 </a>`;
         }
 
         function renderPortal(links) {
             const container = document.getElementById('portal-content');
-            const navLinks = document.getElementById('nav-links');
+            const navContainer = document.getElementById('nav-categories');
             const porCategoria = {};
+
             links.forEach(link => {
                 if (!porCategoria[link.categoria]) porCategoria[link.categoria] = [];
                 porCategoria[link.categoria].push(link);
@@ -318,37 +584,52 @@
                 ...Object.keys(porCategoria).filter(c => !CATEGORIA_ORDEM.includes(c))
             ];
 
-            navLinks.innerHTML = categorias.map(categoria => `
-                <a href="#${slugify(categoria)}" class="nav-pill" data-slug="${slugify(categoria)}">${escapeHtml(categoria)}</a>
-            `).join('');
+            const categoryPages = {
+                'Sistemas': './sistemas.html',
+                'Painéis PCI DSS': './paineis-pci.html',
+                'Chilli Beans': './chilli-beans.html',
+                'Simulados ISO 27001': './simulados.html'
+            };
+
+            navContainer.innerHTML = categorias.map(categoria => {
+                const pageUrl = categoryPages[categoria];
+                if (pageUrl) {
+                    return `<a href="${escapeHtml(pageUrl)}" class="nav-link" data-slug="${slugify(categoria)}">${escapeHtml(categoria)}</a>`;
+                }
+                return `<a href="#${slugify(categoria)}" class="nav-link" data-slug="${slugify(categoria)}">${escapeHtml(categoria)}</a>`;
+            }).join('');
 
             container.innerHTML = categorias.map(categoria => `
-                <section id="${slugify(categoria)}">
-                    <h2 class="section-title">${escapeHtml(categoria)} <span class="count">${porCategoria[categoria].length}</span></h2>
-                    <div class="grid">
+                <section class="portal-section" id="${slugify(categoria)}">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">${escapeHtml(categoria)}</h2>
+                            <div class="section-underline"></div>
+                        </div>
+                        <span class="section-badge">${porCategoria[categoria].length}</span>
+                    </div>
+                    <div class="services-grid">
                         ${porCategoria[categoria].map(cardHtml).join('')}
                     </div>
                 </section>
             `).join('');
-
-            setupActiveNavTracking();
         }
 
         function setupActiveNavTracking() {
-            const sections = document.querySelectorAll('#portal-content section');
-            const pills = document.querySelectorAll('.nav-pill');
-            if (!sections.length || !pills.length) return;
+            const sections = document.querySelectorAll('.portal-section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            if (!sections.length || !navLinks.length) return;
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        const slug = entry.target.id;
-                        pills.forEach(pill => {
-                            pill.classList.toggle('active', pill.dataset.slug === slug);
+                        const sectionId = entry.target.id;
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.dataset.slug === sectionId);
                         });
                     }
                 });
-            }, { rootMargin: '-100px 0px -70% 0px' });
+            }, { rootMargin: '-150px 0px -70% 0px' });
 
             sections.forEach(section => observer.observe(section));
         }
@@ -366,13 +647,13 @@
 
                 if (error) throw error;
                 if (!data || data.length === 0) {
-                    container.innerHTML = '<p class="state-msg">Nenhum link cadastrado.</p>';
+                    container.innerHTML = '<div class="loading-state">Nenhum serviço disponível no momento.</div>';
                     return;
                 }
                 renderPortal(data);
             } catch (err) {
                 console.error('Erro ao carregar links do Portal:', err);
-                container.innerHTML = '<p class="state-msg">Erro ao carregar os links. Tente novamente mais tarde.</p>';
+                container.innerHTML = '<div class="loading-state">⚠️ Erro ao carregar os serviços. Tente novamente em alguns momentos.</div>';
             }
         }
 
