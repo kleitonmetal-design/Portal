@@ -476,14 +476,32 @@
                 .replace(/(^-|-$)/g, '');
         }
 
-        function cardHtml(link) {
+        function cardHtml(link, isCategory = false) {
+            // Se for um card de categoria (do menu), redireciona para a página da categoria
+            if (isCategory) {
+                const categoryPages = {
+                    'Sistemas': './sistemas.html',
+                    'Painéis PCI DSS': './paineis-pci.html',
+                    'Chilli Beans': './chilli-beans.html',
+                    'Simulados ISO 27001': './simulados.html'
+                };
+                const categoryUrl = categoryPages[link.categoria] || '#';
+                return `
+                    <a href="${escapeHtml(categoryUrl)}" class="service-card" data-category="${escapeHtml(link.categoria)}">
+                        <div>
+                            <div class="card-icon">${escapeHtml(link.icone) || '🔗'}</div>
+                            <h3 class="card-title">${escapeHtml(link.titulo)}</h3>
+                            <p class="card-description">${escapeHtml(link.descricao)}</p>
+                        </div>
+                        <span class="card-action">Acessar →</span>
+                    </a>`;
+            }
+
+            // Caso contrário, usa a URL do link
             const url = safeUrl(link.url);
             const target = url.startsWith('http') ? ' target="_blank"' : '';
-            const isChilliBeansCategory = link.categoria === 'Chilli Beans';
-            const finalUrl = isChilliBeansCategory ? './chilli-beans.html' : url;
-            const finalTarget = isChilliBeansCategory ? '' : target;
             return `
-                <a href="${escapeHtml(finalUrl)}"${finalTarget} class="service-card" data-category="${escapeHtml(link.categoria)}">
+                <a href="${escapeHtml(url)}"${target} class="service-card" data-category="${escapeHtml(link.categoria)}">
                     <div>
                         <div class="card-icon">${escapeHtml(link.icone) || '🔗'}</div>
                         <h3 class="card-title">${escapeHtml(link.titulo)}</h3>
@@ -508,11 +526,20 @@
                 ...Object.keys(porCategoria).filter(c => !CATEGORIA_ORDEM.includes(c))
             ];
 
-            navContainer.innerHTML = categorias.map(categoria => `
-                <a href="#${slugify(categoria)}" class="nav-link" data-slug="${slugify(categoria)}">
-                    ${escapeHtml(categoria)}
-                </a>
-            `).join('');
+            const categoryPages = {
+                'Sistemas': './sistemas.html',
+                'Painéis PCI DSS': './paineis-pci.html',
+                'Chilli Beans': './chilli-beans.html',
+                'Simulados ISO 27001': './simulados.html'
+            };
+
+            navContainer.innerHTML = categorias.map(categoria => {
+                const pageUrl = categoryPages[categoria];
+                if (pageUrl) {
+                    return `<a href="${escapeHtml(pageUrl)}" class="nav-link" data-slug="${slugify(categoria)}">${escapeHtml(categoria)}</a>`;
+                }
+                return `<a href="#${slugify(categoria)}" class="nav-link" data-slug="${slugify(categoria)}">${escapeHtml(categoria)}</a>`;
+            }).join('');
 
             container.innerHTML = categorias.map(categoria => `
                 <section class="portal-section" id="${slugify(categoria)}">
