@@ -118,6 +118,8 @@
             font-size: 0.95em;
             transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
+            z-index: 100;
         }
 
         .nav-link:hover {
@@ -137,6 +139,8 @@
         /* Dropdown Menu */
         .nav-item {
             position: relative;
+            display: inline-block;
+            white-space: nowrap;
             border-bottom: 3px solid transparent;
             transition: border-color 0.3s ease;
         }
@@ -147,23 +151,30 @@
 
         .nav-dropdown {
             position: absolute;
-            top: 100%;
+            top: calc(100% + 4px);
             left: 0;
             background: rgba(20, 30, 60, 0.98);
             backdrop-filter: blur(12px);
-            border: none;
+            border: 1px solid rgba(255, 179, 102, 0.2);
             border-radius: 8px;
             min-width: 240px;
             max-height: 500px;
             overflow-y: auto;
-            margin-top: 12px;
             z-index: 1001;
-            display: none;
+            display: block;
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: all 0.3s ease;
+            visibility: hidden;
         }
 
         .nav-dropdown.open {
-            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            visibility: visible;
         }
 
         .dropdown-item {
@@ -519,9 +530,6 @@
     </style>
 </head>
 <body>
-    <div style="background: #ff0000; color: white; padding: 12px; text-align: center; font-weight: bold; font-size: 16px;">
-        🔄 VERSÃO ATUALIZADA - Menus minimalistas ativados!
-    </div>
     <header class="site-header">
         <div class="header-content">
             <a href="#top" class="logo-brand">🛡️ GuardianTech Portal</a>
@@ -698,18 +706,28 @@
                     closeTimer = setTimeout(() => {
                         dropdown.classList.remove('open');
                         navItem.classList.remove('active');
-                    }, 200);
+                    }, 150);
                 };
 
                 // Desktop: abre ao passar o mouse
                 navItem.addEventListener('mouseenter', openDropdown);
                 navItem.addEventListener('mouseleave', scheduleClose);
 
+                // Manter dropdown aberto ao passar sobre ele
+                dropdown.addEventListener('mouseenter', () => {
+                    clearTimeout(closeTimer);
+                    dropdown.classList.add('open');
+                    navItem.classList.add('active');
+                });
+
+                dropdown.addEventListener('mouseleave', scheduleClose);
+
                 // Touch/mobile: abre/fecha ao tocar
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     if (dropdown.classList.contains('open')) {
                         dropdown.classList.remove('open');
+                        navItem.classList.remove('active');
                     } else {
                         openDropdown();
                     }
