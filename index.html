@@ -658,7 +658,7 @@
         }
 
         function setupDropdownMenus(porCategoria) {
-            const navLinks = document.querySelectorAll('.nav-link');
+            const navItems = document.querySelectorAll('.nav-item');
 
             // Fechar todos os dropdowns quando clica fora
             document.addEventListener('click', (e) => {
@@ -667,16 +667,16 @@
                 }
             });
 
-            navLinks.forEach(link => {
-                link.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    const categoria = link.dataset.categoria;
-                    const dropdown = document.querySelector(`[data-dropdown="${categoria}"]`);
+            navItems.forEach(navItem => {
+                const link = navItem.querySelector('.nav-link');
+                const dropdown = navItem.querySelector('.nav-dropdown');
+                const categoria = link.dataset.categoria;
+                let closeTimer;
 
-                    // Toggle dropdown
-                    const isOpen = dropdown.classList.toggle('open');
+                const openDropdown = () => {
+                    clearTimeout(closeTimer);
 
-                    if (isOpen && !dropdown.hasChildNodes()) {
+                    if (!dropdown.hasChildNodes()) {
                         // Carregar itens da categoria
                         const items = porCategoria[categoria] || [];
                         dropdown.innerHTML = items.map(item => {
@@ -705,6 +705,26 @@
                     document.querySelectorAll('.nav-dropdown').forEach(d => {
                         if (d !== dropdown) d.classList.remove('open');
                     });
+
+                    dropdown.classList.add('open');
+                };
+
+                const scheduleClose = () => {
+                    closeTimer = setTimeout(() => dropdown.classList.remove('open'), 200);
+                };
+
+                // Desktop: abre ao passar o mouse
+                navItem.addEventListener('mouseenter', openDropdown);
+                navItem.addEventListener('mouseleave', scheduleClose);
+
+                // Touch/mobile: abre/fecha ao tocar
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (dropdown.classList.contains('open')) {
+                        dropdown.classList.remove('open');
+                    } else {
+                        openDropdown();
+                    }
                 });
             });
         }
