@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🛡️ GuardianTech - Portal de Serviços</title>
+    <script>
+        (function() {
+            try {
+                var t = localStorage.getItem('gt-theme');
+                if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+            } catch (e) {}
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -601,6 +609,127 @@
                 padding: 24px;
             }
         }
+
+        /* Theme toggle button */
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 179, 102, 0.3);
+            background: rgba(255, 179, 102, 0.12);
+            cursor: pointer;
+            font-size: 1.2em;
+            line-height: 1;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .theme-toggle:hover {
+            background: var(--brand-primary);
+            transform: translateY(-2px) rotate(15deg);
+            box-shadow: 0 8px 20px rgba(255, 179, 102, 0.3);
+        }
+
+        .theme-icon-light { display: none; }
+        [data-theme="light"] .theme-icon-dark { display: none; }
+        [data-theme="light"] .theme-icon-light { display: inline; }
+
+        /* Light theme */
+        [data-theme="light"] body {
+            background:
+                radial-gradient(ellipse 900px 600px at 12% -10%, rgba(255, 179, 102, 0.25), transparent 60%),
+                radial-gradient(ellipse 800px 700px at 100% 10%, rgba(255, 140, 60, 0.15), transparent 55%),
+                radial-gradient(ellipse 700px 600px at 20% 100%, rgba(255, 179, 102, 0.12), transparent 60%),
+                linear-gradient(160deg, #fffaf5 0%, #fff1e2 50%, #ffe8d1 100%);
+            color: #5c5548;
+        }
+
+        [data-theme="light"] .bg-orb { opacity: 0.35; }
+
+        [data-theme="light"] .site-header {
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        [data-theme="light"] .logo-brand {
+            color: #b35900;
+            text-shadow: none;
+        }
+
+        [data-theme="light"] .nav-link {
+            background: rgba(255, 140, 0, 0.1);
+            color: #b35900;
+        }
+
+        [data-theme="light"] .nav-link:hover,
+        [data-theme="light"] .nav-link.active {
+            color: #fff;
+        }
+
+        [data-theme="light"] .nav-dropdown {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: rgba(0, 0, 0, 0.08);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        [data-theme="light"] .dropdown-item,
+        [data-theme="light"] .dropdown-item-title {
+            color: #3a2a1a;
+        }
+
+        [data-theme="light"] .dropdown-item:hover {
+            background: rgba(255, 140, 0, 0.08);
+        }
+
+        [data-theme="light"] .hero-title {
+            background: linear-gradient(135deg, #3a2a1a 20%, #b35900 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        [data-theme="light"] .hero-description {
+            color: #6b6255;
+        }
+
+        [data-theme="light"] .section-title {
+            color: #3a2a1a;
+            text-shadow: none;
+        }
+
+        [data-theme="light"] .loading-state {
+            color: #3a2a1a;
+        }
+
+        [data-theme="light"] .service-card {
+            background: linear-gradient(160deg, rgba(255, 255, 255, 0.75), rgba(255, 245, 235, 0.6));
+            border-color: rgba(0, 0, 0, 0.06);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="light"] .service-card:hover {
+            background: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(255, 240, 225, 0.78));
+            box-shadow: 0 20px 50px rgba(255, 140, 0, 0.18);
+        }
+
+        [data-theme="light"] .card-icon {
+            background: rgba(255, 140, 0, 0.08);
+        }
+
+        [data-theme="light"] .card-title {
+            color: #2a2018;
+        }
+
+        [data-theme="light"] .card-description {
+            color: #6b6255;
+        }
+
+        [data-theme="light"] footer {
+            color: #6b6255;
+            background: linear-gradient(to top, rgba(255, 255, 255, 0.5), transparent);
+        }
     </style>
 </head>
 <body>
@@ -611,6 +740,10 @@
         <div class="header-content">
             <a href="#top" class="logo-brand">🛡️ GuardianTech Portal</a>
             <nav class="nav-categories" id="nav-categories"></nav>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema claro/escuro" title="Alternar tema claro/escuro">
+                <span class="theme-icon-dark">🌙</span>
+                <span class="theme-icon-light">☀️</span>
+            </button>
         </div>
     </header>
 
@@ -913,6 +1046,18 @@
         }
 
         carregarPortal();
+
+        document.getElementById('theme-toggle').addEventListener('click', function () {
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            if (isLight) {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+            try {
+                localStorage.setItem('gt-theme', isLight ? 'dark' : 'light');
+            } catch (e) {}
+        });
     </script>
 </body>
 </html>

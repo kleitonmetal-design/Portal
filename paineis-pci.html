@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painéis PCI DSS - Gestão de Conformidade</title>
+    <script>
+        (function() {
+            try {
+                var t = localStorage.getItem('gt-theme');
+                if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+            } catch (e) {}
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -420,6 +428,113 @@
             .service-card {
                 padding: 24px;
             }
+
+            .theme-toggle {
+                order: 3;
+            }
+        }
+
+        /* Theme toggle button */
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            border: 2px solid rgba(124, 58, 237, 0.3);
+            background: rgba(124, 58, 237, 0.12);
+            cursor: pointer;
+            font-size: 1.2em;
+            line-height: 1;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary);
+            transform: translateY(-2px) rotate(15deg);
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        .theme-icon-light { display: none; }
+        [data-theme="light"] .theme-icon-dark { display: none; }
+        [data-theme="light"] .theme-icon-light { display: inline; }
+
+        /* Light theme */
+        [data-theme="light"] body {
+            background:
+                radial-gradient(ellipse 900px 600px at 12% -10%, rgba(124, 58, 237, 0.18), transparent 60%),
+                radial-gradient(ellipse 800px 700px at 100% 10%, rgba(167, 139, 250, 0.12), transparent 55%),
+                radial-gradient(ellipse 700px 600px at 20% 100%, rgba(124, 58, 237, 0.10), transparent 60%),
+                linear-gradient(160deg, #faf7ff 0%, #f1e9ff 50%, #e6d9ff 100%);
+            color: #4a3d5c;
+        }
+
+        [data-theme="light"] .bg-orb { opacity: 0.3; }
+
+        [data-theme="light"] .site-header {
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        [data-theme="light"] .logo-brand {
+            color: #6d28d9;
+            text-shadow: none;
+        }
+
+        [data-theme="light"] .back-button {
+            background: rgba(109, 40, 217, 0.1);
+            color: #6d28d9;
+        }
+
+        [data-theme="light"] .back-button:hover {
+            color: #fff;
+        }
+
+        [data-theme="light"] .hero-subtitle {
+            color: #6d28d9;
+            text-shadow: none;
+        }
+
+        [data-theme="light"] .hero-title {
+            background: linear-gradient(135deg, #2e1a47 20%, #6d28d9 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        [data-theme="light"] .hero-description {
+            color: #5c4d70;
+        }
+
+        [data-theme="light"] .section-title {
+            color: #2e1a47;
+            text-shadow: none;
+        }
+
+        [data-theme="light"] .service-card {
+            background: linear-gradient(160deg, rgba(255, 255, 255, 0.75), rgba(237, 227, 255, 0.6));
+            border-color: rgba(0, 0, 0, 0.06);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="light"] .service-card:hover {
+            background: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(228, 214, 255, 0.78));
+            box-shadow: 0 20px 50px rgba(124, 58, 237, 0.18);
+        }
+
+        [data-theme="light"] .card-title {
+            color: #2e1a47;
+        }
+
+        [data-theme="light"] .card-description {
+            color: #5c4d70;
+        }
+
+        [data-theme="light"] footer {
+            color: #5c4d70;
+            background: linear-gradient(to top, rgba(255, 255, 255, 0.5), transparent);
         }
     </style>
 </head>
@@ -430,6 +545,10 @@
     <header class="site-header">
         <a href="./index.html" class="logo-brand">📊 Painéis PCI DSS</a>
         <a href="./index.html" class="back-button">← Voltar ao Portal</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema claro/escuro" title="Alternar tema claro/escuro">
+            <span class="theme-icon-dark">🌙</span>
+            <span class="theme-icon-light">☀️</span>
+        </button>
     </header>
 
     <section class="hero-section">
@@ -525,6 +644,18 @@
         }
 
         carregarTools();
+
+        document.getElementById('theme-toggle').addEventListener('click', function () {
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            if (isLight) {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+            try {
+                localStorage.setItem('gt-theme', isLight ? 'dark' : 'light');
+            } catch (e) {}
+        });
     </script>
 </body>
 </html>

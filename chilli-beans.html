@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chilli Beans - Ferramentas e Dashboards</title>
+    <script>
+        (function() {
+            try {
+                var t = localStorage.getItem('gt-theme');
+                if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+            } catch (e) {}
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -428,6 +436,108 @@
             .service-card {
                 padding: 24px;
             }
+
+            .theme-toggle {
+                order: 3;
+            }
+        }
+
+        /* Theme toggle button */
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 193, 7, 0.35);
+            background: rgba(255, 193, 7, 0.15);
+            cursor: pointer;
+            font-size: 1.2em;
+            line-height: 1;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent);
+            transform: translateY(-2px) rotate(15deg);
+            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.35);
+        }
+
+        .theme-icon-light { display: none; }
+        [data-theme="light"] .theme-icon-dark { display: none; }
+        [data-theme="light"] .theme-icon-light { display: inline; }
+
+        /* Light theme */
+        [data-theme="light"] body {
+            background:
+                radial-gradient(ellipse 900px 600px at 12% -10%, rgba(255, 193, 7, 0.16), transparent 60%),
+                radial-gradient(ellipse 800px 700px at 100% 10%, rgba(211, 47, 47, 0.14), transparent 55%),
+                radial-gradient(ellipse 700px 600px at 20% 100%, rgba(255, 193, 7, 0.10), transparent 60%),
+                linear-gradient(160deg, #fff9f6 0%, #ffe9e2 50%, #ffd9cc 100%);
+            color: #5c3d33;
+        }
+
+        [data-theme="light"] .bg-orb { opacity: 0.3; }
+
+        [data-theme="light"] .site-header {
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        [data-theme="light"] .logo-brand {
+            color: #b71c1c;
+            text-shadow: none;
+        }
+
+        [data-theme="light"] .back-button {
+            background: rgba(183, 28, 28, 0.1);
+            color: #b71c1c;
+        }
+
+        [data-theme="light"] .back-button:hover {
+            color: #fff;
+        }
+
+        [data-theme="light"] .hero-title {
+            background: linear-gradient(135deg, #3a1414 20%, #b71c1c 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        [data-theme="light"] .hero-description {
+            color: #6b4d42;
+        }
+
+        [data-theme="light"] .section-title {
+            color: #3a1414;
+            text-shadow: none;
+        }
+
+        [data-theme="light"] .service-card {
+            background: linear-gradient(160deg, rgba(255, 255, 255, 0.75), rgba(255, 232, 224, 0.6));
+            border-color: rgba(0, 0, 0, 0.06);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="light"] .service-card:hover {
+            background: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(255, 220, 208, 0.78));
+            box-shadow: 0 20px 50px rgba(211, 47, 47, 0.18);
+        }
+
+        [data-theme="light"] .card-title {
+            color: #3a1414;
+        }
+
+        [data-theme="light"] .card-description {
+            color: #6b4d42;
+        }
+
+        [data-theme="light"] footer {
+            color: #6b4d42;
+            background: linear-gradient(to top, rgba(255, 255, 255, 0.5), transparent);
         }
     </style>
 </head>
@@ -438,6 +548,10 @@
     <header class="site-header">
         <a href="./index.html" class="logo-brand">🌶️ Chilli Beans</a>
         <a href="./index.html" class="back-button">← Voltar ao Portal</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema claro/escuro" title="Alternar tema claro/escuro">
+            <span class="theme-icon-dark">🌙</span>
+            <span class="theme-icon-light">☀️</span>
+        </button>
     </header>
 
     <section class="hero-section">
@@ -533,6 +647,18 @@
         }
 
         carregarChilliBeansTools();
+
+        document.getElementById('theme-toggle').addEventListener('click', function () {
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            if (isLight) {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+            try {
+                localStorage.setItem('gt-theme', isLight ? 'dark' : 'light');
+            } catch (e) {}
+        });
     </script>
 </body>
 </html>
