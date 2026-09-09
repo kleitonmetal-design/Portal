@@ -118,6 +118,8 @@
             font-size: 0.95em;
             transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
+            z-index: 100;
         }
 
         .nav-link:hover {
@@ -137,11 +139,13 @@
         /* Dropdown Menu */
         .nav-item {
             position: relative;
+            display: inline-block;
+            white-space: nowrap;
         }
 
         .nav-dropdown {
             position: absolute;
-            top: 100%;
+            top: calc(100% + 4px);
             left: 0;
             background: rgba(58, 58, 58, 0.98);
             backdrop-filter: blur(12px);
@@ -150,14 +154,21 @@
             min-width: 280px;
             max-height: 400px;
             overflow-y: auto;
-            margin-top: 8px;
             z-index: 1001;
-            display: none;
+            display: block;
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: all 0.3s ease;
+            visibility: hidden;
         }
 
         .nav-dropdown.open {
-            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            visibility: visible;
         }
 
         .dropdown-item {
@@ -658,7 +669,8 @@
         }
 
         function setupDropdownMenus(porCategoria) {
-            const navLinks = document.querySelectorAll('.nav-link');
+            const navItems = document.querySelectorAll('.nav-item');
+            let closeTimer;
 
             // Fechar todos os dropdowns quando clica fora
             document.addEventListener('click', (e) => {
@@ -667,16 +679,13 @@
                 }
             });
 
-            navLinks.forEach(link => {
-                link.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    const categoria = link.dataset.categoria;
-                    const dropdown = document.querySelector(`[data-dropdown="${categoria}"]`);
+            navItems.forEach(navItem => {
+                const link = navItem.querySelector('.nav-link');
+                const dropdown = navItem.querySelector('.nav-dropdown');
+                const categoria = link.dataset.categoria;
 
-                    // Toggle dropdown
-                    const isOpen = dropdown.classList.toggle('open');
-
-                    if (isOpen && !dropdown.hasChildNodes()) {
+                const loadDropdownItems = () => {
+                    if (!dropdown.hasChildNodes()) {
                         // Carregar itens da categoria
                         const items = porCategoria[categoria] || [];
                         dropdown.innerHTML = items.map(item => {
@@ -700,11 +709,46 @@
                             `;
                         }).join('');
                     }
+                };
+
+                const openDropdown = () => {
+                    clearTimeout(closeTimer);
+                    loadDropdownItems();
 
                     // Fechar outros dropdowns
                     document.querySelectorAll('.nav-dropdown').forEach(d => {
                         if (d !== dropdown) d.classList.remove('open');
                     });
+
+                    dropdown.classList.add('open');
+                };
+
+                const scheduleClose = () => {
+                    closeTimer = setTimeout(() => {
+                        dropdown.classList.remove('open');
+                    }, 150);
+                };
+
+                // Mouse events para hover
+                navItem.addEventListener('mouseenter', openDropdown);
+                navItem.addEventListener('mouseleave', scheduleClose);
+
+                // Manter dropdown aberto ao passar sobre ele
+                dropdown.addEventListener('mouseenter', () => {
+                    clearTimeout(closeTimer);
+                    dropdown.classList.add('open');
+                });
+
+                dropdown.addEventListener('mouseleave', scheduleClose);
+
+                // Click para mobile/touch
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (dropdown.classList.contains('open')) {
+                        dropdown.classList.remove('open');
+                    } else {
+                        openDropdown();
+                    }
                 });
             });
         }
