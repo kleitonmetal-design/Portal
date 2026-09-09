@@ -1,293 +1,332 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GuardianTech - Portal de Serviços</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>GuardianTech - Portal de Serviços</title>
+        <style>
+                    * {
+                                    margin: 0;
+                                    padding: 0;
+                                    box-sizing: border-box;
+                    }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
+                    body {
+                                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                    min-height: 100vh;
+                                    padding: 40px 20px;
+                    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+                    .container {
+                                    max-width: 1200px;
+                                    margin: 0 auto;
+                    }
 
-        header {
-            text-align: center;
-            color: white;
-            margin-bottom: 60px;
-        }
+                    header {
+                                    text-align: center;
+                                    color: white;
+                                    margin-bottom: 60px;
+                    }
 
-        header h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
+                    header h1 {
+                                    font-size: 3em;
+                                    margin-bottom: 10px;
+                                    font-weight: 700;
+                    }
 
-        header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
+                    header p {
+                                    font-size: 1.1em;
+                                    opacity: 0.9;
+                    }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
+                    .grid {
+                                    display: grid;
+                                    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                                    gap: 30px;
+                                    margin-bottom: 40px;
+                    }
 
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            text-decoration: none;
-            color: #333;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
-        }
+                    .card {
+                                    background: white;
+                                    border-radius: 12px;
+                                    padding: 30px;
+                                    text-decoration: none;
+                                    color: #333;
+                                    transition: all 0.3s ease;
+                                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                                    display: flex;
+                                    flex-direction: column;
+                                    justify-content: space-between;
+                                    height: 100%;
+                    }
 
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
+                    .card:hover {
+                                    transform: translateY(-8px);
+                                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+                    }
 
-        .card-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
-        }
+                    .card-icon {
+                                    font-size: 3em;
+                                    margin-bottom: 15px;
+                    }
 
-        .card-title {
-            font-size: 1.5em;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #333;
-        }
+                    .card-title {
+                                    font-size: 1.5em;
+                                    font-weight: 600;
+                                    margin-bottom: 10px;
+                                    color: #333;
+                    }
 
-        .card-description {
-            font-size: 0.95em;
-            color: #666;
-            margin-bottom: 20px;
-            flex-grow: 1;
-        }
+                    .card-description {
+                                    font-size: 0.95em;
+                                    color: #666;
+                                    margin-bottom: 20px;
+                                    flex-grow: 1;
+                    }
 
-        .card-link {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            align-self: flex-start;
-        }
+                    .card-link {
+                                    display: inline-block;
+                                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                    color: white;
+                                    padding: 10px 20px;
+                                    border-radius: 6px;
+                                    text-decoration: none;
+                                    font-weight: 600;
+                                    transition: all 0.3s ease;
+                                    align-self: flex-start;
+                    }
 
-        .card-link:hover {
-            opacity: 0.9;
-            transform: translateX(3px);
-        }
+                    .card-link:hover {
+                                    opacity: 0.9;
+                                    transform: translateX(3px);
+                    }
 
-        footer {
-            text-align: center;
-            color: white;
-            opacity: 0.8;
-            font-size: 0.9em;
-            margin-top: 40px;
-        }
+                    footer {
+                                    text-align: center;
+                                    color: white;
+                                    opacity: 0.8;
+                                    font-size: 0.9em;
+                                    margin-top: 40px;
+                    }
 
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2em;
-            }
+                    @media (max-width: 768px) {
+                                    header h1 {
+                                                        font-size: 2em;
+                                    }
 
-            .grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>GuardianTech</h1>
-            <p>Central de Serviços e Automações</p>
-        </header>
+                                    .grid {
+                                                        grid-template-columns: 1fr;
+                                                        gap: 20px;
+                                    }
+                    }
+                </style>
+    </head>
+    <body>
+            <div class="container">
+                        <header>
+                                        <h1>GuardianTech</h1>
+                                    <p>Central de Serviços e Automações</p>
+                        </header>
+            
+                    <div class="grid">
+                                <a href="https://n8n.guardiantechit.com.br" class="card">
+                                                <div>
+                                                                        <div class="card-icon">⚙️</div>
+                                                                        <div class="card-title">n8n</div>
+                                                                        <div class="card-description">Automações e workflows. Integre seus sistemas sem código.</div>
+                                                </div>
+                                                    <div class="card-link">Acessar →</div>
+                                </a>a>
 
-        <div class="grid">
-            <a href="https://n8n.guardiantechit.com.br" class="card">
-                <div>
-                    <div class="card-icon">⚙️</div>
-                    <div class="card-title">n8n</div>
-                    <div class="card-description">Automações e workflows. Integre seus sistemas sem código.</div>
-                </div>
-                <div class="card-link">Acessar →</div>
-            </a>
+                                    <a href="https://easypanel.guardiantechit.com.br" class="card">
+                                                        <div>
+                                                                                <div class="card-icon">🖥️</div>
+                                                                                <div class="card-title">EasyPanel</div>
+                                                                                <div class="card-description">Gerenciamento de aplicações e infraestrutura em um só lugar.</div>
+                                                        </div>
+                                                        <div class="card-link">Acessar →</div>
+                                    </a>a>
 
-            <a href="https://easypanel.guardiantechit.com.br" class="card">
-                <div>
-                    <div class="card-icon">🖥️</div>
-                    <div class="card-title">EasyPanel</div>
-                    <div class="card-description">Gerenciamento de aplicações e infraestrutura em um só lugar.</div>
-                </div>
-                <div class="card-link">Acessar →</div>
-            </a>
+                                    <a href="https://aplicacoes.guardiantechit.com.br" class="card">
+                                                        <div>
+                                                                                <div class="card-icon">📱</div>
+                                                                                <div class="card-title">Aplicações</div>
+                                                                                <div class="card-description">Suite de aplicações customizadas para seus processos.</div>
+                                                        </div>
+                                                        <div class="card-link">Acessar →</div>
+                                    </a>a>
 
-            <a href="https://aplicacoes.guardiantechit.com.br" class="card">
-                <div>
-                    <div class="card-icon">📱</div>
-                    <div class="card-title">Aplicações</div>
-                    <div class="card-description">Suite de aplicações customizadas para seus processos.</div>
-                </div>
-                <div class="card-link">Acessar →</div>
-            </a>
+                                    <a href="https://grafana.guardiantechit.com.br" class="card">
+                                                        <div>
+                                                                                <div class="card-icon">📊</div>
+                                                                                <div class="card-title">Grafana</div>
+                                                                                <div class="card-description">Dashboards em tempo real. Monitore seus dados e métricas.</div>
+                                                        </div>
+                                                        <div class="card-link">Acessar →</div>
+                                    </a>a>
 
-            <a href="https://grafana.guardiantechit.com.br" class="card">
-                <div>
-                    <div class="card-icon">📊</div>
-                    <div class="card-title">Grafana</div>
-                    <div class="card-description">Dashboards em tempo real. Monitore seus dados e métricas.</div>
-                </div>
-                <div class="card-link">Acessar →</div>
-            </a>
-
-            <a href="https://cvolution.guardiantechit.com.br" class="card">
-                <div>
-                    <div class="card-icon">🚀</div>
-                    <div class="card-title">CVolution</div>
-                    <div class="card-description">Plataforma de evolução contínua e otimização de processos.</div>
-                </div>
-                <div class="card-link">Acessar →</div>
-            </a>
-        </div>
-
-        <section style="margin-top: 80px;">
-            <h2 style="text-align: center; color: white; font-size: 2.5em; margin-bottom: 50px;">Painéis PCI DSS</h2>
-            <div class="grid">
-                <a href="https://claude.ai/code/artifact/1fee51f3-6ec4-4a6d-8f4d-ed35e767cc93" target="_blank" class="card">
-                    <div>
-                        <div class="card-icon">📊</div>
-                        <div class="card-title">Thyreos</div>
-                        <div class="card-description">Project Manager - Gestão de projetos e acompanhamento de ROCs</div>
+                                    <a href="https://cvolution.guardiantechit.com.br" class="card">
+                                                        <div>
+                                                                                <div class="card-icon">🚀</div>
+                                                                                <div class="card-title">CVolution</div>
+                                                                                <div class="card-description">Plataforma de evolução contínua e otimização de processos.</div>
+                                                        </div>
+                                                        <div class="card-link">Acessar →</div>
+                                    </a>a>
                     </div>
-                    <div class="card-link">Acessar →</div>
-                </a>
 
-                <a href="https://claude.ai/code/artifact/81a68274-1d83-4ac0-9792-71ded6c18a8c" target="_blank" class="card">
-                    <div>
-                        <div class="card-icon">📈</div>
-                        <div class="card-title">Painel PCI DSS: ZUP ROC</div>
-                        <div class="card-description">Dashboard ROC Report on Compliance - Zup 2026</div>
-                    </div>
-                    <div class="card-link">Acessar →</div>
-                </a>
+                        <section style="margin-top: 80px;">
+                                        <h2 style="text-align: center; color: white; font-size: 2.5em; margin-bottom: 50px;">Painéis PCI DSS</h2>
+                                        <div class="grid">
+                                                            <a href="https://claude.ai/code/artifact/1fee51f3-6ec4-4a6d-8f4d-ed35e767cc93" target="_blank" class="card">
+                                                                                    <div>
+                                                                                                                <div class="card-icon">📊</div>
+                                                                                                                <div class="card-title">Thyreos</div>
+                                                                                                                <div class="card-description">Project Manager - Gestão de projetos e acompanhamento de ROCs</div>
+                                                                                        </div>
+                                                                                    <div class="card-link">Acessar →</div>
+                                                            </a>a>
 
-                <a href="./painel_roc_csu.html" class="card">
-                    <div>
-                        <div class="card-icon">📊</div>
-                        <div class="card-title">Painel PCI DSS: CSU ROC</div>
-                        <div class="card-description">Dashboard ROC Report on Compliance - CSU Digital</div>
-                    </div>
-                    <div class="card-link">Acessar →</div>
-                </a>
+                                                            <a href="https://claude.ai/code/artifact/81a68274-1d83-4ac0-9792-71ded6c18a8c" target="_blank" class="card">
+                                                                                    <div>
+                                                                                                                <div class="card-icon">📈</div>
+                                                                                                                <div class="card-title">Painel PCI DSS: ZUP ROC</div>
+                                                                                                                <div class="card-description">Dashboard ROC Report on Compliance - Zup 2026</div>
+                                                                                        </div>
+                                                                                    <div class="card-link">Acessar →</div>
+                                                            </a>a>
 
-                <a href="https://thyreos.io/" target="_blank" class="card">
-                    <div>
-                        <div class="card-icon">🌐</div>
-                        <div class="card-title">Thyreos Website</div>
-                        <div class="card-description">Plataforma Thyreos - Project Manager oficial</div>
-                    </div>
-                    <div class="card-link">Acessar →</div>
-                </a>
+                                                            <a href="./painel_roc_csu.html" class="card">
+                                                                                    <div>
+                                                                                                                <div class="card-icon">📊</div>
+                                                                                                                <div class="card-title">Painel PCI DSS: CSU ROC</div>
+                                                                                                                <div class="card-description">Dashboard ROC Report on Compliance - CSU Digital</div>
+                                                                                        </div>
+                                                                                    <div class="card-link">Acessar →</div>
+                                                            </a>a>
+
+                                                            <a href="https://thyreos.io/" target="_blank" class="card">
+                                                                                    <div>
+                                                                                                                <div class="card-icon">🌐</div>
+                                                                                                                <div class="card-title">Thyreos Website</div>
+                                                                                                                <div class="card-description">Plataforma Thyreos - Project Manager oficial</div>
+                                                                                        </div>
+                                                                                    <div class="card-link">Acessar →</div>
+                                                            </a>a>
+                                        </div>
+                        </section>section>
+
+                        <section style="margin-top: 80px;">
+                                        <h2 style="text-align: center; color: white; font-size: 2.5em; margin-bottom: 50px;">Chilli Beans - Ferramentas e Dashboards</h2>
+                                        <div class="grid">
+                                                            <a href="https://docs.google.com/spreadsheets/d/1WWp5KMvzhwUrfVVU1b4rWAax0i-gu6miPF9PPCqBgJM/edit?gid=0#gid=0" target="_blank" class="card">
+                                                                                    <div>
+                                                                                                                <div class="card-icon">📊</div>
+                                                                                                                <div class="card-title">Planilha de Vendas</div>
+                                                                                                                <div class="card-description">Controle e análise de vendas Chilli Beans</div>
+                                                                                        </div>
+                                                                                    <div class="card-link">Acessar →</div>
+                                                            </a>a>
+
+                                                            <a href="https://docs.google.com/spreadsheets/d/1h0diZ8u_lyQAW3UucbqMwz5MJhsYd8TbLTfY48lcdZo/edit?gid=0#gid=0" target="_blank" class="card">
+                                                                                    <div>
+                                                                                                                <div class="card-icon">💰</div>
+                                                                                                                <div class="card-title">Planilha Impostos e Fornecedores</div>
+                                                                                                                <div class="card-description">Gestão de impostos e fornecedores</div>
+                                                                                        </div>
+                                                                                    <div class="card-link">Acessar →</div>
+                                                            </a>a>
+
+                                                            <a href="https://n8n.guardiantechit.com.br/webhook/dashboard-boletos" target="_blank" class="card">
+                                                                                    <div>
+                                                                                                                <div class="card-icon">📈</div>
+                                                                                                                <div class="card-title">Dashboard de Boletos</div>
+                                                                                                                <div class="card-description">Acompanhamento de boletos Chilli Beans</div>
+                                                                                        </div>
+                                                                                    <div class="card-link">Acessar →</div>
+                                                            </a>a>
+                                        </div>
+                        </section>section>
+
+                        <section style="margin-top: 80px;">
+                                        <h2 style="text-align: center; color: white; font-size: 2.5em; margin-bottom: 50px;">Simulados ISO 27001</h2>
+                                        <div class="grid">
+                                                            <a href="./Simulado1_blocos10.html" class="card">
+                                                                                    <div>
+                                                                                                                <div class="card-icon">📋</div>
+                                                                                                                <div class="card-title">Simulado 1 - Blocos</div>
+                                                                                                                <div class="card-description">Questões em blocos de 10 itens (ISO 27001)</div>
+                                                                                        </div>
+                                                                                    <div class="card-link">Acessar →</div>
+                                                            </a>a>
+
+                                                            <a href="./Simulado1_ISO27001_LI.html" class="card">
+                                                                                    <div>
+                                                                                                                <div class="card-icon">📄</div>
+                                                                                                                <div class="card-title">Simulado 1 - Listado</div>
+                                                                                                                <div class="card-description">Questões em formato listado (ISO 27001)</div>
+                                                                                        </div>
+                                                                                    <div class="card-link">Acessar →</div>
+                                                            </a>a>
+
+                                                            <a href="./Simulado2_blocos10.html" class="card">
+                                                                                    <div>
+                                                                                                                <div class="card-icon">📋</div>
+                                                                                                                <div class="card-title">Simulado 2 - Blocos</div>
+                                                                                                                <div class="card-description">Questões em blocos de 10 itens (ISO 27001)</div>
+                                                                                        </div>
+                                                                                    <div class="card-link">Acessar →</div>
+                                                            </a>a>
+
+                                                            <a href="./Simulado2_ISO27001_LI.html" class="card">
+                                                                                    <div>
+                                                                                                                <div class="card-icon">📄</div>
+                                                                                                                <div class="card-title">Simulado 2 - Listado</div>
+                                                                                                                <div class="card-description">Questões em formato listado (ISO 27001)</div>
+                                                                                        </div>
+                                                                                    <div class="card-link">Acessar →</div>
+                                                            </a>a>
+
+                                                            <a href="./Simulado3_PECB_blocos10.html" class="card">
+                                                                                    <div>
+                                                                                                                <div class="card-icon">📋</div>
+                                                                                                                <div class="card-title">Simulado 3 PECB - Blocos</div>
+                                                                                                                <div class="card-description">Questões PECB em blocos de 10 itens</div>
+                                                                                        </div>
+                                                                                    <div class="card-link">Acessar →</div>
+                                                            </a>a>
+
+                                                            <a href="./TodosSimulados_blocos10.html" class="card">
+                                                                                    <div>
+                                                                                                                <div class="card-icon">📚</div>
+                                                                                                                <div class="card-title">Todos Simulados - Blocos</div>
+                                                                                                                <div class="card-description">Completo: todos os simulados em blocos</div>
+                                                                                        </div>
+                                                                                    <div class="card-link">Acessar →</div>
+                                                            </a>a>
+
+                                                            <a href="./TodosSimulados_ISO27001_LI.html" class="card">
+                                                                                    <div>
+                                                                                                                <div class="card-icon">📚</div>
+                                                                                                                <div class="card-title">Todos Simulados - Listado</div>
+                                                                                                                <div class="card-description">Completo: todos os simulados em formato listado</div>
+                                                                                        </div>
+                                                                                    <div class="card-link">Acessar →</div>
+                                                            </a>a>
+                                        </div>
+                        </section>section>
+
+                        <footer>
+                                        <p>&copy; 2024 GuardianTech Consultoria. Todos os direitos reservados.</p>
+                        </footer>
             </div>
-        </section>
-
-        <section style="margin-top: 80px;">
-            <h2 style="text-align: center; color: white; font-size: 2.5em; margin-bottom: 50px;">Simulados ISO 27001</h2>
-            <div class="grid">
-                <a href="./Simulado1_blocos10.html" class="card">
-                    <div>
-                        <div class="card-icon">📋</div>
-                        <div class="card-title">Simulado 1 - Blocos</div>
-                        <div class="card-description">Questões em blocos de 10 itens (ISO 27001)</div>
-                    </div>
-                    <div class="card-link">Acessar →</div>
-                </a>
-
-                <a href="./Simulado1_ISO27001_LI.html" class="card">
-                    <div>
-                        <div class="card-icon">📄</div>
-                        <div class="card-title">Simulado 1 - Listado</div>
-                        <div class="card-description">Questões em formato listado (ISO 27001)</div>
-                    </div>
-                    <div class="card-link">Acessar →</div>
-                </a>
-
-                <a href="./Simulado2_blocos10.html" class="card">
-                    <div>
-                        <div class="card-icon">📋</div>
-                        <div class="card-title">Simulado 2 - Blocos</div>
-                        <div class="card-description">Questões em blocos de 10 itens (ISO 27001)</div>
-                    </div>
-                    <div class="card-link">Acessar →</div>
-                </a>
-
-                <a href="./Simulado2_ISO27001_LI.html" class="card">
-                    <div>
-                        <div class="card-icon">📄</div>
-                        <div class="card-title">Simulado 2 - Listado</div>
-                        <div class="card-description">Questões em formato listado (ISO 27001)</div>
-                    </div>
-                    <div class="card-link">Acessar →</div>
-                </a>
-
-                <a href="./Simulado3_PECB_blocos10.html" class="card">
-                    <div>
-                        <div class="card-icon">📋</div>
-                        <div class="card-title">Simulado 3 PECB - Blocos</div>
-                        <div class="card-description">Questões PECB em blocos de 10 itens</div>
-                    </div>
-                    <div class="card-link">Acessar →</div>
-                </a>
-
-                <a href="./TodosSimulados_blocos10.html" class="card">
-                    <div>
-                        <div class="card-icon">📚</div>
-                        <div class="card-title">Todos Simulados - Blocos</div>
-                        <div class="card-description">Completo: todos os simulados em blocos</div>
-                    </div>
-                    <div class="card-link">Acessar →</div>
-                </a>
-
-                <a href="./TodosSimulados_ISO27001_LI.html" class="card">
-                    <div>
-                        <div class="card-icon">📚</div>
-                        <div class="card-title">Todos Simulados - Listado</div>
-                        <div class="card-description">Completo: todos os simulados em formato listado</div>
-                    </div>
-                    <div class="card-link">Acessar →</div>
-                </a>
-            </div>
-        </section>
-
-        <footer>
-            <p>&copy; 2024 GuardianTech Consultoria. Todos os direitos reservados.</p>
-        </footer>
-    </div>
-</body>
-</html>
+    </body>
+</html>html></p>
+                        </footer>
+                                                        </div>
+                                                </div></p></h1>
+                        </header>
+    </body>
+        </style></title>
+    </head>
