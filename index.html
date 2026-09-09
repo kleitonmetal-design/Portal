@@ -701,6 +701,12 @@
                         }
                     });
 
+                    // Posicionar o dropdown junto ao botão (position: fixed
+                    // escapa do overflow-x/y:auto do container de rolagem)
+                    const rect = navItem.getBoundingClientRect();
+                    dropdown.style.left = Math.round(rect.left) + 'px';
+                    dropdown.style.top = Math.round(rect.bottom + 4) + 'px';
+
                     dropdown.classList.add('open');
                     navItem.classList.add('active');
                 };
