@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - GuardianTech Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-card h1 {
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .login-card p.subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            margin-bottom: 18px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        button:hover:not(:disabled) {
+            opacity: 0.9;
+        }
+
+        #error-msg {
+            display: none;
+            background: #fee;
+            color: #c0392b;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            margin-bottom: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h1>GuardianTech</h1>
+        <p class="subtitle">Portal de Serviços</p>
+
+        <p id="error-msg"></p>
+
+        <form id="login-form">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" required autocomplete="username">
+
+            <label for="password">Senha</label>
+            <input type="password" id="password" required autocomplete="current-password">
+
+            <button type="submit" id="submit-btn">Entrar</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+        const SUPABASE_URL = 'https://zprzmhavbjiggqfzzzbt.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_zucE5w9pyxnkXU0r3A8LYQ_ERuwax9r';
+        const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const params = new URLSearchParams(window.location.search);
+        const redirectTo = params.get('redirect') && params.get('redirect').startsWith('/')
+            ? params.get('redirect')
+            : '/';
+
+        const form = document.getElementById('login-form');
+        const errorMsg = document.getElementById('error-msg');
+        const submitBtn = document.getElementById('submit-btn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMsg.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Entrando...';
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            try {
+                const { data, error } = await client.auth.signInWithPassword({ email, password });
+                if (error || !data.session) {
+                    throw error || new Error('Sessão não criada');
+                }
+
+                const maxAge = data.session.expires_in || 3600;
+                document.cookie = `sb-access-token=${data.session.access_token}; path=/; max-age=${maxAge}; SameSite=Lax; Secure`;
+                window.location.href = redirectTo;
+            } catch (err) {
+                console.error('Erro de login:', err);
+                errorMsg.textContent = 'E-mail ou senha inválidos.';
+                errorMsg.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Entrar';
+            }
+        });
+    </script>
+</body>
+</html>

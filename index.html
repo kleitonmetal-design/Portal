@@ -127,6 +127,7 @@
         <header>
             <h1>GuardianTech</h1>
             <p>Central de Serviços e Automações</p>
+            <button id="logout-btn" style="margin-top: 16px; background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 8px 18px; border-radius: 6px; cursor: pointer; font-size: 0.9em;">Sair</button>
         </header>
 
         <div id="portal-content">
@@ -215,6 +216,13 @@
         }
 
         carregarPortal();
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            await client.auth.signOut();
+            document.cookie = 'sb-access-token=; path=/; max-age=0';
+            window.location.href = '/login.html';
+        });
     </script>
 </body>
 </html>
