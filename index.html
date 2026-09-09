@@ -150,9 +150,7 @@
         }
 
         .nav-dropdown {
-            position: absolute;
-            top: calc(100% + 4px);
-            left: 0;
+            position: fixed;
             background: rgba(20, 30, 60, 0.98);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 179, 102, 0.2);
@@ -697,6 +695,12 @@
                             d.parentElement.classList.remove('active');
                         }
                     });
+
+                    // Posicionar o dropdown junto ao botão (position: fixed
+                    // escapa do overflow-x/y:auto do container de rolagem)
+                    const rect = navItem.getBoundingClientRect();
+                    dropdown.style.left = Math.round(rect.left) + 'px';
+                    dropdown.style.top = Math.round(rect.bottom + 4) + 'px';
 
                     dropdown.classList.add('open');
                     navItem.classList.add('active');
