@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PCI DSS QSA — Simulado de Requalificação 2025</title>
+    <style>
+      :root{
+        --bg:#eef1f5; --card:#ffffff; --ink:#1f2937; --muted:#6b7280;
+        --border:#e2e5eb; --primary:#2b3a8f; --primary-2:#3b4db8;
+        --good:#15803d; --good-bg:#dcfce7; --bad:#b91c1c; --bad-bg:#fee2e2;
+        --accent:#2b3a8f; --submit:#1a8a4a; --submit-2:#157a40;
+      }
+      *{box-sizing:border-box}
+      body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+      .shell{max-width:1080px;margin:0 auto;padding:16px 16px 60px}
+      .topbar{background:#fff;border:1px solid var(--border);border-radius:12px 12px 0 0;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+      .topbar .examname{font-weight:700}
+      .topbar .examname span{color:var(--primary)}
+      .loggedas{background:#fde68a;padding:3px 10px;border-radius:6px;font-size:.82rem;font-weight:700}
+      .toolbar{background:#fff;border-left:1px solid var(--border);border-right:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+      .navbtn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center}
+      .navbtn:disabled{opacity:.4;cursor:not-allowed}
+      .qcounter{font-weight:700;font-size:1.02rem;margin-right:6px}
+      .bookmarkbtn{border:1px solid var(--border);background:#fff;border-radius:8px;padding:8px 14px;font-size:.88rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px}
+      .bookmarkbtn.active{background:#fef3c7;border-color:#f59e0b;color:#92400e}
+      .spacer{flex:1}
+      .timer{font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:6px}
+      .timer.low{color:var(--bad)}
+      .timer.ok{color:#374151}
+      .pausebtn{border:1px solid var(--border);background:#fff;border-radius:8px;padding:9px 14px;font-size:.88rem;font-weight:600;cursor:pointer}
+      .submitbtn{background:var(--submit);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:.9rem;font-weight:700;cursor:pointer}
+      .submitbtn:hover{background:var(--submit-2)}
+      .filterbar{background:#fff;border-left:1px solid var(--border);border-right:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:16px;font-size:.9rem}
+      .filterbar label{display:flex;align-items:center;gap:5px;cursor:pointer}
+      .gridwrap{background:#fff;border-left:1px solid var(--border);border-right:1px solid var(--border);padding:14px 20px;max-height:150px;overflow-y:auto}
+      .grid{display:flex;flex-wrap:wrap;gap:8px}
+      .gridnum{width:42px;height:34px;border-radius:6px;border:1px solid var(--border);background:#fff;font-size:.85rem;font-weight:700;cursor:pointer;color:var(--ink);position:relative}
+      .gridnum.current{background:var(--primary);color:#fff;border-color:var(--primary)}
+      .gridnum.answered:not(.current){background:#e7ebfd;border-color:#c7d0f5}
+      .gridnum.locked{opacity:.35;cursor:not-allowed;background:#f3f4f6}
+      .gridnum.bookmarked::after{content:'';position:absolute;top:2px;right:2px;width:6px;height:6px;border-radius:50%;background:#f59e0b}
+      .main{background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 12px 12px;padding:24px 20px 20px}
+      .qtext{font-weight:700;font-size:1.05rem;margin-bottom:18px}
+      .opt{display:flex;align-items:flex-start;gap:12px;border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px;cursor:pointer}
+      .opt:hover{border-color:var(--accent)}
+      .opt.answered{background:#eef1ff;border-color:var(--primary)}
+      .opt input{margin-top:3px;flex-shrink:0}
+      .footer-actions{margin-top:20px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+      .btn{display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:#fff;border:none;border-radius:10px;padding:12px 22px;font-size:1rem;font-weight:600;cursor:pointer}
+      .btn:hover{background:var(--primary-2)}
+      .btn:disabled{background:#9ca3af;cursor:not-allowed}
+      .btn.secondary{background:#fff;color:var(--primary);border:1.5px solid var(--primary)}
+      .btn.secondary:hover{background:#eef2f7}
+      .btn.gray{background:#f3f4f6;color:#374151;border:1px solid var(--border)}
+      .btn.gray:hover{background:#e5e7eb}
+      .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+      h1{font-size:1.4rem;margin:0 0 4px}
+      .sub{color:var(--muted);margin:0 0 20px;font-size:.95rem}
+      .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0 22px}
+      .stat-box{border:1px solid var(--border);border-radius:12px;padding:16px}
+      .stat-box .num{font-size:1.8rem;font-weight:700}
+      .stat-box .label{color:var(--muted);font-size:.85rem}
+      .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.8rem;font-weight:700}
+      .pill.good{background:var(--good-bg);color:var(--good)}
+      .pill.bad{background:var(--bad-bg);color:var(--bad)}
+      .review-list{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
+      .review-chip{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff}
+      .review-chip.ok{background:var(--good)}
+      .review-chip.no{background:var(--bad)}
+      .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+      .bar-label{width:250px;flex-shrink:0;font-size:.85rem;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      .bar-track{flex:1;height:16px;background:var(--border);border-radius:999px;overflow:hidden}
+      .bar-fill{height:100%;border-radius:999px}
+      .bar-pct{width:110px;flex-shrink:0;font-size:.82rem;color:var(--muted);text-align:right}
+      .section-title{font-size:.95rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.03em;margin:22px 0 10px}
+      ul.plain{margin:0;padding-left:0;list-style:none}
+      ul.plain li{padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;font-size:.92rem}
+      ul.plain li:last-child{border-bottom:none}
+      .overlay-note{background:#eef1ff;border:1px solid #c7d0f5;color:#2b3a8f;border-radius:10px;padding:10px 14px;font-size:.85rem;margin-bottom:18px}
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div id="app"></div>
+    </div>
+    <script type="application/json" id="questions-data">[{"id": 1, "text": "1. Which of the following is a requirement for multi-tenant service providers?", "options": [{"id": "a", "text": "A) Ensure that hosted entities cannot access another entity's cardholder data environment."}, {"id": "b", "text": "B) Provide hosted entities with access to the hosting provider's system configuration files."}, {"id": "c", "text": "C) Provide hosted entities with a shared user ID for access to critical system binaries."}, {"id": "d", "text": "D) Ensure that a hosted entity's log files are available to all hosted entities."}], "correct_option": "a", "domain": "QSA 2025", "theme": "rede", "explanation": "O provedor deve isolar o ambiente de cada cliente hospedado; acesso cruzado ou credenciais compartilhadas violam a segregação exigida em ambientes multi-tenant."}, {"id": 2, "text": "2. Which of the following statements about service providers is true?", "options": [{"id": "a", "text": "A) Service providers must report compliance to PCI SSC."}, {"id": "b", "text": "B) A service provider may also be a merchant."}, {"id": "c", "text": "C) A service provider is also a payment brand member."}, {"id": "d", "text": "D) Transaction payment gateways are not considered service providers."}], "correct_option": "b", "domain": "QSA 2025", "theme": "politica", "explanation": "Uma entidade pode acumular os dois papéis: ser comerciante e, ao mesmo tempo, prestar serviços que armazenam, processam ou transmitem dados de cartão para terceiros."}, {"id": 3, "text": "3. Which entity determines a merchant's transaction volume?", "options": [{"id": "a", "text": "A) The PCI SSC"}, {"id": "b", "text": "B) The assessor"}, {"id": "c", "text": "C) The merchant"}, {"id": "d", "text": "D) The acquirer"}], "correct_option": "d", "domain": "QSA 2025", "theme": "politica", "explanation": "O adquirente é quem classifica o volume de transações do lojista e, com isso, define seu nível PCI."}, {"id": 4, "text": "4. Which scenario meets the intent of PCI DSS requirements for assigning users access to cardholder data?", "options": [{"id": "a", "text": "A) Access is assigned to all users based on the access needs of the least-privileged user."}, {"id": "b", "text": "B) Access is assigned to individual users based on the highest privilege available."}, {"id": "c", "text": "C) Access is assigned to an individual user based on the privileges needed to perform their job."}, {"id": "d", "text": "D) Access is assigned to a group of users based on the privileges of the most senior user in the group."}], "correct_option": "c", "domain": "QSA 2025", "theme": "acesso", "explanation": "O princípio é o de necessidade de conhecimento (need-to-know): cada usuário recebe apenas o acesso necessário para a função que exerce."}, {"id": 5, "text": "5. In accordance with PCI DSS Requirement 10, how long must audit logs be retained?", "options": [{"id": "a", "text": "A) At least 1 year, with 3 months immediately available."}, {"id": "b", "text": "B) At least 2 years, with 3 weeks immediately available."}, {"id": "c", "text": "C) At least 2 years, with 1 month immediately available."}, {"id": "d", "text": "D) At least 3 months, with 1 month immediately available."}], "correct_option": "a", "domain": "QSA 2025", "theme": "monitor", "explanation": "O Requisito 10 exige retenção mínima de 1 ano, com os últimos 3 meses prontamente disponíveis para análise imediata."}, {"id": 6, "text": "6. Which of the following statements is true regarding PCI DSS requirements for penetration tests and vulnerability scans for merchants?", "options": [{"id": "a", "text": "A) Penetration tests and vulnerability scans must be performed on a quarterly basis."}, {"id": "b", "text": "B) PCI DSS Requirement 11 requires that either vulnerability scans or penetration tests be performed."}, {"id": "c", "text": "C) Vulnerability scans are performed externally and penetration tests are performed internally."}, {"id": "d", "text": "D) Issues identified during penetration tests and vulnerability scans must be addressed and verified through rescans or tests."}], "correct_option": "d", "domain": "QSA 2025", "theme": "monitor", "explanation": "Vulnerabilidades encontradas em scans ou pentests precisam ser corrigidas e depois confirmadas por reteste, fechando o ciclo de remediação."}, {"id": 7, "text": "7. As defined in Requirement 8, what is the minimum complexity of user passwords if the system does not support 12 characters?", "options": [{"id": "a", "text": "A) 5 characters, either alphabetic or numeric."}, {"id": "b", "text": "B) 6 characters, either alphabetic or numeric."}, {"id": "c", "text": "C) 7 characters, both alphabetic and numeric characters."}, {"id": "d", "text": "D) 8 characters, both alphabetic and numeric characters."}], "correct_option": "d", "domain": "QSA 2025", "theme": "acesso", "explanation": "Quando o sistema não suporta 12 caracteres, o mínimo aceito é 8 caracteres, combinando letras e números."}, {"id": 8, "text": "8. Which of the following meets PCI DSS requirements for secure destruction of media containing cardholder data?", "options": [{"id": "a", "text": "A) Cardholder data on hard copy materials is copied to electronic media before the hard copy materials are destroyed."}, {"id": "b", "text": "B) Storage containers used for hard copy materials are located outside of the CDE."}, {"id": "c", "text": "C) Electronic media is physically destroyed to ensure the data cannot be reconstructed."}, {"id": "d", "text": "D) Electronic media is stored in a secure location when the data is no longer needed for business or legal reasons."}], "correct_option": "c", "domain": "QSA 2025", "theme": "acesso", "explanation": "A destruição segura de mídia eletrônica exige que ela seja fisicamente destruída, tornando os dados impossíveis de reconstruir."}, {"id": 9, "text": "9. Which of the following is an example of a system-level object?", "options": [{"id": "a", "text": "A) A log file."}, {"id": "b", "text": "B) An application executable or configuration file."}, {"id": "c", "text": "C) A document containing cardholder data."}, {"id": "d", "text": "D) Transaction data in a point-of-sale device."}], "correct_option": "b", "domain": "QSA 2025", "theme": "rede", "explanation": "Objetos de nível de sistema são componentes como executáveis e arquivos de configuração, cuja integridade precisa ser monitorada."}, {"id": 10, "text": "10. Which scenario would allow for the largest sample size for assessing applications during a PCI DSS assessment?", "options": [{"id": "a", "text": "A) Applications are listed as validated payment software on the PCI SSC website."}, {"id": "b", "text": "B) Application development follows standard build processes and uniform deployment procedures."}, {"id": "c", "text": "C) Application development follows variable build processes and decentralized deployment procedures."}, {"id": "d", "text": "D) Applications are not listed on the PCI SSC website."}], "correct_option": "c", "domain": "QSA 2025", "theme": "vuln", "explanation": "Processos de build variáveis e implantação descentralizada geram mais inconsistência entre aplicações, exigindo amostras maiores."}, {"id": 11, "text": "11. Which of the following activities must the assessor perform to verify that user passwords are being changed as required by PCI DSS?", "options": [{"id": "a", "text": "A) Set the system clock ahead 60 days to see if passwords expire."}, {"id": "b", "text": "B) Require a user to change their password, and return in 90 days to see if it has expired."}, {"id": "c", "text": "C) Review system configuration settings to verify passwords must be changed after 90 days."}, {"id": "d", "text": "D) Interview service desk personnel to verify that user passwords are disabled every 60 days."}], "correct_option": "c", "domain": "QSA 2025", "theme": "acesso", "explanation": "A verificação correta é técnica: revisar as configurações do sistema que forçam a troca de senha no prazo definido."}, {"id": 12, "text": "12. Which statement is true regarding PCI DSS Requirements for written agreements between entities and their service providers?", "options": [{"id": "a", "text": "A) Written agreements must include the exact wording specified in PCI DSS."}, {"id": "b", "text": "B) The wording used in a written agreement will depend on the particular relationship between the two parties."}, {"id": "c", "text": "C) Written agreements must be updated every 6 months."}, {"id": "d", "text": "D) Service providers must maintain written agreements for at least 3 years."}], "correct_option": "b", "domain": "QSA 2025", "theme": "politica", "explanation": "O PCI DSS não define um texto fixo; o conteúdo do acordo varia conforme a relação específica entre as partes."}, {"id": 13, "text": "13. What process is required by PCI DSS for protecting card-reading devices at the point-of-sale?", "options": [{"id": "a", "text": "A) Devices are periodically inspected to detect unauthorized card skimmers."}, {"id": "b", "text": "B) The serial number of each device is periodically verified with the device manufacturer."}, {"id": "c", "text": "C) Device identifiers and security labels are periodically replaced."}, {"id": "d", "text": "D) Devices are physically destroyed if there is suspicion of compromise."}], "correct_option": "a", "domain": "QSA 2025", "theme": "acesso", "explanation": "O PCI DSS exige inspeção periódica dos dispositivos de captura para detectar sinais de adulteração ou troca (skimming)."}, {"id": 14, "text": "14. Which of the following types of events is required to be logged?", "options": [{"id": "a", "text": "A) All use of end-user messaging technologies."}, {"id": "b", "text": "B) All access to external web sites."}, {"id": "c", "text": "C) All access to all audit trails."}, {"id": "d", "text": "D) All network transmissions."}], "correct_option": "c", "domain": "QSA 2025", "theme": "monitor", "explanation": "O Requisito 10 exige o registro de todo acesso às trilhas de auditoria, já que elas próprias são um alvo sensível."}, {"id": 15, "text": "15. Which of the following is true regarding compensating controls?", "options": [{"id": "a", "text": "A) A compensating control is not necessary if all other PCI DSS requirements are in place."}, {"id": "b", "text": "B) A compensating control must address the risk associated with not meeting the PCI DSS requirement."}, {"id": "c", "text": "C) An existing PCI DSS requirement can be used as compensating control if it is already implemented."}, {"id": "d", "text": "D) A compensating control worksheet is not required if the acquirer approves the compensating control."}], "correct_option": "b", "domain": "QSA 2025", "theme": "politica", "explanation": "O controle compensatório precisa mitigar especificamente o risco que o requisito original endereçaria."}, {"id": 16, "text": "16. Who defines merchant and service provider levels?", "options": [{"id": "a", "text": "A) Payment brands"}, {"id": "b", "text": "B) The merchant or service provider"}, {"id": "c", "text": "C) Acquirer"}, {"id": "d", "text": "D) PCI Security Standards Council"}], "correct_option": "a", "domain": "QSA 2025", "theme": "politica", "explanation": "Cada bandeira de cartão (Visa, Mastercard, Amex etc.) define os critérios de nível com base em volume de transações e risco."}, {"id": 17, "text": "17. If segmentation is being used to reduce the scope of a PCI DSS assessment, the assessor will do which of the following?", "options": [{"id": "a", "text": "A) Verify the segmentation controls allow all network traffic into the cardholder data environment."}, {"id": "b", "text": "B) Verify the payment brands have approved the segmentation."}, {"id": "c", "text": "C) Verify that only PCI-approved devices and applications are used for the segmentation controls."}, {"id": "d", "text": "D) Verify the controls used for segmentation are configured properly and functioning as intended."}], "correct_option": "d", "domain": "QSA 2025", "theme": "rede", "explanation": "O assessor precisa testar e confirmar que a segmentação realmente isola o CDE, e não apenas assumir que ela funciona."}, {"id": 18, "text": "18. A network firewall has been configured with the latest vendor security patches. What additional configuration is needed to harden the firewall?", "options": [{"id": "a", "text": "A) Remove the default “Firewall Administrator” account and create a shared account for firewall administrators to use."}, {"id": "b", "text": "B) Configure the firewall to permit all traffic until additional rules are defined."}, {"id": "c", "text": "C) Synchronize the firewall rule set with the other firewalls in the environment."}, {"id": "d", "text": "D) Disable any firewall functions that are not needed in production."}], "correct_option": "d", "domain": "QSA 2025", "theme": "rede", "explanation": "Hardening significa reduzir a superfície de ataque, desabilitando serviços e funções que não são necessários em produção."}, {"id": 19, "text": "19. Which scenario would support a smaller sample size being used for a PCI DSS assessment of an entity with multiple facilities located in different regions?", "options": [{"id": "a", "text": "A) Security policies and procedures are independently defined by each facility."}, {"id": "b", "text": "B) Security policies and procedures are standardized for each region."}, {"id": "c", "text": "C) Security policies are centralized and procedures consistently implemented across all regions."}, {"id": "d", "text": "D) Security policies are centrally defined and each facility defines their own procedures for implementing the policies."}], "correct_option": "c", "domain": "QSA 2025", "theme": "politica", "explanation": "Quanto mais padronizadas e consistentes as políticas e procedimentos entre as unidades, menor a amostra necessária."}, {"id": 20, "text": "20. Which statement is true regarding the PCI DSS Report on Compliance (ROC)?", "options": [{"id": "a", "text": "A) The ROC Reporting Template and instructions provided by PCI SSC should be used for all ROCs."}, {"id": "b", "text": "B) The assessor may use either their own template or the ROC Reporting Template provided by PCI SSC."}, {"id": "c", "text": "C) The assessor must create their own ROC template for each assessment report."}, {"id": "d", "text": "D) The ROC Reporting Template provided by PCI SSC is only required for service provider assessments."}], "correct_option": "a", "domain": "QSA 2025", "theme": "politica", "explanation": "O PCI SSC exige que o template oficial do ROC seja sempre utilizado, sem alternativa de modelo próprio."}, {"id": 21, "text": "21. Which of the following is true regarding network segmentation?", "options": [{"id": "a", "text": "A) Network segmentation is not a PCI DSS requirement."}, {"id": "b", "text": "B) A properly segmented network increases the scope of a PCI DSS assessment."}, {"id": "c", "text": "C) A segmented network is also known as a “flat network”."}, {"id": "d", "text": "D) Network segmentation is required by PCI DSS for all in-scope networks."}], "correct_option": "a", "domain": "QSA 2025", "theme": "rede", "explanation": "A segmentação é recomendada para reduzir o escopo da avaliação, mas não é obrigatória pelo PCI DSS."}, {"id": 22, "text": "22. What does the PCI PTS POI standard cover?", "options": [{"id": "a", "text": "A) Point-of-interaction devices used to protect account data."}, {"id": "b", "text": "B) Secure coding practices for commercial payment applications."}, {"id": "c", "text": "C) Development of strong cryptographic algorithms."}, {"id": "d", "text": "D) End-to-end encryption solutions for transmission of account data."}], "correct_option": "a", "domain": "QSA 2025", "theme": "acesso", "explanation": "O padrão PTS POI trata especificamente dos dispositivos físicos de ponto de interação usados para proteger dados de conta."}, {"id": 23, "text": "23. Viewing of audit trails should be limited to which users?", "options": [{"id": "a", "text": "A) Individuals with user privileges"}, {"id": "b", "text": "B) Individuals with read/write access"}, {"id": "c", "text": "C) Individuals with administrator privileges"}, {"id": "d", "text": "D) Individuals with a job-related need"}], "correct_option": "d", "domain": "QSA 2025", "theme": "monitor", "explanation": "O acesso à visualização das trilhas de auditoria deve seguir o princípio de necessidade relacionada à função, não o cargo ou nível de privilégio."}, {"id": 24, "text": "24. What is the goal of performing quarterly internal vulnerability scans and rescans?", "options": [{"id": "a", "text": "A) To address all \"high-risk\" and critical vulnerabilities."}, {"id": "b", "text": "B) To address all vulnerabilities ranked \"low\" or \"medium\" as defined by the ASV."}, {"id": "c", "text": "C) To address any vulnerabilities with a CVSS score of 4.0 or lower."}, {"id": "d", "text": "D) To address any vulnerabilities with a CVSS score of 7.0 or higher."}], "correct_option": "a", "domain": "QSA 2025", "theme": "monitor", "explanation": "Os scans internos trimestrais têm como foco tratar vulnerabilidades classificadas como altas ou críticas."}, {"id": 25, "text": "25. What must the assessor verify when testing that cardholder data is protected whenever it is sent over the Internet?", "options": [{"id": "a", "text": "A) The security protocol is configured to support earlier versions."}, {"id": "b", "text": "B) The encryption strength is appropriate for the technology in use."}, {"id": "c", "text": "C) The security protocol is configured to accept all digital certificates."}, {"id": "d", "text": "D) The cardholder data is securely deleted once the transmission has been sent."}], "correct_option": "b", "domain": "QSA 2025", "theme": "dados", "explanation": "O PCI DSS exige que apenas protocolos fortes e criptografia robusta e adequada à tecnologia em uso sejam utilizados na transmissão."}, {"id": 26, "text": "26. Which of these is a responsibility of an acquirer?", "options": [{"id": "a", "text": "A) Maintain lists of compliant merchants and service providers."}, {"id": "b", "text": "B) Determine fines and liability for each card brand compliance program."}, {"id": "c", "text": "C) Provide the compliance status of their merchants to PCI SSC."}, {"id": "d", "text": "D) Incur any liability that may result from their merchants' non-compliance with card brand compliance programs."}], "correct_option": "d", "domain": "QSA 2025", "theme": "politica", "explanation": "O adquirente assume a responsabilidade e a exposição a penalidades decorrentes da não conformidade de seus lojistas."}, {"id": 27, "text": "27. Which protocol may be used to protect non-console administrator access to a system component in the cardholder data environment?", "options": [{"id": "a", "text": "A) SSL v1.0"}, {"id": "b", "text": "B) SSH v1.1"}, {"id": "c", "text": "C) TLS v1.2"}, {"id": "d", "text": "D) SSL v2.1"}], "correct_option": "c", "domain": "QSA 2025", "theme": "rede", "explanation": "Protocolos obsoletos como SSL e SSH v1 são proibidos; o acesso administrativo remoto deve usar um protocolo forte como TLS v1.2 ou superior."}, {"id": 28, "text": "28. If a merchant's cardholder data is shared with service providers, or could be impacted by service providers, what is the merchant required to maintain?", "options": [{"id": "a", "text": "A) Copies of the service providers’ Reports on Compliance (ROC) for at least three years."}, {"id": "b", "text": "B) A program to visit service provider locations at least quarterly."}, {"id": "c", "text": "C) A list of all clients that the service provider has access to."}, {"id": "d", "text": "D) Agreements with the service providers and a program to monitor their compliance status."}], "correct_option": "d", "domain": "QSA 2025", "theme": "politica", "explanation": "O comerciante precisa manter acordos formais com seus prestadores de serviço e um programa contínuo de monitoramento da conformidade deles."}, {"id": 29, "text": "29. A sample of business facilities is reviewed during the PCI DSS assessment. What is the assessor required to validate about the sample?", "options": [{"id": "a", "text": "A) It includes a consistent set of facilities that are reviewed for all assessments."}, {"id": "b", "text": "B) The number of facilities in the sample is at least 10 percent of the total number of facilities."}, {"id": "c", "text": "C) Every facility where cardholder data is stored is reviewed."}, {"id": "d", "text": "D) All types and locations of facilities are represented."}], "correct_option": "d", "domain": "QSA 2025", "theme": "politica", "explanation": "A amostra precisa representar todos os tipos e localidades de instalações, não seguir um percentual fixo ou um conjunto engessado."}, {"id": 30, "text": "30. Which of the following can be sampled for testing during a PCI DSS assessment?", "options": [{"id": "a", "text": "A) PCI DSS requirements and testing procedures."}, {"id": "b", "text": "B) Compensating controls."}, {"id": "c", "text": "C) Business facilities and system components."}, {"id": "d", "text": "D) Security policies and procedures."}], "correct_option": "c", "domain": "QSA 2025", "theme": "politica", "explanation": "Apenas instalações e componentes de sistema podem ser amostrados; requisitos, controles compensatórios e políticas devem ser avaliados por completo."}, {"id": 31, "text": "31. What would be an appropriate strength for the key-encrypting key (KEK) used to protect an AES 128 bit data-encrypting key (DEK)?", "options": [{"id": "a", "text": "A) DES 256"}, {"id": "b", "text": "B) RSA 512"}, {"id": "c", "text": "C) AES 128"}, {"id": "d", "text": "D) ROT 13"}], "correct_option": "c", "domain": "QSA 2025", "theme": "dados", "explanation": "A KEK precisa ter força igual ou superior à DEK que protege; AES 128 é uma força reconhecida como adequada pelo PCI DSS."}, {"id": 32, "text": "32. Which of the following is an effective way for a merchant to reduce the scope of their PCI DSS assessment?", "options": [{"id": "a", "text": "A) Not store cardholder data"}, {"id": "b", "text": "B) Encrypt cardholder data"}, {"id": "c", "text": "C) Mask cardholder data"}, {"id": "d", "text": "D) Store cardholder data in databases"}], "correct_option": "a", "domain": "QSA 2025", "theme": "dados", "explanation": "Não armazenar dados do titular do cartão é a forma mais eficaz de reduzir o escopo, pois remove o dado do ambiente."}, {"id": 33, "text": "33. What is the intent of logging user activities?", "options": [{"id": "a", "text": "A) To restrict access to critical resources based on need-to-know."}, {"id": "b", "text": "B) To detect potential misuse or compromise."}, {"id": "c", "text": "C) To verify that security policies are documented, in use, and known to all affected parties."}, {"id": "d", "text": "D) To identify the use of weak passwords in the environment."}], "correct_option": "b", "domain": "QSA 2025", "theme": "monitor", "explanation": "O registro de atividades dos usuários existe para permitir a detecção de uso indevido ou de comprometimento do ambiente."}, {"id": 34, "text": "34. Which statement is true regarding the use of intrusion detection techniques, such as IDS/IPS?", "options": [{"id": "a", "text": "A) Intrusion detection techniques are required on all system components."}, {"id": "b", "text": "B) Intrusion detection techniques are required to alert personnel of suspected compromises."}, {"id": "c", "text": "C) Intrusion detection techniques are required to isolate systems in the CDE from all other systems."}, {"id": "d", "text": "D) Intrusion detection techniques are required to identify all instances of cardholder data."}], "correct_option": "b", "domain": "QSA 2025", "theme": "monitor", "explanation": "IDS/IPS devem gerar alertas para a equipe responsável diante de suspeitas de comprometimento; não são a ferramenta de segmentação nem de descoberta de dados."}, {"id": 35, "text": "35. What do PCI DSS requirements for protecting cryptographic keys include?", "options": [{"id": "a", "text": "A) Public keys must be encrypted with a key-encrypting key."}, {"id": "b", "text": "B) Data-encrypting keys must be stronger than the key-encrypting key that protects it."}, {"id": "c", "text": "C) Private or secret keys must be encrypted, stored within an SCD, or stored as key components."}, {"id": "d", "text": "D) Key-encrypting keys and data-encrypting keys must be assigned to the same key custodian."}], "correct_option": "c", "domain": "QSA 2025", "theme": "dados", "explanation": "Chaves privadas ou secretas precisam ser protegidas por criptografia, guardadas em um dispositivo criptográfico seguro (SCD) ou fragmentadas em componentes."}, {"id": 36, "text": "36. Which of the following is required to protect public-facing web applications from known attacks?", "options": [{"id": "a", "text": "A) Install a stateful inspection firewall configured to block all inbound traffic."}, {"id": "b", "text": "B) Perform monthly internal and external vulnerability scans."}, {"id": "c", "text": "C) Install a web-application firewall that permits only HTTPS traffic."}, {"id": "d", "text": "D) Install an automated technical solution that is configured to detect and prevent web-based attacks."}], "correct_option": "d", "domain": "QSA 2025", "theme": "vuln", "explanation": "O requisito pede uma solução técnica automatizada dedicada a detectar e bloquear ataques baseados na web, como um WAF configurado para essa finalidade."}, {"id": 37, "text": "37. Which scenario describes a multi-tenant service provider environment that meets PCI DSS requirements?", "options": [{"id": "a", "text": "A) Only designated users from each hosted entity have write access to shared system binaries."}, {"id": "b", "text": "B) Each hosted entity’s applications are run under the hosting provider’s administrative account."}, {"id": "c", "text": "C) A hosted entity’s log files can only be viewed by other entities hosted on the same server."}, {"id": "d", "text": "D) A hosted entity’s applications are run under a unique user ID assigned to that hosted entity."}], "correct_option": "d", "domain": "QSA 2025", "theme": "rede", "explanation": "Cada entidade hospedada precisa rodar suas aplicações sob um ID de usuário único e exclusivo, garantindo segregação entre clientes."}, {"id": 38, "text": "38. Which statement regarding roles and responsibilities is accurate?", "options": [{"id": "a", "text": "A) The payment card brands are responsible for listing validated payment software and PTS-approved devices."}, {"id": "b", "text": "B) Service Providers are responsible for the compliance of their customers."}, {"id": "c", "text": "C) PCI SSC is responsible for setting compliance deadlines for merchants and service providers."}, {"id": "d", "text": "D) Acquirers are responsible for monitoring merchant compliance and validation."}], "correct_option": "d", "domain": "QSA 2025", "theme": "politica", "explanation": "Cabe ao adquirente monitorar a conformidade e a validação de seus comerciantes; listar software validado é papel do PCI SSC, e prazos são definidos pelas bandeiras."}, {"id": 39, "text": "39. Which of the following anti-malware software configurations meets PCI DSS requirements?", "options": [{"id": "a", "text": "A) Anti-malware updates are performed as part of the quarterly vulnerability scanning process."}, {"id": "b", "text": "B) Anti-malware software is disabled when not in use, and enabled upon user request."}, {"id": "c", "text": "C) Systems identified as not at risk from malicious software are periodically reviewed to verify anti-malware is not required."}, {"id": "d", "text": "D) Logs of anti-malware software are securely deleted on a quarterly basis."}], "correct_option": "c", "domain": "QSA 2025", "theme": "vuln", "explanation": "Sistemas considerados fora de risco de malware devem ser reavaliados periodicamente para confirmar que essa condição continua válida."}, {"id": 40, "text": "40. What must be included in an organization’s procedures for managing visitors?", "options": [{"id": "a", "text": "A) Visitors are escorted at all times within areas where cardholder data is processed or maintained."}, {"id": "b", "text": "B) Visitor badges are identical to badges used by onsite personnel."}, {"id": "c", "text": "C) Visitor log includes visitor name, address, and contact phone number."}, {"id": "d", "text": "D) Visitors retain their identification (for example, a visitor badge) for 30 days after completion of the visit."}], "correct_option": "a", "domain": "QSA 2025", "theme": "acesso", "explanation": "Visitantes devem ser acompanhados o tempo todo em áreas onde dados de cartão são processados ou mantidos."}, {"id": 41, "text": "41. Which statement is true regarding the presence of both hashed and truncated versions of the same PAN in an environment?", "options": [{"id": "a", "text": "A) Controls are needed to prevent the original PAN being exposed by correlating the hashed and truncated versions."}, {"id": "b", "text": "B) The hashed version of the PAN must also be truncated per PCI DSS requirements for strong cryptography."}, {"id": "c", "text": "C) The hashed and truncated versions must be correlated so the source PAN can be identified."}, {"id": "d", "text": "D) Hashed and truncated versions of a PAN must not exist in same environment."}], "correct_option": "a", "domain": "QSA 2025", "theme": "dados", "explanation": "Quando as duas versões coexistem, é preciso controlar o risco de alguém correlacioná-las para reconstruir o PAN original."}, {"id": 42, "text": "42. PCI DSS requirements for performing periodic inspections of card-reading devices include which of the following?", "options": [{"id": "a", "text": "A) Examining device surfaces to identify possible tampering or substitution."}, {"id": "b", "text": "B) Replacing devices so they are not used at the same location for an extended period of time."}, {"id": "c", "text": "C) Attempting to brute-force the device case to determine if the device can withstand physical tampering."}, {"id": "d", "text": "D) Replacing security stickers and anti-tamper mechanisms after each inspection."}], "correct_option": "a", "domain": "QSA 2025", "theme": "acesso", "explanation": "A inspeção periódica consiste em examinar a superfície dos dispositivos em busca de sinais de adulteração ou substituição."}, {"id": 43, "text": "43. How often must a process to detect rogue wireless access points be performed?", "options": [{"id": "a", "text": "A) Annually"}, {"id": "b", "text": "B) Every three months"}, {"id": "c", "text": "C) Every six months"}, {"id": "d", "text": "D) Once a month"}], "correct_option": "b", "domain": "QSA 2025", "theme": "monitor", "explanation": "O processo de detecção de pontos de acesso sem fio não autorizados deve ser realizado trimestralmente."}, {"id": 44, "text": "44. If an entity does not use wireless networking technology anywhere in their environment, what must the assessor do to validate PCI DSS Requirement 11.2 for the ROC?", "options": [{"id": "a", "text": "A) Select “In Place with CCW” for the requirement."}, {"id": "b", "text": "B) Perform the testing procedures as if wireless were present."}, {"id": "c", "text": "C) Inspect the environment to verify there is no wireless, and select “N/A” for the requirement."}, {"id": "d", "text": "D) Select “Not Tested” for the requirement."}], "correct_option": "c", "domain": "QSA 2025", "theme": "monitor", "explanation": "Quando não há tecnologia sem fio no ambiente, o assessor deve inspecionar essa ausência e marcar o requisito como “N/A”, nunca “Not Tested”."}, {"id": 45, "text": "45. Which of the following could be used to provide network segmentation?", "options": [{"id": "a", "text": "A) Traffic monitoring systems with notifications enabled."}, {"id": "b", "text": "B) Network hubs, bridges, and connectors."}, {"id": "c", "text": "C) Intrusion-detection systems with enhanced logging."}, {"id": "d", "text": "D) Firewalls, routers, access control list (ACL)."}], "correct_option": "d", "domain": "QSA 2025", "theme": "rede", "explanation": "A segmentação de rede é implementada com firewalls, roteadores e listas de controle de acesso (ACL) controlando o tráfego entre redes."}, {"id": 46, "text": "46. How often does PCI DSS require organizations to review their information security policy?", "options": [{"id": "a", "text": "A) At least every 12 months"}, {"id": "b", "text": "B) At least every 3 months"}, {"id": "c", "text": "C) Every 6 months"}, {"id": "d", "text": "D) Every 3 years"}], "correct_option": "a", "domain": "QSA 2025", "theme": "politica", "explanation": "O PCI DSS exige revisão anual (a cada 12 meses) da política de segurança da informação, além de revisões após mudanças relevantes no ambiente."}, {"id": 47, "text": "47. When must cryptographic keys be changed?", "options": [{"id": "a", "text": "A) At the end of their defined cryptoperiod."}, {"id": "b", "text": "B) At least annually."}, {"id": "c", "text": "C) When a new key custodian is employed."}, {"id": "d", "text": "D) Upon release of a new algorithm."}], "correct_option": "a", "domain": "QSA 2025", "theme": "dados", "explanation": "As chaves devem ser trocadas ao final do cryptoperiod definido para cada chave, e não em um intervalo fixo genérico."}, {"id": 48, "text": "48. Which statement is true regarding the use of validated payment software listed on the PCI SSC website?", "options": [{"id": "a", "text": "A) Use of validated software is required for P2PE solutions."}, {"id": "b", "text": "B) Validated software is in scope for merchant’s PCI DSS assessment."}, {"id": "c", "text": "C) Use of validated software is required for PCI DSS compliance."}, {"id": "d", "text": "D) All applications in the merchant’s cardholder data environment must be listed on the PCI SSC website."}], "correct_option": "a", "domain": "QSA 2025", "theme": "vuln", "explanation": "Em soluções P2PE, apenas software e hardware listados e validados pelo PCI SSC podem ser utilizados."}, {"id": 49, "text": "49. What is the intent of assigning a risk ranking to vulnerabilities?", "options": [{"id": "a", "text": "A) To ensure all vulnerabilities are addressed within 30 days."}, {"id": "b", "text": "B) To replace the need for quarterly ASV scans."}, {"id": "c", "text": "C) To prioritize the highest risk items so they can be addressed more quickly."}, {"id": "d", "text": "D) To ensure that critical security patches are installed at least quarterly."}], "correct_option": "c", "domain": "QSA 2025", "theme": "vuln", "explanation": "O ranking de risco serve para priorizar a correção das vulnerabilidades mais críticas primeiro, direcionando o esforço de remediação."}, {"id": 50, "text": "50. Regarding issuers and the storage of Sensitive Authentication Data (SAD), which statement is true?", "options": [{"id": "a", "text": "A) Issuers do not need to perform any testing for Requirement 3."}, {"id": "b", "text": "B) PCI DSS is not applicable to issuers."}, {"id": "c", "text": "C) Issuers are required to have a documented business justification for all storage of sensitive authentication data."}, {"id": "d", "text": "D) Issuers must not store sensitive authentication data after authorization."}], "correct_option": "c", "domain": "QSA 2025", "theme": "dados", "explanation": "Emissores podem armazenar SAD após a autorização, mas apenas com justificativa de negócio documentada e proteção adequada, conforme o Requisito 3."}]</script>
+    <script>
+      const ALL_QUESTIONS = JSON.parse(document.getElementById('questions-data').textContent);
+      const CONFIG = {"examTitle": "PCI DSS QSA — Simulado de Requalificação 2025", "examSubtitle": "50 questões (Prova de Requalificação QSA 2025), em blocos de 10, com pausa e acompanhamento de desempenho.", "totalSeconds": 5400};
+      const BLOCK_SIZE = 10;
+      const TOTAL = ALL_QUESTIONS.length;
+      const TOTAL_BLOCKS = Math.ceil(TOTAL / BLOCK_SIZE);
+      const TOTAL_SECONDS = CONFIG.totalSeconds;
+
+      const state = {
+        view: 'intro', // intro | exam | pause | confirmSubmit | manualPause | final
+        current: 1, // 1-indexed question number
+        maxUnlocked: BLOCK_SIZE,
+        answers: {}, // qid -> letter
+        bookmarks: new Set(),
+        filter: 'all', // all | bookmarked | unanswered
+        secondsLeft: TOTAL_SECONDS,
+        timerId: null,
+        pauseBlockIndex: null, // which block the pause screen refers to (0-indexed)
+      };
+
+      const byId = (i) => ALL_QUESTIONS[i - 1];
+
+      const THEME_META = {
+        rede:      { label: '🌐 Rede e Sistemas Seguros',      controls: 2, order: 1 },
+        dados:     { label: '🔒 Proteção de Dados do Titular', controls: 2, order: 2 },
+        vuln:      { label: '🛡️ Gestão de Vulnerabilidades',   controls: 2, order: 3 },
+        acesso:    { label: '🔑 Controle de Acesso Físico/Lógico', controls: 3, order: 4 },
+        monitor:   { label: '📊 Monitoramento e Testes',       controls: 2, order: 5 },
+        politica:  { label: '📋 Política, Papéis e Programa PCI', controls: 1, order: 6 },
+      };
+      const THEME_ORDER = ['rede', 'dados', 'vuln', 'acesso', 'monitor', 'politica'];
+
+      function computeStatsForQuestions(qs) {
+        let correct = 0;
+        const perQuestion = [];
+        qs.forEach(q => {
+          const chosen = state.answers[q.id];
+          const isCorrect = chosen === q.correct_option;
+          if (isCorrect) correct++;
+          perQuestion.push({ id: q.id, correct: isCorrect, answered: chosen !== undefined });
+        });
+        return { correct, total: qs.length, perQuestion };
+      }
+
+      function computeDomainBreakdown(qs) {
+        const byTheme = {};
+        THEME_ORDER.forEach(k => { byTheme[k] = { correct: 0, total: 0 }; });
+        qs.forEach(q => {
+          const key = THEME_META[q.theme] ? q.theme : 'organizacional';
+          byTheme[key].total++;
+          if (state.answers[q.id] === q.correct_option) byTheme[key].correct++;
+        });
+        return byTheme;
+      }
+
+      function barChartHTML(byDomain) {
+        return THEME_ORDER.map(k => {
+          const meta = THEME_META[k];
+          const d = byDomain[k] || { correct: 0, total: 0 };
+          const pct = d.total ? Math.round((d.correct / d.total) * 100) : 0;
+          const color = d.total === 0 ? '#cbd5e1' : (pct >= 70 ? '#15803d' : (pct >= 50 ? '#d97706' : '#b91c1c'));
+          const countLabel = d.total ? `${d.correct}/${d.total} (${pct}%)` : 'sem dados ainda';
+          return `
+            <div class="bar-row">
+              <div class="bar-label" title="${escapeHtml(meta.label)} · ${meta.controls} requisitos PCI DSS">${escapeHtml(meta.label)}</div>
+              <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+              <div class="bar-pct">${countLabel}</div>
+            </div>`;
+        }).join('');
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+
+      function fmtTime(totalSec) {
+        const s = Math.max(0, totalSec);
+        const h = Math.floor(s / 3600);
+        const m = Math.floor((s % 3600) / 60);
+        const sec = Math.floor(s % 60);
+        const pad = (n) => String(n).padStart(2, '0');
+        return `${pad(h)}:${pad(m)}:${pad(sec)}`;
+      }
+
+      function startTimer() {
+        if (state.timerId) return;
+        state.timerId = setInterval(() => {
+          if (state.view !== 'exam') return; // ticks only while actively answering
+          state.secondsLeft--;
+          if (state.secondsLeft <= 0) {
+            state.secondsLeft = 0;
+            clearInterval(state.timerId);
+            state.timerId = null;
+            state.view = 'final';
+            render();
+            return;
+          }
+          const el = document.getElementById('timer-display');
+          if (el) el.textContent = fmtTime(state.secondsLeft);
+        }, 1000);
+      }
+
+      function render() {
+        const app = document.getElementById('app');
+        if (state.view === 'intro') app.innerHTML = renderIntro();
+        else if (state.view === 'exam') app.innerHTML = renderExamChrome() + renderExamBody();
+        else if (state.view === 'pause') app.innerHTML = renderExamChrome(true) + renderPause();
+        else if (state.view === 'confirmSubmit') app.innerHTML = renderExamChrome(true) + renderConfirmSubmit();
+        else if (state.view === 'manualPause') app.innerHTML = renderExamChrome(true) + renderManualPause();
+        else if (state.view === 'final') app.innerHTML = renderFinal();
+        attachHandlers();
+        window.scrollTo(0, 0);
+      }
+
+      function renderIntro() {
+        return `
+          <div class="card">
+            <h1>${escapeHtml(CONFIG.examTitle)}</h1>
+            <p class="sub">${escapeHtml(CONFIG.examSubtitle)}</p>
+            <ul class="plain">
+              <li><span>Total de questões</span><strong>${TOTAL}</strong></li>
+              <li><span>Tempo total</span><strong>${fmtTime(TOTAL_SECONDS)}</strong></li>
+              <li><span>Nota de aprovação</span><strong>70%</strong></li>
+              <li><span>Pausas</span><strong>a cada ${BLOCK_SIZE} questões, com resultado parcial</strong></li>
+            </ul>
+            <div class="footer-actions" style="justify-content:flex-end">
+              <button class="btn" id="start-btn">Iniciar Simulado</button>
+            </div>
+          </div>`;
+      }
+
+      function renderExamChrome(disabled) {
+        const pct = TOTAL_SECONDS ? state.secondsLeft / TOTAL_SECONDS : 1;
+        const timerCls = pct < 0.1 ? 'timer low' : 'timer ok';
+        return `
+          <div class="topbar">
+            <div class="examname">Exam: <span>${escapeHtml(CONFIG.examTitle)}</span></div>
+            <div class="loggedas">Logged in as: Student</div>
+          </div>
+          <div class="toolbar">
+            <button class="navbtn" id="prev-q-btn" ${disabled || state.current <= 1 ? 'disabled' : ''}>&lsaquo;</button>
+            <span class="qcounter">Question ${state.current} of ${TOTAL}</span>
+            <button class="navbtn" id="next-q-btn-top" ${disabled || state.current >= state.maxUnlocked ? 'disabled' : ''}>&rsaquo;</button>
+            <button class="bookmarkbtn ${state.bookmarks.has(state.current) ? 'active' : ''}" id="bookmark-btn" ${disabled ? 'disabled' : ''}>🔖 Bookmark</button>
+            <div class="spacer"></div>
+            <div class="${timerCls}">🕐 <span id="timer-display">${fmtTime(state.secondsLeft)}</span></div>
+            <button class="pausebtn" id="manual-pause-btn" ${disabled ? 'disabled' : ''}>⏸ Pause Exam</button>
+            <button class="submitbtn" id="submit-exam-btn" ${disabled ? 'disabled' : ''}>✓ SUBMIT EXAM</button>
+          </div>
+          <div class="filterbar">
+            Show:
+            <label><input type="radio" name="filter" value="all" ${state.filter==='all'?'checked':''} ${disabled?'disabled':''}> All</label>
+            <label><input type="radio" name="filter" value="bookmarked" ${state.filter==='bookmarked'?'checked':''} ${disabled?'disabled':''}> Bookmarked</label>
+            <label><input type="radio" name="filter" value="unanswered" ${state.filter==='unanswered'?'checked':''} ${disabled?'disabled':''}> Unanswered</label>
+          </div>
+          <div class="gridwrap">
+            <div class="grid">${renderGrid(disabled)}</div>
+          </div>`;
+      }
+
+      function renderGrid(disabled) {
+        let nums = [];
+        for (let i = 1; i <= TOTAL; i++) nums.push(i);
+        if (state.filter === 'bookmarked') nums = nums.filter(i => state.bookmarks.has(i));
+        if (state.filter === 'unanswered') nums = nums.filter(i => i <= state.maxUnlocked && state.answers[byId(i).id] === undefined);
+        if (nums.length === 0) return `<span class="sub">Nenhuma questão nesse filtro.</span>`;
+        return nums.map(i => {
+          const locked = i > state.maxUnlocked;
+          const answered = state.answers[byId(i).id] !== undefined;
+          let cls = 'gridnum';
+          if (i === state.current) cls += ' current';
+          else if (answered) cls += ' answered';
+          if (locked) cls += ' locked';
+          if (state.bookmarks.has(i)) cls += ' bookmarked';
+          return `<button type="button" class="${cls}" data-goto="${i}" ${locked || disabled ? 'disabled' : ''} title="${locked ? 'Bloqueada até concluir o bloco anterior' : ''}">${i}</button>`;
+        }).join('');
+      }
+
+      function renderExamBody() {
+        const q = byId(state.current);
+        const isLastGlobal = state.current === TOTAL;
+        const optionsHtml = q.options.map(opt => {
+          const checked = state.answers[q.id] === opt.id ? 'checked' : '';
+          const cls = state.answers[q.id] === opt.id ? 'opt answered' : 'opt';
+          return `
+            <label class="${cls}">
+              <input type="radio" name="q_${q.id}" value="${opt.id}" ${checked} data-qid="${q.id}" data-opt="${opt.id}">
+              <span>${escapeHtml(opt.text)}</span>
+            </label>`;
+        }).join('');
+
+        const nextControls = isLastGlobal
+          ? `<span class="sub" style="margin:0">Última questão — use SUBMIT EXAM para finalizar.</span>`
+          : `<button class="btn gray" id="skip-q-btn">Skip Question &rsaquo;</button>
+             <button class="btn" id="next-q-btn">Go To Next Question &rsaquo;</button>`;
+
+        return `
+          <div class="main">
+            <div class="qtext">${escapeHtml(q.text)}</div>
+            ${optionsHtml}
+            <div class="footer-actions">
+              <span></span>
+              <div style="display:flex;gap:10px">${nextControls}</div>
+            </div>
+          </div>`;
+      }
+
+      function renderPause() {
+        const blockIndex = state.pauseBlockIndex;
+        const start = blockIndex * BLOCK_SIZE;
+        const qs = ALL_QUESTIONS.slice(start, start + BLOCK_SIZE);
+        const blockStats = computeStatsForQuestions(qs);
+        const answeredSoFar = ALL_QUESTIONS.slice(0, start + BLOCK_SIZE);
+        const cumStats = computeStatsForQuestions(answeredSoFar);
+        const cumPct = Math.round((cumStats.correct / cumStats.total) * 100);
+        const byDomain = computeDomainBreakdown(answeredSoFar);
+        const isLastBlock = (start + BLOCK_SIZE) >= TOTAL;
+
+        const reviewChips = blockStats.perQuestion.map((p, i) => {
+          const num = start + i + 1;
+          return `<div class="review-chip ${p.correct ? 'ok' : 'no'}" title="Questão ${num}">${num}</div>`;
+        }).join('');
+
+        return `
+          <div class="main">
+            <h1>Exame Pausado</h1>
+            <p class="sub">Bloco ${blockIndex + 1} de ${TOTAL_BLOCKS} concluído (questões ${start+1}–${start+qs.length}).</p>
+
+            <div class="section-title">Resultado provisório · últimas ${qs.length} perguntas</div>
+            <div class="stat-grid">
+              <div class="stat-box">
+                <div class="num">${blockStats.correct}/${blockStats.total}</div>
+                <div class="label">Acertos neste bloco</div>
+              </div>
+              <div class="stat-box">
+                <div class="num">${Math.round((blockStats.correct/blockStats.total)*100)}%</div>
+                <div class="label">Aproveitamento do bloco</div>
+              </div>
+            </div>
+            <div class="review-list">${reviewChips}</div>
+
+            <div class="section-title">Resultado acumulado · ${cumStats.total} respondidas</div>
+            <div class="stat-grid">
+              <div class="stat-box">
+                <div class="num">${cumStats.correct}/${cumStats.total}</div>
+                <div class="label">Acertos no total</div>
+              </div>
+              <div class="stat-box">
+                <div class="num">${cumPct}% <span class="pill ${cumPct>=70?'good':'bad'}">${cumPct>=70?'No caminho da aprovação':'Abaixo de 70%'}</span></div>
+                <div class="label">Aproveitamento acumulado</div>
+              </div>
+            </div>
+
+            <div class="section-title">Acertos por domínio (acumulado)</div>
+            ${barChartHTML(byDomain)}
+
+            <div class="footer-actions">
+              <span></span>
+              ${isLastBlock
+                ? `<button class="btn" id="final-btn">Ver Resultado Final</button>`
+                : `<button class="btn" id="continue-btn">Continuar (próximas ${Math.min(BLOCK_SIZE, TOTAL - (start+BLOCK_SIZE))} perguntas)</button>`}
+            </div>
+          </div>`;
+      }
+
+      function renderConfirmSubmit() {
+        return `
+          <div class="main">
+            <h1>Finalizar o simulado?</h1>
+            <p class="sub">Você respondeu ${Object.keys(state.answers).length} de ${TOTAL} questões. Questões não respondidas contam como erradas no resultado final.</p>
+            <div class="footer-actions">
+              <button class="btn gray" id="cancel-submit-btn">Voltar ao exame</button>
+              <button class="btn" id="confirm-submit-btn">Confirmar e Ver Resultado</button>
+            </div>
+          </div>`;
+      }
+
+      function renderManualPause() {
+        return `
+          <div class="main">
+            <h1>Exame Pausado Manualmente</h1>
+            <p class="sub">O cronômetro está parado. Clique em retomar para continuar de onde parou.</p>
+            <div class="footer-actions">
+              <span></span>
+              <button class="btn" id="resume-btn">Retomar Exame</button>
+            </div>
+          </div>`;
+      }
+
+      function renderFinal() {
+        const all = ALL_QUESTIONS;
+        const stats = computeStatsForQuestions(all.filter(q => state.answers[q.id] !== undefined || true));
+        const pct = Math.round((stats.correct / stats.total) * 100);
+        const approved = pct >= 70;
+        const byDomain = computeDomainBreakdown(all);
+
+        return `
+          <div class="card">
+            <h1>Resultado Final</h1>
+            <p class="sub">${escapeHtml(CONFIG.examTitle)}</p>
+            <div class="stat-grid">
+              <div class="stat-box">
+                <div class="num">${stats.correct}/${stats.total}</div>
+                <div class="label">Acertos totais</div>
+              </div>
+              <div class="stat-box">
+                <div class="num">${pct}% <span class="pill ${approved?'good':'bad'}">${approved?'APROVADO':'NÃO APROVADO'}</span></div>
+                <div class="label">Nota final (corte: 70%)</div>
+              </div>
+            </div>
+
+            <div class="section-title">Acertos por domínio</div>
+            ${barChartHTML(byDomain)}
+
+            <div class="footer-actions">
+              <span></span>
+              <button class="btn secondary" id="retake-btn">Refazer Simulado</button>
+            </div>
+          </div>`;
+      }
+
+      function advance() {
+        // called from Next/Skip: moves from state.current forward by 1, triggering pause at 10-boundaries
+        const leaving = state.current;
+        if (leaving % BLOCK_SIZE === 0 && leaving < TOTAL) {
+          state.pauseBlockIndex = (leaving / BLOCK_SIZE) - 1;
+          state.view = 'pause';
+          render();
+          return;
+        }
+        if (leaving < TOTAL) {
+          state.current = leaving + 1;
+          render();
+        }
+      }
+
+      function attachHandlers() {
+        const startBtn = document.getElementById('start-btn');
+        if (startBtn) startBtn.onclick = () => {
+          state.view = 'exam'; state.current = 1; state.maxUnlocked = BLOCK_SIZE;
+          render(); startTimer();
+        };
+
+        document.querySelectorAll('input[type=radio][name^="q_"]').forEach(input => {
+          input.onchange = (e) => {
+            const qid = Number(e.target.dataset.qid);
+            state.answers[qid] = e.target.dataset.opt;
+            render();
+          };
+        });
+
+        document.querySelectorAll('input[type=radio][name="filter"]').forEach(input => {
+          input.onchange = (e) => { state.filter = e.target.value; render(); };
+        });
+
+        document.querySelectorAll('.gridnum').forEach(btn => {
+          btn.onclick = (e) => {
+            const n = Number(e.currentTarget.dataset.goto);
+            if (n > state.maxUnlocked) return;
+            state.current = n;
+            render();
+          };
+        });
+
+        const prevBtn = document.getElementById('prev-q-btn');
+        if (prevBtn) prevBtn.onclick = () => { if (state.current > 1) { state.current--; render(); } };
+
+        const nextTopBtn = document.getElementById('next-q-btn-top');
+        if (nextTopBtn) nextTopBtn.onclick = () => { if (state.current < state.maxUnlocked) { state.current++; render(); } };
+
+        const nextBtn = document.getElementById('next-q-btn');
+        if (nextBtn) nextBtn.onclick = advance;
+        const skipBtn = document.getElementById('skip-q-btn');
+        if (skipBtn) skipBtn.onclick = advance;
+
+        const bookmarkBtn = document.getElementById('bookmark-btn');
+        if (bookmarkBtn) bookmarkBtn.onclick = () => {
+          if (state.bookmarks.has(state.current)) state.bookmarks.delete(state.current);
+          else state.bookmarks.add(state.current);
+          render();
+        };
+
+        const manualPauseBtn = document.getElementById('manual-pause-btn');
+        if (manualPauseBtn) manualPauseBtn.onclick = () => { state.view = 'manualPause'; render(); };
+        const resumeBtn = document.getElementById('resume-btn');
+        if (resumeBtn) resumeBtn.onclick = () => { state.view = 'exam'; render(); };
+
+        const submitBtn = document.getElementById('submit-exam-btn');
+        if (submitBtn) submitBtn.onclick = () => { state.view = 'confirmSubmit'; render(); };
+        const cancelSubmitBtn = document.getElementById('cancel-submit-btn');
+        if (cancelSubmitBtn) cancelSubmitBtn.onclick = () => { state.view = 'exam'; render(); };
+        const confirmSubmitBtn = document.getElementById('confirm-submit-btn');
+        if (confirmSubmitBtn) confirmSubmitBtn.onclick = () => { state.view = 'final'; render(); };
+
+        const continueBtn = document.getElementById('continue-btn');
+        if (continueBtn) continueBtn.onclick = () => {
+          state.maxUnlocked = Math.min(TOTAL, state.maxUnlocked + BLOCK_SIZE);
+          state.current = state.current + 1 > TOTAL ? TOTAL : (state.pauseBlockIndex + 1) * BLOCK_SIZE + 1;
+          state.view = 'exam';
+          render();
+        };
+
+        const finalBtn = document.getElementById('final-btn');
+        if (finalBtn) finalBtn.onclick = () => { state.view = 'final'; render(); };
+
+        const retakeBtn = document.getElementById('retake-btn');
+        if (retakeBtn) retakeBtn.onclick = () => {
+          state.view = 'intro'; state.current = 1; state.maxUnlocked = BLOCK_SIZE;
+          state.answers = {}; state.bookmarks = new Set(); state.filter = 'all';
+          state.secondsLeft = TOTAL_SECONDS;
+          render();
+        };
+      }
+
+      render();
+    </script>
+  </body>
+</html>
