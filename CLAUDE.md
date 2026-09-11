@@ -7,8 +7,32 @@ Site estático (HTML + CSS + JS puro) hospedado no GitHub Pages, publicado em
 - `index.html` — página principal. Busca links no Supabase e monta menu + cards.
 - `sistemas.html`, `paineis-pci.html`, `chilli-beans.html`, `simulados.html` — páginas de categoria.
 - `Simulado*.html` — simulados ISO 27001, arquivos grandes e autocontidos.
+- `painel_roc_zup_updated_1.html` — dashboard dinâmico do ROC (PCI DSS) da ZUP.
+  Ver seção "Painel ROC ZUP (dinâmico)" abaixo.
 - Deploy: todo push em `main` publica automaticamente via GitHub Pages. Não existe
   ambiente de staging — o que vai pro `main` fica visível no site em minutos.
+
+## Painel ROC ZUP (dinâmico)
+Dashboard que mostra status de preenchimento do ROC PCI DSS v4.0.1 da ZUP.
+Atualiza sozinho a cada 30s via `fetch()`, sem precisar recarregar a página.
+
+- **Arquivo:** `painel_roc_zup_updated_1.html`
+- **URL pública:** `portal.guardiantechit.com.br/painel_roc_zup_updated_1.html`
+- **Acesso no portal:** menu "Painéis PCI DSS" → card "Painel PCI DSS: ZUP ROC (Dinâmico)"
+- **Fonte dos dados:** workflow n8n "ROC Status API" (id `w8yV8wOmXDAZQB9L`), via
+  webhook `https://n8n.guardiantechit.com.br/webhook/1cb9a3a5-aebe-45a8-aea6-4f6376f0303c`
+  — **atenção:** é o ID do *webhook*, não do workflow. Confundir os dois já causou bug
+  (zero execuções, painel nunca recebia resposta).
+- Hoje os dados no n8n (node "Seed ROC Data") são **hardcoded manualmente** — não lê
+  o `.docx` do ROC em tempo real. Alguém precisa atualizar o JSON à mão quando o ROC muda.
+- **Nunca hospedar este tipo de painel como Claude Artifact.** Artifacts bloqueiam
+  `fetch`/`XHR` para domínios externos (CSP) e a chamada falha silenciosamente,
+  sem erro visível — só cai no `catch()`. Por isso é arquivo estático no GitHub Pages.
+- Editar workflow n8n ou tabela `links` do Supabase: use as MCP tools
+  (`mcp__n8n__*`, `mcp__Supabase__*`) direto, sem passo manual.
+- Editar o `.html` do painel: mesmo fluxo de qualquer outro arquivo deste repo
+  (commit + push em `main`). Se `git push` for bloqueado pelo proxy da sessão,
+  avise o usuário — o workaround é upload manual pela interface web do GitHub.
 
 ## Dados
 - Backend é Supabase (tabela `links`). URL e chave pública ficam hardcoded no
