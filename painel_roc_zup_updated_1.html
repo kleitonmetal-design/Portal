@@ -93,9 +93,16 @@ header{
   font-family:"IBM Plex Mono", monospace; font-size:11.5px; letter-spacing:.09em; text-transform:uppercase;
   color:var(--accent); margin:0 0 8px;
 }
+.company-brand{display:flex; align-items:center; gap:14px; margin-bottom:10px;}
+.company-logo{height:40px; width:40px; flex-shrink:0; border-radius:8px; object-fit:contain;}
+.company-logo-fallback{
+  height:40px; width:40px; flex-shrink:0; border-radius:8px; background:var(--ink);
+  color:var(--surface); display:flex; align-items:center; justify-content:center;
+  font-family:"Fraunces", serif; font-weight:600; font-size:18px;
+}
 h1{
   font-family:"Fraunces", Georgia, serif; font-weight:600; font-size:28px; line-height:1.15;
-  margin:0 0 8px; text-wrap:balance; letter-spacing:-.01em;
+  margin:0; text-wrap:balance; letter-spacing:-.01em;
 }
 .subtitle{color:var(--ink-dim); font-size:14px; margin:0; max-width:52ch; line-height:1.55;}
 
@@ -237,8 +244,12 @@ footer{margin-top:32px; padding-top:18px; border-top:1px solid var(--line); font
 <div class="wrap">
   <header>
     <div class="title-block">
-      <p class="eyebrow">ZUP IT Soluções · PCI DSS v4.0.1</p>
-      <h1>Painel de preenchimento do ROC 2026</h1>
+      <div class="company-brand">
+        <img src="./assets/zup-logo.png" alt="Logo ZUP IT Soluções" class="company-logo"
+          onerror="this.outerHTML='&lt;div class=&quot;company-logo-fallback&quot;&gt;Z&lt;/div&gt;'">
+        <h1>ZUP IT Soluções</h1>
+      </div>
+      <p class="eyebrow">PCI DSS v4.0.1 · Painel de preenchimento do ROC 2026</p>
       <p class="subtitle">Checkboxes de "Assessment Findings" 100% marcados (In Place/Not Applicable) nos 250 sub-requisitos de <span class="mono">ROC-Zup-2026.docx</span>. Este painel sinaliza, por requisito, sub-requisitos com referência de evidência (Camada 3 — "Reporting Details: Assessor's Response") ainda em branco em algum procedimento de teste.</p>
     </div>
     <div class="header-actions">
