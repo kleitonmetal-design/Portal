@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Visual — Redesign Painéis PCI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Verdana, Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 2rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a5f7a;
+            margin-bottom: 1rem;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #555;
+            margin-bottom: 2rem;
+            font-size: 1.1em;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .test-panel {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .panel-header {
+            padding: 1.5rem;
+            font-weight: bold;
+            font-size: 1.2em;
+            border-bottom: 3px solid;
+        }
+
+        .before .panel-header {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+
+        .after .panel-header {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .panel-content {
+            padding: 2rem;
+        }
+
+        .color-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .color-swatch {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            flex-shrink: 0;
+        }
+
+        .color-info {
+            flex: 1;
+        }
+
+        .color-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 0.25rem;
+        }
+
+        .color-hex {
+            font-family: monospace;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .color-usage {
+            font-size: 0.9em;
+            color: #888;
+            font-style: italic;
+        }
+
+        .test-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .test-section h2 {
+            color: #1a5f7a;
+            margin-bottom: 1.5rem;
+            font-size: 1.5em;
+        }
+
+        .instruction {
+            background: #e7f3ff;
+            border-left: 4px solid #1a5f7a;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+
+        .instruction strong {
+            color: #1a5f7a;
+        }
+
+        .card-preview {
+            background: #ecf0f1;
+            border-left: 4px solid #1a5f7a;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+
+        .card-preview h3 {
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            font-size: 1.2em;
+        }
+
+        .card-preview p {
+            color: #555555;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .card-action {
+            display: inline-block;
+            background: #1a5f7a;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .card-action:hover {
+            background: #2d8fa3;
+            transform: translateX(4px);
+        }
+
+        .card-preview:hover {
+            box-shadow: 0 20px 50px rgba(26, 95, 122, 0.15);
+            transform: translateY(-8px);
+        }
+
+        .card-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #1a5f7a, #e67e22);
+            display: none;
+        }
+
+        .checklist {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .checklist ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+
+        .checklist input {
+            margin-right: 0.5rem;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 1024px) {
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .test-grid {
+                gap: 1rem;
+            }
+
+            .color-row {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .color-swatch {
+                width: 100%;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Teste Visual — Redesign Painéis PCI DSS</h1>
+        <p class="subtitle">Comparação Antes vs Depois + Checklist de Testes</p>
+
+        <!-- PALETA DE CORES -->
+        <div class="test-section">
+            <h2>1️⃣ Paleta de Cores</h2>
+            <div class="test-grid">
+                <!-- ANTES -->
+                <div class="test-panel before">
+                    <div class="panel-header">❌ ANTES (Roxo)</div>
+                    <div class="panel-content">
+                        <div class="color-row">
+                            <div class="color-swatch" style="background: #7c3aed;"></div>
+                            <div class="color-info">
+                                <div class="color-name">Primary</div>
+                                <div class="color-hex">#7c3aed</div>
+                                <div class="color-usage">Roxo vibrante — botões, bordas</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background: #6d28d9;"></div>
+                            <div class="color-info">
+                                <div class="color-name">Primary Dark</div>
+                                <div class="color-hex">#6d28d9</div>
+                                <div class="color-usage">Roxo escuro — gradiente fundo</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background: #3c3c3c;"></div>
+                            <div class="color-info">
+                                <div class="color-name">Card Background</div>
+                                <div class="color-hex">rgba(60,60,60)</div>
+                                <div class="color-usage">Cinza monótono — sem hierarquia</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background: #c0c0c0;"></div>
+                            <div class="color-info">
+                                <div class="color-name">Texto (Card)</div>
+                                <div class="color-hex">#c0c0c0</div>
+                                <div class="color-usage">⚠️ Contraste 3:1 (FALHA)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DEPOIS -->
+                <div class="test-panel after">
+                    <div class="panel-header">✅ DEPOIS (Teal)</div>
+                    <div class="panel-content">
+                        <div class="color-row">
+                            <div class="color-swatch" style="background: #1a5f7a;"></div>
+                            <div class="color-info">
+                                <div class="color-name">Primary</div>
+                                <div class="color-hex">#1a5f7a</div>
+                                <div class="color-usage">Teal escuro — profissional</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background: #2d8fa3;"></div>
+                            <div class="color-info">
+                                <div class="color-name">Accent</div>
+                                <div class="color-hex">#2d8fa3</div>
+                                <div class="color-usage">Teal médio — hover, destaque</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background: #ecf0f1;"></div>
+                            <div class="color-info">
+                                <div class="color-name">Card Background</div>
+                                <div class="color-hex">#ecf0f1</div>
+                                <div class="color-usage">Branco claro — alta legibilidade</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background: #555555;"></div>
+                            <div class="color-info">
+                                <div class="color-name">Texto (Card)</div>
+                                <div class="color-hex">#555555</div>
+                                <div class="color-usage">✅ Contraste 6.5:1 (AA+)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PREVIEW DE CARDS -->
+        <div class="test-section">
+            <h2>2️⃣ Preview dos Cards Novos</h2>
+            <p>Passe o mouse sobre os cards abaixo para ver o efeito de hover:</p>
+            <div class="card-preview">
+                <h3>📊 Painel ROC ZUP</h3>
+                <p>Dashboard dinâmico que mostra status de preenchimento do ROC PCI DSS v4.0.1 da ZUP. Atualiza a cada 30 segundos.</p>
+                <a href="#" class="card-action">Acessar →</a>
+            </div>
+            <div class="card-preview">
+                <h3>📋 Painel ROC CSU</h3>
+                <p>Dashboard dinâmico para conformidade e compliance da CSU Digital S/A. Mostra requisitos pendentes e assessment findings.</p>
+                <a href="#" class="card-action">Acessar →</a>
+            </div>
+        </div>
+
+        <!-- TIPOGRAFIA -->
+        <div class="test-section">
+            <h2>3️⃣ Tipografia (Acessibilidade)</h2>
+            <div class="test-grid">
+                <div class="test-panel before">
+                    <div class="panel-header">❌ ANTES</div>
+                    <div class="panel-content">
+                        <p><strong>Font:</strong> system-ui (genérico)</p>
+                        <p><strong>Linha:</strong> 1.6 (densa)</p>
+                        <p><strong>Peso títulos:</strong> 800 (pesado)</p>
+                        <p style="margin-top: 1rem; color: #c0c0c0;">Texto com contraste baixo, sem respiração visual.</p>
+                    </div>
+                </div>
+                <div class="test-panel after">
+                    <div class="panel-header">✅ DEPOIS</div>
+                    <div class="panel-content">
+                        <p><strong>Font:</strong> Verdana (dislexia-friendly)</p>
+                        <p><strong>Linha:</strong> 1.5 (respirável)</p>
+                        <p><strong>Peso títulos:</strong> 700 (leve)</p>
+                        <p style="margin-top: 1rem; color: #555555;">Texto com contraste alto, parágrafos bem separados.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHECKLIST DE TESTES -->
+        <div class="test-section">
+            <h2>4️⃣ Checklist de Testes Manuais</h2>
+            <p>Use este checklist para validar o redesign:</p>
+
+            <div class="checklist">
+                <strong>🌐 Teste 1: Abrir a página nova</strong>
+                <ul>
+                    <li>
+                        <input type="checkbox">
+                        <strong>Cores visíveis:</strong> Clique em
+                        <a href="http://localhost:8000/paineis-pci.html" target="_blank" class="highlight">paineis-pci.html</a>
+                        — verifique que o header, títulos e botões estão em <span style="color: #1a5f7a; font-weight: bold;">TEAL</span>, não roxo.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="checklist">
+                <strong>🖱️ Teste 2: Interação (Hover)</strong>
+                <ul>
+                    <li>
+                        <input type="checkbox">
+                        <strong>Cards hover:</strong> Passe o mouse sobre cada card — deve elevar 8px e mostrar borda top de 6px (teal + laranja gradiente).
+                    </li>
+                    <li>
+                        <input type="checkbox">
+                        <strong>Botão "Acessar":</strong> Hover deve mudar de teal escuro (#1a5f7a) para teal médio (#2d8fa3).
+                    </li>
+                </ul>
+            </div>
+
+            <div class="checklist">
+                <strong>📏 Teste 3: Zoom (ADHD)</strong>
+                <ul>
+                    <li>
+                        <input type="checkbox">
+                        <strong>Zoom 150%:</strong> Ctrl/Cmd + "+" três vezes — layout deve manter-se legível, cards devem stackar em coluna.
+                    </li>
+                    <li>
+                        <input type="checkbox">
+                        <strong>Sem quebra:</strong> Nenhum texto deve sair do container ou ficar cortado.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="checklist">
+                <strong>🌙 Teste 4: Modo Escuro</strong>
+                <ul>
+                    <li>
+                        <input type="checkbox">
+                        <strong>Sistema operacional:</strong> Ative modo escuro (Settings → Dark Mode) — cores devem permanecer legíveis.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="checklist">
+                <strong>📱 Teste 5: Mobile (768px)</strong>
+                <ul>
+                    <li>
+                        <input type="checkbox">
+                        <strong>Responsive:</strong> DevTools (F12) → Toggle device toolbar → 768px — cards devem virar coluna única.
+                    </li>
+                    <li>
+                        <input type="checkbox">
+                        <strong>Sem scroll horizontal:</strong> Página não deve scrollar horizontalmente.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="checklist">
+                <strong>✨ Teste 6: Contraste Visual</strong>
+                <ul>
+                    <li>
+                        <input type="checkbox">
+                        <strong>Legibilidade:</strong> Textos em cards brancos (#ecf0f1) devem ser perfeitamente legíveis em cinza escuro (#555555).
+                    </li>
+                    <li>
+                        <input type="checkbox">
+                        <strong>Destaque:</strong> Botões teal devem "saltar" visualmente — eles devem ser o foco do card.
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- RESUMO -->
+        <div class="test-section" style="background: #d4edda; border-left: 4px solid #28a745;">
+            <h2 style="color: #155724;">✅ Pronto para Merge?</h2>
+            <p style="color: #155724; margin-bottom: 1rem;">Após completar todos os testes acima com ✅, o PR está pronto!</p>
+            <div class="instruction" style="background: white; border-left-color: #28a745;">
+                <strong>Próximo Passo:</strong> Volte ao terminal e execute:
+                <pre style="background: #f5f5f5; padding: 1rem; margin-top: 0.5rem; border-radius: 4px;">cd /home/user/Portal
+git log --oneline -1  # confirmar último commit
+# Se tudo está OK, o PR está pronto para merge no GitHub!</pre>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
