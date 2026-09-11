@@ -83,6 +83,14 @@ body{
 
 .wrap{max-width:1180px; margin:0 auto; padding:36px 28px 64px;}
 
+.back-link{
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:"IBM Plex Sans"; font-size:13px; font-weight:600;
+  color:var(--ink-dim); text-decoration:none; margin-bottom:20px;
+  transition:.15s ease;
+}
+.back-link:hover{color:var(--accent);}
+
 header{
   display:flex; align-items:flex-start; justify-content:space-between; gap:28px;
   padding-bottom:24px; border-bottom:1px solid var(--line); margin-bottom:28px;
@@ -231,6 +239,10 @@ footer{margin-top:32px; padding-top:18px; border-top:1px solid var(--line); font
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 
 <div class="wrap">
+  <a href="./index.html" class="back-link">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Voltar ao Portal GuardianTech
+  </a>
   <header>
     <div class="title-block">
       <div class="company-brand">
