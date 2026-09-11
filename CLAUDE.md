@@ -9,6 +9,10 @@ Site estático (HTML + CSS + JS puro) hospedado no GitHub Pages, publicado em
 - `Simulado*.html` — simulados ISO 27001, arquivos grandes e autocontidos.
 - `painel_roc_zup_updated_1.html` — dashboard dinâmico do ROC (PCI DSS) da ZUP.
   Ver seção "Painel ROC ZUP (dinâmico)" abaixo.
+- `painel_roc_csu_dinamico.html` — dashboard dinâmico do ROC (PCI DSS) da CSU.
+  Ver seção "Painel ROC CSU (dinâmico)" abaixo.
+- `painel_roc_csu.html` — versão antiga/estática do painel CSU, mantida no ar
+  sem alteração (não sobrescrever, só adicionar).
 - Deploy: todo push em `main` publica automaticamente via GitHub Pages. Não existe
   ambiente de staging — o que vai pro `main` fica visível no site em minutos.
 
@@ -33,6 +37,25 @@ Atualiza sozinho a cada 30s via `fetch()`, sem precisar recarregar a página.
 - Editar o `.html` do painel: mesmo fluxo de qualquer outro arquivo deste repo
   (commit + push em `main`). Se `git push` for bloqueado pelo proxy da sessão,
   avise o usuário — o workaround é upload manual pela interface web do GitHub.
+
+## Painel ROC CSU (dinâmico)
+Mesmo padrão do painel ZUP: dashboard que mostra status de preenchimento do
+ROC PCI DSS v4.0.1 da CSU Digital S/A, atualizado a cada 30s via `fetch()`.
+
+- **Arquivo:** `painel_roc_csu_dinamico.html`
+- **Acesso no portal:** menu "Painéis PCI DSS" → card "Painel PCI DSS: CSU ROC (Dinâmico)"
+- **Fonte dos dados:** workflow n8n "ROC Status API - CSU" (id `5KCTDqnrlcoi4eYf`), via
+  webhook `https://n8n.guardiantechit.com.br/webhook/ba60e66c-d57c-4953-8ea9-1ac66adb7186`
+  — de novo, é ID do *webhook*, não do workflow.
+- **Diferença em relação ao ZUP:** este workflow já nasceu com a expressão correta
+  no node de resposta (`JSON.parse($input.first().json.rocData)`) — não teve o bug
+  de duplo-embrulho JSON que o ZUP teve. Não precisa reaplicar essa correção aqui.
+- Cada card mostra "ver pendências →" com a lista de `unfilled_ids` (sub-requisitos
+  ainda sem Assessment Finding e/ou evidência completa), diferente do painel ZUP.
+- O painel antigo `painel_roc_csu.html` (estático, sem API) foi mantido no ar sem
+  alteração — mesma regra do ZUP: nunca sobrescrever o que já funciona, só adicionar.
+- Linha correspondente na tabela `links` do Supabase: id `fbceb6e4-4d57-4c93-8b3b-5380c2452bb8`.
+- Mesmas regras de Claude Artifact e fluxo de edição do painel ZUP, acima.
 
 ## Dados
 - Backend é Supabase (tabela `links`). URL e chave pública ficam hardcoded no
