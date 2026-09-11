@@ -61,3 +61,16 @@ Atualiza sozinho a cada 30s via `fetch()`, sem precisar recarregar a página.
 ## Git
 - Branch principal: `main`. É nela que o deploy acontece.
 - Não fazer force-push sem confirmar com o usuário antes.
+
+## Manual do projeto (Supabase)
+Existe um manual completo do portal salvo na tabela `documentos` do
+Supabase (`portal-guardiantech`, `zprzmhavbjiggqfzzzbt`), registro com
+`slug = 'manual-portal'`. É a documentação de referência do projeto inteiro
+(arquitetura, tabelas, painéis, fluxo de trabalho).
+
+**Regra permanente:** toda vez que uma mudança no projeto tornar esse
+manual desatualizado — nova página, nova integração, novo painel, mudança
+de arquitetura ou de fluxo — atualizar esse registro no banco na mesma
+sessão, sem esperar o usuário pedir. Fazer via `UPDATE documentos SET
+conteudo = ..., updated_at = now() WHERE slug = 'manual-portal'` (MCP
+`mcp__Supabase__execute_sql`).
