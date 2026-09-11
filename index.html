@@ -688,11 +688,6 @@
                         }).join('');
                     }
 
-                    // Calcular posição do dropdown (position: fixed)
-                    const rect = link.getBoundingClientRect();
-                    dropdown.style.top = (rect.bottom + 4) + 'px';
-                    dropdown.style.left = rect.left + 'px';
-
                     // Fechar outros dropdowns e remover active
                     document.querySelectorAll('.nav-dropdown').forEach(d => {
                         if (d !== dropdown) {
