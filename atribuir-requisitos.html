@@ -380,15 +380,16 @@
                 
                 todosRequisitos = reqs || [];
 
-                // Se a tabela estiver vazia no banco, usa lista modelo PCI
+                // Se a tabela estiver vazia no banco, usa lista modelo PCI desmembrada por escopo
                 if (todosRequisitos.length === 0) {
                     todosRequisitos = [
-                        { id: 'req-1', codigo: '1.2.1', titulo: 'Configuração de Controles de Segurança de Rede (Firewalls)', area_sugerida: 'Infraestrutura e Redes', responsavel_id: null, status: 'NAO_ENVIADO' },
-                        { id: 'req-2', codigo: '2.2.1', titulo: 'Padrões de Endurecimento de Sistemas (System Hardening)', area_sugerida: 'Infraestrutura e Redes', responsavel_id: null, status: 'NAO_ENVIADO' },
-                        { id: 'req-3', codigo: '3.4.1', titulo: 'Criptografia e Proteção de Dados de Cartão de Crédito', area_sugerida: 'Segurança da Informação', responsavel_id: null, status: 'NAO_ENVIADO' },
-                        { id: 'req-4', codigo: '6.3.1', titulo: 'Gestão de Vulnerabilidades e Aplicação de Patches de Segurança', area_sugerida: 'Sistemas e Desenvolvimento', responsavel_id: null, status: 'NAO_ENVIADO' },
-                        { id: 'req-5', codigo: '8.3.1', titulo: 'Autenticação de Múltiplos Fatores (MFA) para Acesso de Redes', area_sugerida: 'Segurança da Informação', responsavel_id: null, status: 'NAO_ENVIADO' },
-                        { id: 'req-6', codigo: '10.2.1', titulo: 'Implementação e Retenção de Logs de Auditoria', area_sugerida: 'Infraestrutura e Redes', responsavel_id: null, status: 'NAO_ENVIADO' }
+                        { id: 'req-1a', codigo: '1.2.1-A', titulo: 'Configuração de Segurança de Rede', escopo: 'Firewalls e Roteadores', area_sugerida: 'Infraestrutura e Redes', responsavel_id: null, status: 'NAO_ENVIADO' },
+                        { id: 'req-2a', codigo: '2.2.1-A', titulo: 'System Hardening', escopo: 'Dispositivos de Rede & Firewalls', area_sugerida: 'Infraestrutura e Redes', responsavel_id: null, status: 'ACEITO' },
+                        { id: 'req-2b', codigo: '2.2.1-B', titulo: 'System Hardening', escopo: 'Servidores (Linux & Windows)', area_sugerida: 'Infraestrutura e Redes', responsavel_id: null, status: 'EM_REVISAO' },
+                        { id: 'req-2c', codigo: '2.2.1-C', titulo: 'System Hardening', escopo: 'Bancos de Dados (DBA)', area_sugerida: 'Banco de Dados (DBA)', responsavel_id: null, status: 'NAO_ENVIADO' },
+                        { id: 'req-3a', codigo: '3.4.1-A', titulo: 'Criptografia de Dados (PAN)', escopo: 'Bancos de Dados & Storage', area_sugerida: 'Segurança da Informação', responsavel_id: null, status: 'NAO_ENVIADO' },
+                        { id: 'req-4a', codigo: '6.3.1-A', titulo: 'Gestão de Vulnerabilidades & Patches', escopo: 'Aplicações e Código Fonte', area_sugerida: 'Sistemas e Desenvolvimento', responsavel_id: null, status: 'NAO_ENVIADO' },
+                        { id: 'req-5a', codigo: '8.3.1-A', titulo: 'Autenticação Múltiplo Fator (MFA)', escopo: 'Acessos Administrativos', area_sugerida: 'Segurança da Informação', responsavel_id: null, status: 'NAO_ENVIADO' }
                     ];
                 }
 
@@ -405,7 +406,9 @@
             const filterStatus = document.getElementById('filter-status').value;
 
             let filtrados = todosRequisitos.filter(r => {
-                const matchSearch = r.codigo.toLowerCase().includes(searchVal) || r.titulo.toLowerCase().includes(searchVal);
+                const matchSearch = r.codigo.toLowerCase().includes(searchVal) || 
+                                    r.titulo.toLowerCase().includes(searchVal) ||
+                                    (r.escopo && r.escopo.toLowerCase().includes(searchVal));
                 const matchArea = !filterArea || r.area_sugerida === filterArea;
                 const matchStatus = !filterStatus || (filterStatus === 'unassigned' ? !r.responsavel_id : !!r.responsavel_id);
                 return matchSearch && matchArea && matchStatus;
@@ -423,15 +426,9 @@
             document.getElementById('kpi-pct').textContent = `${pct}%`;
 
             if (filtrados.length === 0) {
-                listEl.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-gray); padding: 40px;">Nenhum requisito encontrado para os filtros selecionados.</td></tr>';
+                listEl.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-gray); padding: 40px;">Nenhum requisito encontrado para os filtros selecionados.</td></tr>';
                 return;
             }
-
-            // Opções do Select de Responsável
-            const userOptionsHtml = `
-                <option value="">-- Selecione o Responsável --</option>
-                ${todosUsuarios.map(u => `<option value="${u.id}">${escapeHtml(u.nome)} (${escapeHtml(u.area)})</option>`).join('')}
-            `;
 
             listEl.innerHTML = filtrados.map(r => {
                 const isAssigned = !!r.responsavel_id;
@@ -440,7 +437,10 @@
                 return `
                     <tr>
                         <td><span class="code-tag">${escapeHtml(r.codigo)}</span></td>
-                        <td><strong>${escapeHtml(r.titulo)}</strong></td>
+                        <td>
+                            <strong>${escapeHtml(r.titulo)}</strong>
+                            ${r.escopo ? `<div style="font-size: 0.85em; color: var(--brand-primary); margin-top: 2px;">📍 Escopo: ${escapeHtml(r.escopo)}</div>` : ''}
+                        </td>
                         <td>${escapeHtml(r.area_sugerida || '-')}</td>
                         <td>
                             <select class="${selectClass}" onchange="salvarAtribuicao('${r.id}', this.value)">
