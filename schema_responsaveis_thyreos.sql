@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS requisitos_conformidade (
         'ACEITO'
     )),
     prazo_entrega DATE,
-    pendencia_gap TEXT, -- Preenchido obrigatoriamente quando status = 'AJUSTE_SOLICITADO'
+    pendencia_gap TEXT,
     comentario_auditor TEXT,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -52,14 +52,14 @@ CREATE TABLE IF NOT EXISTS requisitos_conformidade (
 CREATE TABLE IF NOT EXISTS evidencias (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     requisito_id UUID REFERENCES requisitos_conformidade(id) ON DELETE CASCADE,
-    enviado_por_id UUID REFERENCES usuarios_internos(id) ON DELETE SET NULL, -- Rastreabilidade (quem enviou)
+    enviado_por_id UUID REFERENCES usuarios_internos(id) ON DELETE SET NULL,
     arquivo_nome TEXT NOT NULL,
     arquivo_url TEXT NOT NULL,
     observacao TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Habilitar RLS (Row Level Security) e permitir leitura pública para testes
+-- Habilitar RLS (Row Level Security) e permitir Leitura, Inserção e Atualização para os Testes
 ALTER TABLE projetos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE usuarios_internos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE requisitos_conformidade ENABLE ROW LEVEL SECURITY;
@@ -67,8 +67,10 @@ ALTER TABLE evidencias ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Permitir leitura publica em projetos" ON projetos FOR SELECT USING (true);
 CREATE POLICY "Permitir leitura publica em usuarios_internos" ON usuarios_internos FOR SELECT USING (true);
+CREATE POLICY "Permitir insercao publica em usuarios_internos" ON usuarios_internos FOR INSERT WITH CHECK (true);
 CREATE POLICY "Permitir leitura publica em requisitos_conformidade" ON requisitos_conformidade FOR SELECT USING (true);
-CREATE POLICY "Permitir leitura publica em evidencias" ON evidencias FOR SELECT USING (true);
+CREATE POLICY "Permitir atualizacao publica em requisitos_conformidade" ON requisitos_conformidade FOR UPDATE USING (true);
+CREATE POLICY "Permitir insercao publica em evidencias" ON evidencias FOR INSERT WITH CHECK (true);
 
 -- ==============================================================================
 -- DADOS DE TESTE INICIAIS (CSU DIGITAL PCI DSS 4.0.1)
