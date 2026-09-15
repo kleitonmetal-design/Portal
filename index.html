@@ -566,6 +566,9 @@
         }
 
         function safeUrl(url) {
+            if (url && url.includes('claude.ai/code/artifact')) {
+                return 'https://thyreos.io/';
+            }
             return /^(https?:|\.\/|\/)/i.test(url) ? url : '#';
         }
 
