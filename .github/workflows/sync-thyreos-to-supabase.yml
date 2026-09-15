@@ -1,0 +1,75 @@
+name: Sincronizar Especificação Thyreos para Supabase
+
+on:
+  push:
+    branches:
+      - main
+      - claude/**
+    paths:
+      - 'claude/instrucoes-projeto-plataforma-gestao-pci.md'
+
+jobs:
+  sync-to-supabase:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repositório
+        uses: actions/checkout@v4
+
+      - name: Ler arquivo da especificação
+        id: read_file
+        run: |
+          content=$(cat claude/instrucoes-projeto-plataforma-gestao-pci.md)
+          # Escapar JSON e quebras de linha para passar como variável
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          echo "file_content=$content" >> $GITHUB_OUTPUT
+
+      - name: Sincronizar com Supabase
+        env:
+          SUPABASE_URL: https://zprzmhavbjiggqfzzzbt.supabase.co
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          # Ler conteúdo do arquivo
+          CONTENT=$(cat claude/instrucoes-projeto-plataforma-gestao-pci.md)
+
+          # Escapar para JSON
+          CONTENT_JSON=$(jq -Rs . <<< "$CONTENT")
+
+          # Fazer upsert na tabela documentos
+          curl -X POST \
+            "$SUPABASE_URL/rest/v1/documentos" \
+            -H "apikey: $SUPABASE_SERVICE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"slug\": \"plataforma-thyreos-pci\",
+              \"titulo\": \"Especificação Técnica - Plataforma Thyreos PCI DSS\",
+              \"categoria\": \"Thyreos\",
+              \"conteudo\": $CONTENT_JSON,
+              \"updated_at\": \"now()\"
+            }" \
+            --fail || echo "Tentando update..."
+
+          # Se insert falhou (slug já existe), fazer update
+          if [ $? -ne 0 ]; then
+            curl -X PATCH \
+              "$SUPABASE_URL/rest/v1/documentos?slug=eq.plataforma-thyreos-pci" \
+              -H "apikey: $SUPABASE_SERVICE_KEY" \
+              -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+              -H "Content-Type: application/json" \
+              -d "{
+                \"conteudo\": $CONTENT_JSON,
+                \"updated_at\": \"now()\"
+              }" \
+              --fail
+          fi
+
+      - name: Status de sincronização
+        if: success()
+        run: echo "✅ Especificação Thyreos sincronizada com sucesso!"
+
+      - name: Erro na sincronização
+        if: failure()
+        run: echo "❌ Falha ao sincronizar com Supabase" && exit 1
