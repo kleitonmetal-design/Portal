@@ -3,7 +3,7 @@
 Versão: 1.0  
 Data: 2026-09-15  
 Status: Rascunho — Requisitos como Pendências  
-Sincronização Supabase: ✅ Automática (PostToolUse hook configurado — testes de permissão em andamento)
+Sincronização Supabase: ✅ Automática via GitHub Actions (workflow sync-thyreos-to-supabase configurado)
 
 ---
 
