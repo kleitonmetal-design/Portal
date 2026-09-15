@@ -254,6 +254,58 @@
             z-index: 1000;
         }
 
+        /* Tabs de Navegação por Perfil */
+        .profile-tabs-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            background: #18181b;
+            border: 1px solid rgba(255, 179, 102, 0.25);
+            padding: 6px;
+            border-radius: 12px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 180px;
+            background: transparent;
+            color: #a1a1aa;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn.active {
+            background: var(--brand-primary);
+            color: #111;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        /* 5x5 Matrix Styles */
+        .matrix-grid-5x5 {
+            display: grid;
+            grid-template-columns: 40px repeat(5, 1fr);
+            grid-template-rows: repeat(5, 48px) 26px;
+            gap: 4px;
+            margin-top: 10px;
+        }
+        .cell-axis-5x5 { display: flex; align-items: center; justify-content: center; font-size: 0.75em; font-weight: 700; color: #a1a1aa; }
+        .cell-5x5 { border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.15s; font-size: 0.8em; font-weight: 700; }
+        .cell-5x5:hover { transform: scale(1.05); z-index: 5; box-shadow: 0 4px 12px rgba(0,0,0,0.6); }
+        .cell-r-low { background: rgba(16, 185, 129, 0.25); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .cell-r-med { background: rgba(234, 179, 8, 0.25); color: #fde047; border: 1px solid rgba(234, 179, 8, 0.4); }
+        .cell-r-high { background: rgba(249, 115, 22, 0.3); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.5); }
+        .cell-r-crit { background: rgba(239, 68, 68, 0.35); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.6); }
+
         /* Modal Evidências & Parecer QSA */
         .modal-overlay {
             position: fixed;
@@ -400,94 +452,169 @@
             <p class="subtitle">Vincule cada requisito da norma a um Ponto Focal Operacional cadastrado.</p>
         </div>
 
-        <!-- KPI Cards -->
-        <div class="kpi-grid">
-            <div class="kpi-card">
-                <div class="kpi-title">Total de Requisitos</div>
-                <div class="kpi-value" id="kpi-total">0</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-title">Sem Responsável</div>
-                <div class="kpi-value warning" id="kpi-unassigned">0</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-title">Atribuídos</div>
-                <div class="kpi-value success" id="kpi-assigned">0</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-title">Cobertura de Atribuição</div>
-                <div class="kpi-value" id="kpi-pct">0%</div>
-            </div>
+        <!-- Navegação Integrada de Perfis (Recomendação Thyreos Guardian) -->
+        <div class="profile-tabs-nav">
+            <button class="tab-btn active" id="tab-btn-executivo" onclick="trocarAbaPerfil('executivo')">
+                📊 Visão Executiva (Matriz 5x5)
+            </button>
+            <button class="tab-btn" id="tab-btn-operacional" onclick="trocarAbaPerfil('operacional')">
+                🔒 Visão Operacional (Área Interna)
+            </button>
+            <button class="tab-btn" id="tab-btn-qsa" onclick="trocarAbaPerfil('qsa')">
+                ⚖️ Auditoria QSA (Parecer & GAPs)
+            </button>
+            <button class="tab-btn" id="tab-btn-admin" onclick="trocarAbaPerfil('admin')">
+                👥 Gestão de Equipe (Admin)
+            </button>
         </div>
 
-        <!-- Scope & Role Mode Switcher (Recomendação 1) -->
+        <!-- Scope & Role Mode Switcher (Simulação de Perfil) -->
         <div class="scope-banner" style="background: rgba(45, 45, 45, 0.95); border: 1px solid rgba(255, 179, 102, 0.3); padding: 16px 20px; border-radius: 12px; margin-bottom: 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
             <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="font-size: 1.2em;">🔒</span>
+                <span style="font-size: 1.2em;">👤</span>
                 <div>
-                    <strong style="color: var(--brand-primary); font-size: 0.95em;">Modo de Visualização & Trava de Escopo:</strong>
-                    <div style="font-size: 0.85em; color: var(--text-gray);">Restringe a exibição de requisitos apenas ao responsável logado da área.</div>
+                    <strong style="color: var(--brand-primary); font-size: 0.95em;">Simulador de Perfil & Usuário Logado:</strong>
+                    <div style="font-size: 0.85em; color: var(--text-gray);">Alterna automaticamente a visão e restrição de escopo de acordo com o papel.</div>
                 </div>
             </div>
 
             <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                <select id="mode-selector" class="filter-select" style="border-color: var(--brand-primary); font-weight: 600;">
+                <select id="mode-selector" class="filter-select" onchange="aoMudarModoExibicao()" style="border-color: var(--brand-primary); font-weight: 600;">
                     <option value="coordenador">🌐 Visão Geral (Coordenador / Admin)</option>
                     <option value="area_interna">🔒 Restrição de Escopo (Área Interna)</option>
                 </select>
 
-                <select id="user-sim-selector" class="filter-select" style="display: none; border-color: var(--brand-secondary);">
+                <select id="user-sim-selector" class="filter-select" onchange="aoMudarUsuarioSimulado()" style="display: none; border-color: var(--brand-secondary);">
                     <option value="">-- Selecione o Usuário para Simular --</option>
                 </select>
             </div>
         </div>
 
-        <!-- Toolbar & Filters -->
-        <div class="toolbar">
-            <div class="filter-group">
-                <input type="text" id="search-input" class="search-input" placeholder="Buscar código ou título...">
-                <select id="filter-area" class="filter-select">
-                    <option value="">Todas as Áreas</option>
-                    <option value="Infraestrutura e Redes">Infraestrutura e Redes</option>
-                    <option value="Segurança da Informação">Segurança da Informação</option>
-                    <option value="Sistemas e Desenvolvimento">Sistemas e Desenvolvimento</option>
-                    <option value="Banco de Dados (DBA)">Banco de Dados (DBA)</option>
-                </select>
-                <select id="filter-status" class="filter-select">
-                    <option value="">Todos os Status de Atribuição</option>
-                    <option value="unassigned">⚠️ Sem Responsável</option>
-                    <option value="assigned">✅ Atribuídos</option>
-                </select>
-            </div>
+        <!-- CONTEÚDO 1: VISÃO EXECUTIVA & MATRIZ 5X5 -->
+        <div id="view-executivo" class="tab-view-content" style="display: block;">
+            <div class="card-panel" style="background: #18181b; border: 1px solid rgba(255, 179, 102, 0.3); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+                    <div>
+                        <h2 style="color: var(--brand-primary); font-size: 1.3em;">🔥 Matriz de Risco 5x5 (Probabilidade x Impacto)</h2>
+                        <p style="color: var(--text-gray); font-size: 0.9em;">Visão consolidada para a Diretoria e Pontos Focais Executivos</p>
+                    </div>
+                    <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid var(--brand-primary); padding: 10px 18px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.4em; font-weight: 800; color: var(--brand-gold);">MODERADO</div>
+                        <div style="font-size: 0.75em; color: var(--text-gray); text-transform: uppercase;">Selo de Risco Geral</div>
+                    </div>
+                </div>
 
-            <button class="btn-auto-assign" id="btn-auto-assign">
-                ⚡ Atribuição Automática por Área
-            </button>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <div style="writing-mode: vertical-lr; transform: rotate(180deg); text-align: center; font-weight: 700; font-size: 0.8em; color: #a1a1aa; letter-spacing: 1px;">PROBABILIDADE</div>
+                    <div style="flex-grow: 1;">
+                        <div class="matrix-grid-5x5">
+                            <div class="cell-axis-5x5">5</div>
+                            <div class="cell-5x5 cell-r-med">5 (0)</div>
+                            <div class="cell-5x5 cell-r-high">10 (1)</div>
+                            <div class="cell-5x5 cell-r-high">15 (0)</div>
+                            <div class="cell-5x5 cell-r-crit">20 (1)</div>
+                            <div class="cell-5x5 cell-r-crit">25 (0)</div>
+
+                            <div class="cell-axis-5x5">4</div>
+                            <div class="cell-5x5 cell-r-low">4 (2)</div>
+                            <div class="cell-5x5 cell-r-med">8 (0)</div>
+                            <div class="cell-5x5 cell-r-high">12 (1)</div>
+                            <div class="cell-5x5 cell-r-high">16 (0)</div>
+                            <div class="cell-5x5 cell-r-crit">20 (0)</div>
+
+                            <div class="cell-axis-5x5">3</div>
+                            <div class="cell-5x5 cell-r-low">3 (4)</div>
+                            <div class="cell-5x5 cell-r-med">6 (2)</div>
+                            <div class="cell-5x5 cell-r-med">9 (1)</div>
+                            <div class="cell-5x5 cell-r-high">12 (0)</div>
+                            <div class="cell-5x5 cell-r-high">15 (0)</div>
+
+                            <div class="cell-axis-5x5">2</div>
+                            <div class="cell-5x5 cell-r-low">2 (3)</div>
+                            <div class="cell-5x5 cell-r-low">4 (1)</div>
+                            <div class="cell-5x5 cell-r-med">6 (0)</div>
+                            <div class="cell-5x5 cell-r-med">8 (0)</div>
+                            <div class="cell-5x5 cell-r-high">10 (0)</div>
+
+                            <div class="cell-axis-5x5">1</div>
+                            <div class="cell-5x5 cell-r-low">1 (5)</div>
+                            <div class="cell-5x5 cell-r-low">2 (2)</div>
+                            <div class="cell-5x5 cell-r-low">3 (0)</div>
+                            <div class="cell-5x5 cell-r-low">4 (0)</div>
+                            <div class="cell-5x5 cell-r-med">5 (0)</div>
+
+                            <div></div>
+                            <div class="cell-axis-5x5">1</div>
+                            <div class="cell-axis-5x5">2</div>
+                            <div class="cell-axis-5x5">3</div>
+                            <div class="cell-axis-5x5">4</div>
+                            <div class="cell-axis-5x5">5</div>
+                        </div>
+                        <div style="text-align: center; font-weight: 700; font-size: 0.8em; color: #a1a1aa; letter-spacing: 1px; margin-top: 6px;">IMPACTO</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Table Card -->
-        <div class="card-table">
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 90px;">Código</th>
-                            <th>Título do Requisito</th>
-                            <th>Área Sugerida</th>
-                            <th style="width: 240px;">Responsável (Ponto Focal)</th>
-                            <th style="width: 120px;">Status Evidência</th>
-                            <th style="width: 140px; text-align: center;">Ações QSA</th>
-                        </tr>
-                    </thead>
-                    <tbody id="req-list">
-                        <tr>
-                            <td colspan="6" style="text-align: center; color: var(--text-gray); padding: 40px;">Carregando requisitos e equipe...</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- CONTEÚDO 2: TABELA DE REQUISITOS (OPERACIONAL & QSA) -->
+        <div id="view-requisitos" class="tab-view-content" style="display: block;">
+            <!-- Toolbar & Filters -->
+            <div class="toolbar">
+                <div class="filter-group">
+                    <input type="text" id="search-input" class="search-input" placeholder="Buscar código ou título...">
+                    <select id="filter-area" class="filter-select">
+                        <option value="">Todas as Áreas</option>
+                        <option value="Infraestrutura e Redes">Infraestrutura e Redes</option>
+                        <option value="Segurança da Informação">Segurança da Informação</option>
+                        <option value="Sistemas e Desenvolvimento">Sistemas e Desenvolvimento</option>
+                        <option value="Banco de Dados (DBA)">Banco de Dados (DBA)</option>
+                    </select>
+                    <select id="filter-status" class="filter-select">
+                        <option value="">Todos os Status de Atribuição</option>
+                        <option value="unassigned">⚠️ Sem Responsável</option>
+                        <option value="assigned">✅ Atribuídos</option>
+                    </select>
+                </div>
+
+                <button class="btn-auto-assign" id="btn-auto-assign">
+                    ⚡ Atribuição Automática por Área
+                </button>
+            </div>
+
+            <!-- Table Card -->
+            <div class="card-table">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 90px;">Código</th>
+                                <th>Título do Requisito</th>
+                                <th>Área Sugerida</th>
+                                <th style="width: 240px;">Responsável (Ponto Focal)</th>
+                                <th style="width: 120px;">Status Evidência</th>
+                                <th style="width: 140px; text-align: center;">Ações QSA</th>
+                            </tr>
+                        </thead>
+                        <tbody id="req-list">
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: var(--text-gray); padding: 40px;">Carregando requisitos e equipe...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+
+        <!-- CONTEÚDO 3: GESTÃO DA EQUIPE & ONBOARDING (ADMIN) -->
+        <div id="view-equipe" class="tab-view-content" style="display: none;">
+            <div class="card-table" style="padding: 24px;">
+                <h3 style="color: var(--brand-primary); margin-bottom: 12px;">👥 Integrantes Cadastrados no Projeto CSU Digital</h3>
+                <p style="color: var(--text-gray); font-size: 0.9em; margin-bottom: 20px;">Gerencie os pontos focais e papeis de acesso por departamento.</p>
+                <div id="team-list-container">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
+        </div>
 
     <!-- Modal Evidências e Revisão QSA -->
     <div id="modal-evidencias" class="modal-overlay">
