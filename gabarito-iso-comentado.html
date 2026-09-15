@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gabarito Comentado ISO 27001 - Explicações Detalhadas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f2557 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(42, 42, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid #fbbf24;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 1.8em;
+            text-shadow: 0 2px 10px rgba(251, 191, 36, 0.2);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            padding: 10px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: #fbbf24;
+            color: #1a1a1a;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            background: rgba(60, 60, 60, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .control-label {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        select {
+            background: rgba(60, 60, 60, 0.9);
+            color: white;
+            border: 1px solid #fbbf24;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        .question-card {
+            background: rgba(60, 60, 60, 0.9);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .question-number {
+            color: #fbbf24;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .enunciado {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            font-weight: 600;
+            line-height: 1.6;
+            color: white;
+        }
+
+        .alternativas {
+            background: rgba(40, 40, 40, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .alternativa {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border-left: 3px solid #6b7280;
+        }
+
+        .alternativa.correta {
+            background: rgba(34, 197, 94, 0.15);
+            border-left-color: #22c55e;
+        }
+
+        .alternativa.correta-label {
+            color: #4ade80;
+            font-weight: 700;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .section-title {
+            color: #fbbf24;
+            font-weight: 700;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+
+        .justificativa {
+            background: rgba(40, 40, 40, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .analise-incorretas {
+            background: rgba(40, 40, 40, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 3px solid #ef4444;
+        }
+
+        .alt-incorreta {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(251, 191, 36, 0.1);
+        }
+
+        .alt-incorreta:last-child {
+            border-bottom: none;
+        }
+
+        .alt-incorreta strong {
+            color: #fca5a5;
+        }
+
+        .dica {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 3px solid #fbbf24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .dica-titulo {
+            color: #fbbf24;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .resumo {
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 3px solid #a78bfa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .resumo-titulo {
+            color: #c4b5fd;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .navegacao {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(251, 191, 36, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .info-painel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 12px 15px;
+            background: rgba(60, 60, 60, 0.9);
+            border-radius: 8px;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .contador {
+            color: #fbbf24;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            h1 {
+                font-size: 1.3em;
+            }
+
+            .question-card {
+                padding: 20px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .navegacao {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div>
+                    <h1>📚 Gabarito Comentado ISO 27001</h1>
+                    <p style="color: #fbbf24; font-size: 0.9em; margin-top: 5px;">Explicações detalhadas com análise de alternativas</p>
+                </div>
+                <a href="./index.html" class="back-link">← Voltar ao Portal</a>
+            </div>
+        </header>
+
+        <div class="controls">
+            <span class="control-label">Selecione o Simulado:</span>
+            <select id="simuladoSelect" onchange="carregarSimulado()">
+                <option value="1">Simulado 1 (80 questões)</option>
+                <option value="2">Simulado 2 (80 questões)</option>
+                <option value="3">Simulado 3 PECB (50 questões)</option>
+            </select>
+
+            <span class="control-label" style="margin-left: auto;">Questão:</span>
+            <input type="number" id="questaoInput" min="1" max="80" value="1" style="width: 70px; padding: 8px; background: rgba(60,60,60,0.9); color: white; border: 1px solid #fbbf24; border-radius: 6px;">
+            <button onclick="irParaQuestao()">Ir</button>
+        </div>
+
+        <div class="info-painel">
+            <span class="contador" id="infoQuestao">Carregando...</span>
+            <button onclick="imprimirPagina()" style="padding: 8px 16px;">🖨️ Imprimir</button>
+        </div>
+
+        <div id="questionContainer">
+            <div class="question-card">
+                <p style="text-align: center; color: #fbbf24;">Carregando explicações...</p>
+            </div>
+        </div>
+
+        <div class="navegacao">
+            <button onclick="questaoAnterior()">← Questão Anterior</button>
+            <button onclick="proximaQuestao()">Próxima Questão →</button>
+        </div>
+    </div>
+
+    <script>
+        const questoes = {
+            1: {
+                titulo: "Simulado ISO 27001 Nº 1",
+                url: "https://raw.githubusercontent.com/kleitonmetal-design/portal/main/explicacoes_simulado1_iso.md"
+            },
+            2: {
+                titulo: "Simulado ISO 27001 Nº 2",
+                url: "https://raw.githubusercontent.com/kleitonmetal-design/portal/main/explicacoes_simulado2_iso.md"
+            },
+            3: {
+                titulo: "Simulado 3 PECB",
+                url: "https://raw.githubusercontent.com/kleitonmetal-design/portal/main/explicacoes_simulado3_pecb.md"
+            }
+        };
+
+        let dadosSimulado = {};
+        let simuladoAtual = 1;
+        let questaoAtual = 1;
+
+        async function carregarSimulado() {
+            simuladoAtual = parseInt(document.getElementById('simuladoSelect').value);
+            questaoAtual = 1;
+            document.getElementById('questaoInput').value = 1;
+            await buscarExplicacoes();
+            renderizarQuestao();
+        }
+
+        async function buscarExplicacoes() {
+            const container = document.getElementById('questionContainer');
+            try {
+                const response = await fetch(`https://zprzmhavbjiggqfzzzbt.supabase.co/rest/v1/rpc/buscar_explicacoes?simulado=${simuladoAtual}`, {
+                    headers: {
+                        'apikey': 'sb_publishable_zucE5w9pyxnkXU0r3A8LYQ_ERuwax9r',
+                    }
+                });
+                if (!response.ok) {
+                    mostrarErro("Não foi possível carregar as explicações. Verifique sua conexão.");
+                    return;
+                }
+                const data = await response.json();
+                if (data && data.length > 0) {
+                    dadosSimulado = data[0].explicacoes || {};
+                }
+            } catch (error) {
+                console.warn('Fetch falhou, usando dados em memória');
+                // Fallback: dados em memória serão adicionados
+            }
+        }
+
+        function renderizarQuestao() {
+            const container = document.getElementById('questionContainer');
+
+            // Simulação com dados em memória (será substituído por dados reais)
+            const questao = {
+                numero: questaoAtual,
+                enunciado: "Carregando questão...",
+                resposta_correta: "Aguardando dados...",
+                justificativa: "Dados de explicação não disponíveis offline.",
+                alternativas_incorretas: [],
+                dica: "Conecte-se à internet para ver as explicações completas.",
+                resumo: "Página de gabarito comentado - dados carregados dinamicamente"
+            };
+
+            const html = `
+                <div class="question-card">
+                    <div class="question-number">Questão ${questao.numero}</div>
+                    <div class="enunciado">${questao.enunciado}</div>
+
+                    <div class="section-title">Alternativas</div>
+                    <div class="alternativas">
+                        <div class="alternativa correta">
+                            <span class="alternativa-correta-label">✅ Correta:</span>
+                            ${questao.resposta_correta}
+                        </div>
+                    </div>
+
+                    <div class="section-title">Justificativa</div>
+                    <div class="justificativa">
+                        ${questao.justificativa}
+                    </div>
+
+                    <div class="section-title">Por que as demais estão incorretas?</div>
+                    <div class="analise-incorretas">
+                        <div class="alt-incorreta">
+                            <strong>A)</strong> ${questao.alternativas_incorretas[0] || 'Carregando...'}
+                        </div>
+                    </div>
+
+                    <div class="dica">
+                        <div class="dica-titulo">💡 Dica para a Prova ISO 27001</div>
+                        ${questao.dica}
+                    </div>
+
+                    <div class="resumo">
+                        <div class="resumo-titulo">📝 Resumo para Memorização</div>
+                        ${questao.resumo}
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+            atualizarInfo();
+        }
+
+        function atualizarInfo() {
+            const total = simuladoAtual === 3 ? 50 : 80;
+            document.getElementById('infoQuestao').textContent = `Questão ${questaoAtual} de ${total}`;
+            document.getElementById('questaoInput').max = total;
+        }
+
+        function proximaQuestao() {
+            const total = simuladoAtual === 3 ? 50 : 80;
+            if (questaoAtual < total) {
+                questaoAtual++;
+                document.getElementById('questaoInput').value = questaoAtual;
+                renderizarQuestao();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function questaoAnterior() {
+            if (questaoAtual > 1) {
+                questaoAtual--;
+                document.getElementById('questaoInput').value = questaoAtual;
+                renderizarQuestao();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function irParaQuestao() {
+            const total = simuladoAtual === 3 ? 50 : 80;
+            const numero = parseInt(document.getElementById('questaoInput').value);
+            if (numero >= 1 && numero <= total) {
+                questaoAtual = numero;
+                renderizarQuestao();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function imprimirPagina() {
+            window.print();
+        }
+
+        function mostrarErro(mensagem) {
+            document.getElementById('questionContainer').innerHTML = `
+                <div class="question-card" style="text-align: center; color: #fbbf24;">
+                    <p>⚠️ ${mensagem}</p>
+                    <p style="font-size: 0.9em; color: #c0c0c0; margin-top: 10px;">
+                        Este recurso requer conexão com a internet para carregar os dados de explicações.
+                    </p>
+                </div>
+            `;
+        }
+
+        // Carregar ao iniciar
+        window.addEventListener('DOMContentLoaded', () => {
+            carregarSimulado();
+        });
+
+        // Navegação com teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') proximaQuestao();
+            if (e.key === 'ArrowLeft') questaoAnterior();
+        });
+    </script>
+</body>
+</html>
