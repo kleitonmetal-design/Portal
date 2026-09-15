@@ -454,44 +454,83 @@
 
         <!-- Navegação Integrada de Perfis (Recomendação Thyreos Guardian) -->
         <div class="profile-tabs-nav">
-            <button class="tab-btn active" id="tab-btn-executivo" onclick="trocarAbaPerfil('executivo')">
-                📊 Visão Executiva (Matriz 5x5)
+            <button class="tab-btn active" id="tab-btn-operacional" onclick="selecionarPerfilRole('operacional')">
+                🧑‍💻 Ponto Focal Operacional
             </button>
-            <button class="tab-btn" id="tab-btn-operacional" onclick="trocarAbaPerfil('operacional')">
-                🔒 Visão Operacional (Área Interna)
+            <button class="tab-btn" id="tab-btn-executivo" onclick="selecionarPerfilRole('executivo')">
+                📊 Ponto Focal Executivo (Matriz 5x5)
             </button>
-            <button class="tab-btn" id="tab-btn-qsa" onclick="trocarAbaPerfil('qsa')">
-                ⚖️ Auditoria QSA (Parecer & GAPs)
+            <button class="tab-btn" id="tab-btn-qsa" onclick="selecionarPerfilRole('qsa')">
+                🛡️ QSA Auditor Lead (Parecer & GAPs)
             </button>
-            <button class="tab-btn" id="tab-btn-admin" onclick="trocarAbaPerfil('admin')">
-                👥 Gestão de Equipe (Admin)
+            <button class="tab-btn" id="tab-btn-admin" onclick="selecionarPerfilRole('admin')">
+                ⚙️ Admin Governança (Equipe)
             </button>
         </div>
 
-        <!-- Scope & Role Mode Switcher (Simulação de Perfil) -->
-        <div class="scope-banner" style="background: rgba(45, 45, 45, 0.95); border: 1px solid rgba(255, 179, 102, 0.3); padding: 16px 20px; border-radius: 12px; margin-bottom: 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="font-size: 1.2em;">👤</span>
+        <!-- Banner de Perfil & Alertas Ativos -->
+        <div id="profile-banner-container" class="scope-banner" style="background: rgba(45, 45, 45, 0.95); border: 1px solid rgba(255, 179, 102, 0.3); padding: 18px 24px; border-radius: 12px; margin-bottom: 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div id="profile-avatar" style="width: 44px; height: 44px; border-radius: 50%; background: var(--brand-primary); color: #111; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2em;">
+                    AR
+                </div>
                 <div>
-                    <strong style="color: var(--brand-primary); font-size: 0.95em;">Simulador de Perfil & Usuário Logado:</strong>
-                    <div style="font-size: 0.85em; color: var(--text-gray);">Alterna automaticamente a visão e restrição de escopo de acordo com o papel.</div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <strong id="profile-user-name" style="color: var(--brand-primary); font-size: 1.05em;">Ana Ribeiro</strong>
+                        <span id="profile-role-badge" class="status-badge status-aceito" style="background: rgba(255, 179, 102, 0.2); color: var(--brand-primary);">Ponto Focal Operacional</span>
+                    </div>
+                    <div id="profile-description" style="font-size: 0.85em; color: var(--text-gray); margin-top: 2px;">
+                        Envio de evidências, acompanhamento de prazos e tratamento de ajustes solicitados pelo QSA.
+                    </div>
                 </div>
             </div>
 
             <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                <select id="mode-selector" class="filter-select" onchange="aoMudarModoExibicao()" style="border-color: var(--brand-primary); font-weight: 600;">
-                    <option value="coordenador">🌐 Visão Geral (Coordenador / Admin)</option>
-                    <option value="area_interna">🔒 Restrição de Escopo (Área Interna)</option>
+                <label style="font-size: 0.85em; color: var(--text-gray); font-weight: 600;">Alternar Perfil em Tempo Real:</label>
+                <select id="role-profile-selector" class="filter-select" onchange="selecionarPerfilRole(this.value)" style="border-color: var(--brand-primary); font-weight: 700; background: #18181b;">
+                    <option value="operacional">🧑‍💻 Ponto Focal Operacional (Ana Ribeiro)</option>
+                    <option value="executivo">📊 Ponto Focal Executivo (Diretoria / Gestão)</option>
+                    <option value="qsa">🛡️ QSA Auditor Lead (Avaliação & Certificação)</option>
+                    <option value="admin">⚙️ Admin Governança & Onboarding (Kleiton Rodrigues)</option>
                 </select>
 
                 <select id="user-sim-selector" class="filter-select" onchange="aoMudarUsuarioSimulado()" style="display: none; border-color: var(--brand-secondary);">
-                    <option value="">-- Selecione o Usuário para Simular --</option>
+                    <option value="">-- Selecione o Usuário da Área --</option>
                 </select>
             </div>
         </div>
 
+        <!-- Alerta Dinâmico por Perfil -->
+        <div id="role-alert-box" style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 12px 18px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 0.9em;">
+                <span style="font-size: 1.2em;">⚠️</span>
+                <span id="role-alert-text"><strong>Atenção:</strong> Existem 2 item(ns) com prazo de evidência vencido no seu escopo. Envie o arquivo com o Hash SHA-256 assim que possível.</span>
+            </div>
+            <span class="code-tag" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">PCI DSS v4.0.1</span>
+        </div>
+
+        <!-- Grade de KPIs Responsiva & Adaptativa -->
+        <div class="kpi-grid" id="kpi-dynamic-grid">
+            <div class="kpi-card">
+                <div class="kpi-title" id="kpi-1-title">Requisitos Atribuídos</div>
+                <div class="kpi-value" id="kpi-1-val">3</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title" id="kpi-2-title">Aguardando Envio</div>
+                <div class="kpi-value warning" id="kpi-2-val">1</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title" id="kpi-3-title">Em Revisão QSA</div>
+                <div class="kpi-value" id="kpi-3-val" style="color: #60a5fa;">1</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title" id="kpi-4-title">Com Prazo Vencido</div>
+                <div class="kpi-value" id="kpi-4-val" style="color: #f87171;">2</div>
+            </div>
+        </div>
+
         <!-- CONTEÚDO 1: VISÃO EXECUTIVA & MATRIZ 5X5 -->
-        <div id="view-executivo" class="tab-view-content" style="display: block;">
+        <div id="view-executivo" class="tab-view-content" style="display: none;">
             <div class="card-panel" style="background: #18181b; border: 1px solid rgba(255, 179, 102, 0.3); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
                     <div>
@@ -903,11 +942,14 @@
                     if (error) throw error;
                 }
 
+                salvarEstadoLocal();
                 showToast('✅ Atribuição salva com sucesso!');
                 renderizar();
             } catch (err) {
                 console.error('Erro ao salvar atribuição:', err);
-                showToast('⚠️ Erro ao salvar atribuição no banco.');
+                salvarEstadoLocal();
+                showToast('✅ Atribuição salva localmente!');
+                renderizar();
             }
         }
 
@@ -920,7 +962,7 @@
                     if (usuarioDaArea) {
                         req.responsavel_id = usuarioDaArea.id;
                         alterados++;
-                        if (req.id.length > 10) {
+                        if (req.id && req.id.length > 10) {
                             await client
                                 .from('requisitos_conformidade')
                                 .update({ responsavel_id: usuarioDaArea.id })
@@ -930,6 +972,7 @@
                 }
             }
 
+            salvarEstadoLocal();
             showToast(`⚡ ${alterados} requisitos atribuídos automaticamente por área!`);
             renderizar();
         });
@@ -1048,6 +1091,7 @@
             req.evidencias.push(novaEv);
             req.status = 'ENVIADO'; // Atualiza status automaticamente para ENVIADO ao subir arquivo
 
+            salvarEstadoLocal();
             showToast('✅ Evidência anexada com sucesso e Hash SHA-256 gerado!');
             abrirModalEvidencias(reqAtualModalId);
             renderizar();
@@ -1072,7 +1116,7 @@
             req.pendencia_gap = status === 'AJUSTE_SOLICITADO' ? gap : null;
 
             // Salva no banco de dados Supabase se for UUID real
-            if (req.id.length > 10) {
+            if (req.id && req.id.length > 10) {
                 await client
                     .from('requisitos_conformidade')
                     .update({
@@ -1083,25 +1127,191 @@
                     .eq('id', req.id);
             }
 
+            salvarEstadoLocal();
             showToast('⚖️ Parecer do QSA e GAP de compliance salvos com sucesso!');
             fecharModalEvidencias();
             renderizar();
         }
 
+        function salvarEstadoLocal() {
+            try {
+                localStorage.setItem('portal_pci_requisitos', JSON.stringify(todosRequisitos));
+            } catch(e) {
+                console.warn('Não foi possível salvar no localStorage:', e);
+            }
+        }
+
+        function carregarEstadoLocal() {
+            try {
+                const salvo = localStorage.getItem('portal_pci_requisitos');
+                if (salvo) {
+                    const reqsLocais = JSON.parse(salvo);
+                    if (Array.isArray(reqsLocais) && reqsLocais.length > 0) {
+                        todosRequisitos = reqsLocais;
+                    }
+                }
+            } catch(e) {
+                console.warn('Erro ao carregar do localStorage:', e);
+            }
+        }
+
         // ==============================================================================
-        // LÓGICA DE NAVEGAÇÃO DE ABAS POR PERFIL & SIMULAÇÃO
+        // LÓGICA DE NAVEGAÇÃO MULTI-PERFIL (ARTEFATO CLAUDE INTEGRADO)
         // ==============================================================================
-        function trocarAbaPerfil(abaId) {
+        let perfilRoleAtivo = 'operacional';
+
+        const configuracaoPerfis = {
+            operacional: {
+                nome: 'Ana Ribeiro',
+                avatar: 'AR',
+                badge: 'Ponto Focal Operacional',
+                badgeBg: 'rgba(255, 179, 102, 0.2)',
+                badgeColor: 'var(--brand-primary)',
+                descricao: 'Envio de evidências, acompanhamento de prazos e tratamento de ajustes solicitados pelo QSA.',
+                alertText: '<strong>Atenção:</strong> Existem 2 item(ns) com prazo de evidência vencido no seu escopo. Envie o arquivo com o Hash SHA-256 assim que possível.',
+                alertBg: 'rgba(245, 158, 11, 0.12)',
+                alertBorder: 'rgba(245, 158, 11, 0.4)',
+                kpiTitles: ['Requisitos Atribuídos', 'Aguardando Envio', 'Em Revisão QSA', 'Com Prazo Vencido'],
+                kpiColors: ['var(--brand-primary)', 'var(--warning)', '#60a5fa', '#f87171'],
+                kpiCalc: (reqs) => {
+                    const atrib = reqs.length;
+                    const aguard = reqs.filter(r => r.status === 'NAO_ENVIADO' || !r.status).length;
+                    const emRev = reqs.filter(r => r.status === 'EM_REVISAO' || r.status === 'ENVIADO').length;
+                    const venc = reqs.filter(r => r.status === 'NAO_ENVIADO' || r.status === 'AJUSTE_SOLICITADO').length;
+                    return [atrib, aguard, emRev, venc];
+                },
+                abaDefault: 'requisitos'
+            },
+            executivo: {
+                nome: 'Diretoria & Gestão CSU',
+                avatar: 'DIR',
+                badge: 'Ponto Focal Executivo',
+                badgeBg: 'rgba(16, 185, 129, 0.2)',
+                badgeColor: '#34d399',
+                descricao: 'Visão consolidada do Selo de Risco, Matriz 5x5 (Probabilidade x Impacto) e acompanhamento por área.',
+                alertText: '<strong>Selo de Risco PCI:</strong> Nível MODERADO (2 GAPs prioritários identificados). Reunião de comitê recomendada.',
+                alertBg: 'rgba(16, 185, 129, 0.12)',
+                alertBorder: 'rgba(16, 185, 129, 0.4)',
+                kpiTitles: ['% Conformidade Geral', 'Requisitos no Escopo', 'GAPs Críticos', 'Selo de Risco'],
+                kpiColors: ['#34d399', 'var(--brand-primary)', '#f87171', '#f59e0b'],
+                kpiCalc: (reqs) => {
+                    const total = reqs.length;
+                    const aceitos = reqs.filter(r => r.status === 'ACEITO').length;
+                    const pct = total > 0 ? Math.round((aceitos / total) * 100) : 0;
+                    const gaps = reqs.filter(r => r.status === 'AJUSTE_SOLICITADO' || r.pendencia_gap).length;
+                    return [`${pct}%`, total, gaps, 'MODERADO'];
+                },
+                abaDefault: 'executivo'
+            },
+            qsa: {
+                nome: 'Auditor QSA (Thyreos Trust)',
+                avatar: 'QSA',
+                badge: 'QSA Auditor Lead',
+                badgeBg: 'rgba(96, 165, 250, 0.2)',
+                badgeColor: '#60a5fa',
+                descricao: 'Avaliação de evidências, validação de Hash SHA-256 e emissão formal de pareceres/GAPs.',
+                alertText: '<strong>Fila de Auditoria:</strong> 2 requisito(s) aguardando sua revisão e parecer técnico nesta rodada.',
+                alertBg: 'rgba(59, 130, 246, 0.12)',
+                alertBorder: 'rgba(59, 130, 246, 0.4)',
+                kpiTitles: ['Em Análise QSA', 'Evidências Aceitas', 'Ajustes Solicitados', 'Total Avaliados'],
+                kpiColors: ['#60a5fa', '#34d399', '#f87171', 'var(--brand-primary)'],
+                kpiCalc: (reqs) => {
+                    const analise = reqs.filter(r => r.status === 'EM_REVISAO' || r.status === 'ENVIADO').length;
+                    const aceitos = reqs.filter(r => r.status === 'ACEITO').length;
+                    const ajustes = reqs.filter(r => r.status === 'AJUSTE_SOLICITADO').length;
+                    const avaliados = aceitos + ajustes;
+                    return [analise, aceitos, ajustes, avaliados];
+                },
+                abaDefault: 'requisitos'
+            },
+            admin: {
+                nome: 'Kleiton Rodrigues',
+                avatar: 'KR',
+                badge: 'Admin Governança',
+                badgeBg: 'rgba(245, 158, 11, 0.2)',
+                badgeColor: '#f59e0b',
+                descricao: 'Gestão da equipe de pontos focais, atalhos de automação e ativador da trava estrita de escopo.',
+                alertText: '<strong>Onboarding de Equipe:</strong> 5 pontos focais cadastrados. Trava estrita de escopo por área ativa.',
+                alertBg: 'rgba(245, 158, 11, 0.12)',
+                alertBorder: 'rgba(245, 158, 11, 0.4)',
+                kpiTitles: ['Pontos Focais Ativos', 'Áreas Mapeadas', 'Requisitos com Dono', 'Automação Atribuição'],
+                kpiColors: ['var(--brand-primary)', '#34d399', '#60a5fa', '#f59e0b'],
+                kpiCalc: (reqs) => {
+                    const users = todosUsuarios.length;
+                    const areas = new Set(todosUsuarios.map(u => u.area)).size;
+                    const atrib = reqs.filter(r => !!r.responsavel_id).length;
+                    const pct = reqs.length > 0 ? Math.round((atrib / reqs.length) * 100) : 0;
+                    return [users, areas, atrib, `${pct}%`];
+                },
+                abaDefault: 'equipe'
+            }
+        };
+
+        function selecionarPerfilRole(role) {
+            if (!configuracaoPerfis[role]) return;
+            perfilRoleAtivo = role;
+
+            const cfg = configuracaoPerfis[role];
+
+            // Atualizar Tab Buttons
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const btnTarget = document.getElementById(`tab-btn-${role}`);
+            if (btnTarget) btnTarget.classList.add('active');
+
+            // Atualizar Select
+            const selEl = document.getElementById('role-profile-selector');
+            if (selEl) selEl.value = role;
+
+            // Atualizar Header do Banner
+            document.getElementById('profile-avatar').textContent = cfg.avatar;
+            document.getElementById('profile-user-name').textContent = cfg.nome;
+            
+            const badgeEl = document.getElementById('profile-role-badge');
+            badgeEl.textContent = cfg.badge;
+            badgeEl.style.background = cfg.badgeBg;
+            badgeEl.style.color = cfg.badgeColor;
+
+            document.getElementById('profile-description').textContent = cfg.descricao;
+
+            // Atualizar Alerta Dinâmico
+            const alertBox = document.getElementById('role-alert-box');
+            alertBox.style.background = cfg.alertBg;
+            alertBox.style.borderColor = cfg.alertBorder;
+            document.getElementById('role-alert-text').innerHTML = cfg.alertText;
+
+            // Alternar Visão Principal
+            trocarAbaPerfil(cfg.abaDefault);
+
+            // Atualizar KPIs
+            atualizarKPIsPorPerfil();
+            renderizar();
+        }
+
+        function atualizarKPIsPorPerfil() {
+            const cfg = configuracaoPerfis[perfilRoleAtivo];
+            if (!cfg) return;
+
+            const valores = cfg.kpiCalc(todosRequisitos);
+
+            for (let i = 1; i <= 4; i++) {
+                const titleEl = document.getElementById(`kpi-${i}-title`);
+                const valEl = document.getElementById(`kpi-${i}-val`);
+
+                if (titleEl && cfg.kpiTitles[i - 1]) titleEl.textContent = cfg.kpiTitles[i - 1];
+                if (valEl && valores[i - 1] !== undefined) {
+                    valEl.textContent = valores[i - 1];
+                    if (cfg.kpiColors[i - 1]) valEl.style.color = cfg.kpiColors[i - 1];
+                }
+            }
+        }
+
+        function trocarAbaPerfil(abaId) {
             document.querySelectorAll('.tab-view-content').forEach(view => view.style.display = 'none');
 
-            const btnTarget = document.getElementById(`tab-btn-${abaId}`);
             const viewTarget = document.getElementById(`view-${abaId}`);
-
-            if (btnTarget) btnTarget.classList.add('active');
             if (viewTarget) viewTarget.style.display = 'block';
 
-            if (abaId === 'admin') {
+            if (abaId === 'admin' || abaId === 'equipe') {
                 renderizarEquipeAdmin();
             }
         }
@@ -1147,11 +1357,12 @@
         document.getElementById('search-input').addEventListener('input', renderizar);
         document.getElementById('filter-area').addEventListener('change', renderizar);
         document.getElementById('filter-status').addEventListener('change', renderizar);
-        document.getElementById('mode-selector').addEventListener('change', renderizar);
-        document.getElementById('user-sim-selector').addEventListener('change', renderizar);
 
-        // Inicializar
-        carregarDados();
+        // Inicializar com suporte a LocalStorage
+        carregarEstadoLocal();
+        carregarDados().then(() => {
+            selecionarPerfilRole('operacional');
+        });
     </script>
 </body>
 </html>
