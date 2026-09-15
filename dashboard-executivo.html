@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Executivo & Matriz de Risco 5x5 — Thyreos Guardian</title>
+    <style>
+        :root {
+            --bg-dark: #09090b;
+            --surface-card: #18181b;
+            --surface-hover: #27272a;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --brand-gold: #ffb366;
+            --brand-primary: #f59e0b;
+            --text-white: #fafafa;
+            --text-muted: #a1a1aa;
+            
+            /* Risk Matrix Colors */
+            --risk-low: #10b981;
+            --risk-medium: #eab308;
+            --risk-high: #f97316;
+            --risk-critical: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--brand-gold);
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* Header Executivo */
+        .exec-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #18181b 0%, #27272a 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .header-title h1 {
+            font-size: 1.8em;
+            font-weight: 800;
+            background: linear-gradient(90deg, #ffffff, var(--brand-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-title p {
+            color: var(--text-muted);
+            font-size: 0.95em;
+            margin-top: 4px;
+        }
+
+        .risk-seal-badge {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid var(--brand-primary);
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .risk-seal-val {
+            font-size: 1.6em;
+            font-weight: 800;
+            color: var(--brand-gold);
+        }
+
+        .risk-seal-lbl {
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        /* Grid KPIs */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background: var(--surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px;
+        }
+
+        .kpi-num {
+            font-size: 1.8em;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .kpi-lbl {
+            font-size: 0.85em;
+            color: var(--text-muted);
+        }
+
+        /* Layout Principal Dashboard (Matriz + Categorias) */
+        .dashboard-main-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-panel {
+            background: var(--surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .panel-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--brand-gold);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Matriz de Risco 5x5 */
+        .matrix-wrapper {
+            display: flex;
+            gap: 12px;
+        }
+
+        .y-axis-label {
+            writing-mode: vertical-lr;
+            transform: rotate(180deg);
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.85em;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .matrix-container {
+            flex-grow: 1;
+        }
+
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: 40px repeat(5, 1fr);
+            grid-template-rows: repeat(5, 54px) 30px;
+            gap: 4px;
+        }
+
+        .cell-axis {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75em;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .matrix-cell {
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            position: relative;
+            user-select: none;
+        }
+
+        .matrix-cell:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .cell-score {
+            font-size: 0.7em;
+            opacity: 0.6;
+            font-weight: 600;
+        }
+
+        .cell-count {
+            font-size: 1.1em;
+            font-weight: 800;
+        }
+
+        /* Cores da Matriz 5x5 */
+        .cell-r-low { background: rgba(16, 185, 129, 0.25); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .cell-r-med { background: rgba(234, 179, 8, 0.25); color: #fde047; border: 1px solid rgba(234, 179, 8, 0.4); }
+        .cell-r-high { background: rgba(249, 115, 22, 0.3); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.5); }
+        .cell-r-crit { background: rgba(239, 68, 68, 0.35); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.6); }
+
+        .x-axis-title {
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.85em;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+
+        /* Legenda de Risco */
+        .risk-legend {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #27272a;
+            font-size: 0.8em;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        /* Lista de Requisitos de Alto Risco / GAPs */
+        .gap-list-item {
+            background: #121215;
+            border: 1px solid #27272a;
+            border-left: 4px solid var(--risk-critical);
+            border-radius: 6px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+        }
+
+        .gap-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .gap-code {
+            font-weight: 800;
+            color: var(--brand-gold);
+            font-size: 0.9em;
+        }
+
+        .gap-title {
+            font-weight: 600;
+            font-size: 0.95em;
+            margin-bottom: 6px;
+        }
+
+        .gap-desc {
+            font-size: 0.85em;
+            color: #f87171;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 6px 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="./paineis-pci.html" class="back-link">← Voltar para Painéis PCI</a>
+
+        <!-- Executive Header -->
+        <header class="exec-header">
+            <div class="header-title">
+                <h1>📊 Dashboard Executivo & Matriz de Risco 5x5</h1>
+                <p>Monitoramento Estratégico de Conformidade PCI DSS 4.0.1 — CSU Digital</p>
+            </div>
+            <div class="risk-seal-badge">
+                <div class="risk-seal-val">MODERADO</div>
+                <div class="risk-seal-lbl">Selo de Risco Geral (Score 68/100)</div>
+            </div>
+        </header>
+
+        <!-- KPI Grid -->
+        <div class="kpi-grid">
+            <div class="kpi-card" style="border-left: 4px solid #3b82f6;">
+                <div class="kpi-num" style="color: #60a5fa;">163</div>
+                <div class="kpi-lbl">Total de Requisitos PCI</div>
+            </div>
+            <div class="kpi-card" style="border-left: 4px solid #10b981;">
+                <div class="kpi-num" style="color: #34d399;">7</div>
+                <div class="kpi-lbl">Conformes / Aceitos</div>
+            </div>
+            <div class="kpi-card" style="border-left: 4px solid #f59e0b;">
+                <div class="kpi-num" style="color: #fbbf24;">2</div>
+                <div class="kpi-lbl">Em Análise / Revisão</div>
+            </div>
+            <div class="kpi-card" style="border-left: 4px solid #ef4444;">
+                <div class="kpi-num" style="color: #f87171;">1</div>
+                <div class="kpi-lbl">GAPs Críticos Abertos</div>
+            </div>
+        </div>
+
+        <!-- Main Content (Matrix + GAPs) -->
+        <div class="dashboard-main-grid">
+            <!-- 5x5 Risk Matrix Panel -->
+            <div class="card-panel">
+                <div class="panel-title">
+                    <span>🔥 Matriz de Risco 5x5 (Probabilidade x Impacto)</span>
+                </div>
+
+                <div class="matrix-wrapper">
+                    <div class="y-axis-label">PROBABILIDADE</div>
+                    <div class="matrix-container">
+                        <div class="matrix-grid">
+                            <!-- Row 5 (Muito Alta) -->
+                            <div class="cell-axis">5</div>
+                            <div class="matrix-cell cell-r-med" onclick="filtrarMatriz(5,1)"><span class="cell-score">5</span><span class="cell-count">0</span></div>
+                            <div class="matrix-cell cell-r-high" onclick="filtrarMatriz(5,2)"><span class="cell-score">10</span><span class="cell-count">1</span></div>
+                            <div class="matrix-cell cell-r-high" onclick="filtrarMatriz(5,3)"><span class="cell-score">15</span><span class="cell-count">0</span></div>
+                            <div class="matrix-cell cell-r-crit" onclick="filtrarMatriz(5,4)"><span class="cell-score">20</span><span class="cell-count">1</span></div>
+                            <div class="matrix-cell cell-r-crit" onclick="filtrarMatriz(5,5)"><span class="cell-score">25</span><span class="cell-count">0</span></div>
+
+                            <!-- Row 4 (Alta) -->
+                            <div class="cell-axis">4</div>
+                            <div class="matrix-cell cell-r-low" onclick="filtrarMatriz(4,1)"><span class="cell-score">4</span><span class="cell-count">2</span></div>
+                            <div class="matrix-cell cell-r-med" onclick="filtrarMatriz(4,2)"><span class="cell-score">8</span><span class="cell-count">0</span></div>
+                            <div class="matrix-cell cell-r-high" onclick="filtrarMatriz(4,3)"><span class="cell-score">12</span><span class="cell-count">1</span></div>
+                            <div class="matrix-cell cell-r-high" onclick="filtrarMatriz(4,4)"><span class="cell-score">16</span><span class="cell-count">0</span></div>
+                            <div class="matrix-cell cell-r-crit" onclick="filtrarMatriz(4,5)"><span class="cell-score">20</span><span class="cell-count">0</span></div>
+
+                            <!-- Row 3 (Média) -->
+                            <div class="cell-axis">3</div>
+                            <div class="matrix-cell cell-r-low" onclick="filtrarMatriz(3,1)"><span class="cell-score">3</span><span class="cell-count">4</span></div>
+                            <div class="matrix-cell cell-r-med" onclick="filtrarMatriz(3,2)"><span class="cell-score">6</span><span class="cell-count">2</span></div>
+                            <div class="matrix-cell cell-r-med" onclick="filtrarMatriz(3,3)"><span class="cell-score">9</span><span class="cell-count">1</span></div>
+                            <div class="matrix-cell cell-r-high" onclick="filtrarMatriz(3,4)"><span class="cell-score">12</span><span class="cell-count">0</span></div>
+                            <div class="matrix-cell cell-r-high" onclick="filtrarMatriz(3,5)"><span class="cell-score">15</span><span class="cell-count">0</span></div>
+
+                            <!-- Row 2 (Baixa) -->
+                            <div class="cell-axis">2</div>
+                            <div class="matrix-cell cell-r-low" onclick="filtrarMatriz(2,1)"><span class="cell-score">2</span><span class="cell-count">3</span></div>
+                            <div class="matrix-cell cell-r-low" onclick="filtrarMatriz(2,2)"><span class="cell-score">4</span><span class="cell-count">1</span></div>
+                            <div class="matrix-cell cell-r-med" onclick="filtrarMatriz(2,3)"><span class="cell-score">6</span><span class="cell-count">0</span></div>
+                            <div class="matrix-cell cell-r-med" onclick="filtrarMatriz(2,4)"><span class="cell-score">8</span><span class="cell-count">0</span></div>
+                            <div class="matrix-cell cell-r-high" onclick="filtrarMatriz(2,5)"><span class="cell-score">10</span><span class="cell-count">0</span></div>
+
+                            <!-- Row 1 (Muito Baixa) -->
+                            <div class="cell-axis">1</div>
+                            <div class="matrix-cell cell-r-low" onclick="filtrarMatriz(1,1)"><span class="cell-score">1</span><span class="cell-count">5</span></div>
+                            <div class="matrix-cell cell-r-low" onclick="filtrarMatriz(1,2)"><span class="cell-score">2</span><span class="cell-count">2</span></div>
+                            <div class="matrix-cell cell-r-low" onclick="filtrarMatriz(1,3)"><span class="cell-score">3</span><span class="cell-count">0</span></div>
+                            <div class="matrix-cell cell-r-low" onclick="filtrarMatriz(1,4)"><span class="cell-score">4</span><span class="cell-count">0</span></div>
+                            <div class="matrix-cell cell-r-med" onclick="filtrarMatriz(1,5)"><span class="cell-score">5</span><span class="cell-count">0</span></div>
+
+                            <!-- X Axis Headers -->
+                            <div></div>
+                            <div class="cell-axis">1</div>
+                            <div class="cell-axis">2</div>
+                            <div class="cell-axis">3</div>
+                            <div class="cell-axis">4</div>
+                            <div class="cell-axis">5</div>
+                        </div>
+                        <div class="x-axis-title">IMPACTO</div>
+                    </div>
+                </div>
+
+                <!-- Legend -->
+                <div class="risk-legend">
+                    <div class="legend-item"><div class="legend-color" style="background:#10b981;"></div> Baixo (1-4)</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#eab308;"></div> Médio (5-9)</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#f97316;"></div> Alto (10-16)</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#ef4444;"></div> Crítico (20-25)</div>
+                </div>
+            </div>
+
+            <!-- GAPs & Action Items Panel -->
+            <div class="card-panel">
+                <div class="panel-title">
+                    <span>⚠️ GAPs de Maior Severidade</span>
+                </div>
+
+                <div id="gap-items-list">
+                    <div class="gap-list-item">
+                        <div class="gap-header">
+                            <span class="gap-code">3.4.1-A</span>
+                            <span style="font-size: 0.75em; color: #ef4444; font-weight: 700;">RISCO CRÍTICO (Score 20)</span>
+                        </div>
+                        <div class="gap-title">Criptografia de Dados de Cartão (PAN)</div>
+                        <div class="gap-desc">
+                            ⚠️ <strong>GAP QSA:</strong> Falta comprovação da rotação semestral das chaves KEK/DEK de criptografia no Banco de Dados.
+                        </div>
+                    </div>
+
+                    <div class="gap-list-item" style="border-left-color: var(--risk-high);">
+                        <div class="gap-header">
+                            <span class="gap-code">8.3.1-A</span>
+                            <span style="font-size: 0.75em; color: #f97316; font-weight: 700;">RISCO ALTO (Score 12)</span>
+                        </div>
+                        <div class="gap-title">Autenticação Múltiplo Fator (MFA)</div>
+                        <div class="gap-desc" style="color: #fb923c; background: rgba(249, 115, 22, 0.1);">
+                            ⚠️ <strong>GAP QSA:</strong> Evidência pendente para todos os acessos administrativos de rede e bastion host.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filtrarMatriz(prob, imp) {
+            const score = prob * imp;
+            alert(`🔍 Filtrando matriz para Probabilidade ${prob} x Impacto ${imp} (Score de Risco ${score})`);
+        }
+    </script>
+</body>
+</html>

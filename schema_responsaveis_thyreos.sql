@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS usuarios_internos (
     email VARCHAR(255) NOT NULL UNIQUE,
     area VARCHAR(100) NOT NULL, -- Ex: TI, Infraestrutura, Segurança, RH, Financeiro
     cargo VARCHAR(100),
-    perfil VARCHAR(50) CHECK (perfil IN ('operacional', 'coordenador', 'executivo', 'auditor')),
+    perfil VARCHAR(50) CHECK (perfil IN ('operacional', 'coordenador', 'executivo', 'auditor', 'admin_plataforma')),
     ativo BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -48,13 +48,15 @@ CREATE TABLE IF NOT EXISTS requisitos_conformidade (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 4. Tabela de Evidências Enviadas
+-- 4. Tabela de Evidências Enviadas (com Hash SHA-256 e Rastreabilidade)
 CREATE TABLE IF NOT EXISTS evidencias (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     requisito_id UUID REFERENCES requisitos_conformidade(id) ON DELETE CASCADE,
-    enviado_por_id UUID REFERENCES usuarios_internos(id) ON DELETE SET NULL,
+    enviado_por_id UUID REFERENCES usuarios_internos(id) ON DELETE SET NULL, -- Rastreabilidade em nome de terceiros
     arquivo_nome TEXT NOT NULL,
     arquivo_url TEXT NOT NULL,
+    sha256_hash VARCHAR(64), -- Validação de integridade do arquivo
+    tamanho_bytes BIGINT,
     observacao TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -83,10 +85,11 @@ ON CONFLICT (id) DO UPDATE SET nome = EXCLUDED.nome;
 
 -- Inserir Usuários Internos da CSU Digital
 INSERT INTO usuarios_internos (id, projeto_id, nome, email, area, cargo, perfil) VALUES
+('66666666-6666-6666-6666-666666666666', '11111111-1111-1111-1111-111111111111', 'Kleiton Rodrigues', 'krodrigues@botech.info', 'Segurança da Informação', 'Administrador da Plataforma', 'admin_plataforma'),
 ('22222222-2222-2222-2222-222222222222', '11111111-1111-1111-1111-111111111111', 'Ponto Focal CSU', 'focal.pci@csudigital.com.br', 'Segurança da Informação', 'Coordenador de Conformidade PCI', 'coordenador'),
 ('33333333-3333-3333-3333-333333333333', '11111111-1111-1111-1111-111111111111', 'Responsável Redes CSU', 'redes.infra@csudigital.com.br', 'Infraestrutura e Redes', 'Especialista de Redes', 'operacional'),
 ('44444444-4444-4444-4444-444444444444', '11111111-1111-1111-1111-111111111111', 'Responsável Sistemas CSU', 'sistemas.dev@csudigital.com.br', 'Sistemas e Desenvolvimento', 'Desenvolvedor Senior', 'operacional')
-ON CONFLICT (email) DO UPDATE SET nome = EXCLUDED.nome, area = EXCLUDED.area;
+ON CONFLICT (email) DO UPDATE SET nome = EXCLUDED.nome, area = EXCLUDED.area, perfil = EXCLUDED.perfil;
 
 -- Inserir Requisitos de Teste CSU Digital
 INSERT INTO requisitos_conformidade (projeto_id, codigo, titulo, area_sugerida, responsavel_id, atribuido_por_id, status, prazo_entrega) VALUES

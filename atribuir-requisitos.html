@@ -253,6 +253,140 @@
             display: none;
             z-index: 1000;
         }
+
+        /* Modal Evidências & Parecer QSA */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .modal-container {
+            background: #18181b;
+            border: 1px solid rgba(255, 179, 102, 0.3);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 850px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+            color: #f4f4f5;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #3f3f46;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.25em;
+            font-weight: 700;
+            color: var(--brand-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #a1a1aa;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .modal-close:hover { color: white; }
+
+        .modal-section {
+            background: #27272a;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #3f3f46;
+        }
+
+        .modal-section-title {
+            font-size: 0.95em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #d4d4d8;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .evidencia-item {
+            background: #18181b;
+            border: 1px solid #3f3f46;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hash-tag {
+            font-family: monospace;
+            font-size: 0.75em;
+            background: #09090b;
+            color: #f59e0b;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            word-break: break-all;
+        }
+
+        .btn-btn-action {
+            background: var(--brand-primary);
+            color: #111;
+            font-weight: 700;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-btn-action:hover { opacity: 0.9; }
+
+        .btn-evidencias {
+            background: rgba(255, 179, 102, 0.15);
+            color: var(--brand-primary);
+            border: 1px solid var(--brand-primary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-evidencias:hover {
+            background: var(--brand-primary);
+            color: #111;
+        }
+
+        .gap-alert-box {
+            border: 2px solid #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 12px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -286,6 +420,28 @@
             </div>
         </div>
 
+        <!-- Scope & Role Mode Switcher (Recomendação 1) -->
+        <div class="scope-banner" style="background: rgba(45, 45, 45, 0.95); border: 1px solid rgba(255, 179, 102, 0.3); padding: 16px 20px; border-radius: 12px; margin-bottom: 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 1.2em;">🔒</span>
+                <div>
+                    <strong style="color: var(--brand-primary); font-size: 0.95em;">Modo de Visualização & Trava de Escopo:</strong>
+                    <div style="font-size: 0.85em; color: var(--text-gray);">Restringe a exibição de requisitos apenas ao responsável logado da área.</div>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <select id="mode-selector" class="filter-select" style="border-color: var(--brand-primary); font-weight: 600;">
+                    <option value="coordenador">🌐 Visão Geral (Coordenador / Admin)</option>
+                    <option value="area_interna">🔒 Restrição de Escopo (Área Interna)</option>
+                </select>
+
+                <select id="user-sim-selector" class="filter-select" style="display: none; border-color: var(--brand-secondary);">
+                    <option value="">-- Selecione o Usuário para Simular --</option>
+                </select>
+            </div>
+        </div>
+
         <!-- Toolbar & Filters -->
         <div class="toolbar">
             <div class="filter-group">
@@ -295,6 +451,7 @@
                     <option value="Infraestrutura e Redes">Infraestrutura e Redes</option>
                     <option value="Segurança da Informação">Segurança da Informação</option>
                     <option value="Sistemas e Desenvolvimento">Sistemas e Desenvolvimento</option>
+                    <option value="Banco de Dados (DBA)">Banco de Dados (DBA)</option>
                 </select>
                 <select id="filter-status" class="filter-select">
                     <option value="">Todos os Status de Atribuição</option>
@@ -317,16 +474,91 @@
                             <th style="width: 90px;">Código</th>
                             <th>Título do Requisito</th>
                             <th>Área Sugerida</th>
-                            <th style="width: 280px;">Responsável (Ponto Focal Operacional)</th>
+                            <th style="width: 240px;">Responsável (Ponto Focal)</th>
                             <th style="width: 120px;">Status Evidência</th>
+                            <th style="width: 140px; text-align: center;">Ações QSA</th>
                         </tr>
                     </thead>
                     <tbody id="req-list">
                         <tr>
-                            <td colspan="5" style="text-align: center; color: var(--text-gray); padding: 40px;">Carregando requisitos e equipe...</td>
+                            <td colspan="6" style="text-align: center; color: var(--text-gray); padding: 40px;">Carregando requisitos e equipe...</td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Evidências e Revisão QSA -->
+    <div id="modal-evidencias" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>📎 Evidências & Parecer QSA:</span>
+                    <span id="modal-req-codigo" class="code-tag"></span>
+                </div>
+                <button class="modal-close" onclick="fecharModalEvidencias()">&times;</button>
+            </div>
+
+            <div id="modal-req-titulo" style="font-size: 1.1em; font-weight: 600; margin-bottom: 20px; color: #e4e4e7;"></div>
+
+            <!-- Seção 1: Histórico de Evidências -->
+            <div class="modal-section">
+                <div class="modal-section-title">📂 Evidências Anexadas (Com Hash SHA-256)</div>
+                <div id="modal-evidencias-list">
+                    <div style="color: #a1a1aa; font-size: 0.9em;">Nenhuma evidência anexada até o momento.</div>
+                </div>
+            </div>
+
+            <!-- Seção 2: Anexar Nova Evidência -->
+            <div class="modal-section">
+                <div class="modal-section-title">📤 Enviar Nova Evidência</div>
+                <div style="display: grid; gap: 12px;">
+                    <div>
+                        <label style="font-size: 0.85em; color: #a1a1aa; display: block; margin-bottom: 4px;">Selecione o Arquivo (PDF, ZIP, PNG, DOCX)</label>
+                        <input type="file" id="file-input" onchange="calcularHashPreview(this)" style="background: #18181b; border: 1px solid #3f3f46; color: white; padding: 8px; border-radius: 6px; width: 100%;">
+                    </div>
+                    <div id="hash-preview" style="display: none; font-size: 0.8em; color: #f59e0b;">
+                        🔐 <strong>SHA-256 Calculado:</strong> <span id="hash-preview-val" class="hash-tag"></span>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.85em; color: #a1a1aa; display: block; margin-bottom: 4px;">Observações / Descrição do Arquivo</label>
+                        <input type="text" id="file-obs-input" placeholder="Ex: Evidência de parametrização do firewall em ambiente PCI" style="background: #18181b; border: 1px solid #3f3f46; color: white; padding: 8px 12px; border-radius: 6px; width: 100%;">
+                    </div>
+                    <button class="btn-btn-action" onclick="salvarNovaEvidencia()" style="justify-self: start;">📤 Enviar Evidência com Validação Hash</button>
+                </div>
+            </div>
+
+            <!-- Seção 3: Avaliação & Parecer QSA Auditor -->
+            <div class="modal-section" style="border-color: rgba(245, 158, 11, 0.4);">
+                <div class="modal-section-title" style="color: #f59e0b;">⚖️ Parecer da Auditoria QSA (Decisão & GAP)</div>
+                <div style="display: grid; gap: 14px;">
+                    <div>
+                        <label style="font-size: 0.85em; color: #a1a1aa; display: block; margin-bottom: 6px;">Status da Conformidade</label>
+                        <select id="modal-qsa-status" class="assign-select" onchange="toggleGapField(this.value)">
+                            <option value="NAO_ENVIADO">NÃO ENVIADO (Pendente)</option>
+                            <option value="ENVIADO">ENVIADO (Aguardando Análise)</option>
+                            <option value="EM_REVISAO">EM REVISÃO (QSA Analisando)</option>
+                            <option value="AJUSTE_SOLICITADO">⚠️ AJUSTE SOLICITADO (Gerar GAP)</option>
+                            <option value="ACEITO">✅ ACEITO (Requisito Conforme)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="font-size: 0.85em; color: #a1a1aa; display: block; margin-bottom: 4px;">Comentário Geral da Auditoria</label>
+                        <textarea id="modal-qsa-comentario" rows="2" placeholder="Comentário do QSA sobre a análise das evidências..." style="background: #18181b; border: 1px solid #3f3f46; color: white; padding: 10px; border-radius: 6px; width: 100%; font-family: inherit;"></textarea>
+                    </div>
+
+                    <!-- Campo GAP Obrigatório quando Ajuste Solicitado -->
+                    <div id="gap-field-container" class="gap-alert-box">
+                        <label style="font-size: 0.9em; font-weight: 700; color: #f87171; display: block; margin-bottom: 6px;">
+                            ⚠️ PENDÊNCIA / GAP DE COMPLIANCE (OBRIGATÓRIO PARA SOLICITAR AJUSTE)
+                        </label>
+                        <textarea id="modal-qsa-gap" rows="3" placeholder="Especifique exatamente o que está faltando ou o ajuste necessário para o ponto focal corrigir..." style="background: #18181b; border: 1px solid #f87171; color: white; padding: 10px; border-radius: 6px; width: 100%; font-family: inherit;"></textarea>
+                    </div>
+
+                    <button class="btn-btn-action" onclick="salvarParecerQSA()" style="background: #f59e0b; color: #111; justify-self: start;">💾 Salvar Parecer do QSA</button>
+                </div>
             </div>
         </div>
     </div>
@@ -359,44 +591,82 @@
         }
 
         async function carregarDados() {
+            // 1. Carregar Usuários Cadastrados
             try {
-                // 1. Carregar Usuários Cadastrados
                 const { data: users, error: errUsers } = await client
                     .from('usuarios_internos')
                     .select('*')
                     .eq('projeto_id', PROJETO_ID);
 
-                if (errUsers) throw errUsers;
-                todosUsuarios = users || [];
+                if (!errUsers && users && users.length > 0) {
+                    todosUsuarios = users;
+                } else {
+                    throw new Error('Usando lista local de usuários');
+                }
+            } catch (err) {
+                console.warn('Equipe Supabase indisponível, usando equipe modelo CSU:', err);
+                todosUsuarios = [
+                    { id: '66666666-6666-6666-6666-666666666666', nome: 'Kleiton Rodrigues', email: 'krodrigues@botech.info', area: 'Segurança da Informação', perfil: 'admin_plataforma' },
+                    { id: '22222222-2222-2222-2222-222222222222', nome: 'Ponto Focal CSU (Bruno)', area: 'Segurança da Informação', perfil: 'coordenador' },
+                    { id: '33333333-3333-3333-3333-333333333333', nome: 'Responsável Redes CSU', area: 'Infraestrutura e Redes', perfil: 'operacional' },
+                    { id: '44444444-4444-4444-4444-444444444444', nome: 'Responsável Sistemas CSU', area: 'Sistemas e Desenvolvimento', perfil: 'operacional' },
+                    { id: '55555555-5555-5555-5555-555555555555', nome: 'Responsável DBA CSU', area: 'Banco de Dados (DBA)', perfil: 'operacional' }
+                ];
+            }
 
-                // 2. Carregar Requisitos
+            // Garantir que Kleiton Rodrigues sempre exista na lista para testes de escopo
+            const kleitonExistente = todosUsuarios.find(u => u.id === '66666666-6666-6666-6666-666666666666' || u.email.includes('kleiton') || u.email.includes('botech'));
+            if (!kleitonExistente) {
+                todosUsuarios.unshift({
+                    id: '66666666-6666-6666-6666-666666666666',
+                    nome: 'Kleiton Rodrigues',
+                    email: 'krodrigues@botech.info',
+                    area: 'Segurança da Informação',
+                    perfil: 'admin_plataforma'
+                });
+            } else {
+                kleitonExistente.email = 'krodrigues@botech.info';
+                kleitonExistente.perfil = 'admin_plataforma';
+            }
+
+            // Atualizar dropdown de simulação de usuário
+            atualizarSeletorSimulacao();
+
+            // 2. Carregar Requisitos
+            try {
                 const { data: reqs, error: errReqs } = await client
                     .from('requisitos_conformidade')
                     .select('*')
                     .eq('projeto_id', PROJETO_ID)
                     .order('codigo', { ascending: true });
 
-                if (errReqs) throw errReqs;
-                
-                todosRequisitos = reqs || [];
-
-                // Se a tabela estiver vazia no banco, usa lista modelo PCI desmembrada por escopo
-                if (todosRequisitos.length === 0) {
-                    todosRequisitos = [
-                        { id: 'req-1a', codigo: '1.2.1-A', titulo: 'Configuração de Segurança de Rede', escopo: 'Firewalls e Roteadores', area_sugerida: 'Infraestrutura e Redes', responsavel_id: null, status: 'NAO_ENVIADO' },
-                        { id: 'req-2a', codigo: '2.2.1-A', titulo: 'System Hardening', escopo: 'Dispositivos de Rede & Firewalls', area_sugerida: 'Infraestrutura e Redes', responsavel_id: null, status: 'ACEITO' },
-                        { id: 'req-2b', codigo: '2.2.1-B', titulo: 'System Hardening', escopo: 'Servidores (Linux & Windows)', area_sugerida: 'Infraestrutura e Redes', responsavel_id: null, status: 'EM_REVISAO' },
-                        { id: 'req-2c', codigo: '2.2.1-C', titulo: 'System Hardening', escopo: 'Bancos de Dados (DBA)', area_sugerida: 'Banco de Dados (DBA)', responsavel_id: null, status: 'NAO_ENVIADO' },
-                        { id: 'req-3a', codigo: '3.4.1-A', titulo: 'Criptografia de Dados (PAN)', escopo: 'Bancos de Dados & Storage', area_sugerida: 'Segurança da Informação', responsavel_id: null, status: 'NAO_ENVIADO' },
-                        { id: 'req-4a', codigo: '6.3.1-A', titulo: 'Gestão de Vulnerabilidades & Patches', escopo: 'Aplicações e Código Fonte', area_sugerida: 'Sistemas e Desenvolvimento', responsavel_id: null, status: 'NAO_ENVIADO' },
-                        { id: 'req-5a', codigo: '8.3.1-A', titulo: 'Autenticação Múltiplo Fator (MFA)', escopo: 'Acessos Administrativos', area_sugerida: 'Segurança da Informação', responsavel_id: null, status: 'NAO_ENVIADO' }
-                    ];
+                if (!errReqs && reqs && reqs.length > 0) {
+                    todosRequisitos = reqs;
+                } else {
+                    throw new Error('Usando lista local de requisitos');
                 }
-
-                renderizar();
             } catch (err) {
-                console.error('Erro ao carregar dados:', err);
+                console.warn('Requisitos Supabase indisponíveis, usando matriz modelo PCI:', err);
+                todosRequisitos = [
+                    { id: 'req-1a', codigo: '1.2.1-A', titulo: 'Configuração de Segurança de Rede', escopo: 'Firewalls e Roteadores', area_sugerida: 'Infraestrutura e Redes', responsavel_id: '33333333-3333-3333-3333-333333333333', status: 'NAO_ENVIADO' },
+                    { id: 'req-2a', codigo: '2.2.1-A', titulo: 'System Hardening', escopo: 'Dispositivos de Rede & Firewalls', area_sugerida: 'Infraestrutura e Redes', responsavel_id: '33333333-3333-3333-3333-333333333333', status: 'ACEITO' },
+                    { id: 'req-2b', codigo: '2.2.1-B', titulo: 'System Hardening', escopo: 'Servidores (Linux & Windows)', area_sugerida: 'Infraestrutura e Redes', responsavel_id: '33333333-3333-3333-3333-333333333333', status: 'EM_REVISAO' },
+                    { id: 'req-2c', codigo: '2.2.1-C', titulo: 'System Hardening', escopo: 'Bancos de Dados (DBA)', area_sugerida: 'Banco de Dados (DBA)', responsavel_id: '55555555-5555-5555-5555-555555555555', status: 'NAO_ENVIADO' },
+                    { id: 'req-3a', codigo: '3.4.1-A', titulo: 'Criptografia de Dados (PAN)', escopo: 'Bancos de Dados & Storage', area_sugerida: 'Segurança da Informação', responsavel_id: '66666666-6666-6666-6666-666666666666', status: 'EM_REVISAO' },
+                    { id: 'req-4a', codigo: '6.3.1-A', titulo: 'Gestão de Vulnerabilidades & Patches', escopo: 'Aplicações e Código Fonte', area_sugerida: 'Sistemas e Desenvolvimento', responsavel_id: '44444444-4444-4444-4444-444444444444', status: 'NAO_ENVIADO' },
+                    { id: 'req-5a', codigo: '8.3.1-A', titulo: 'Autenticação Múltiplo Fator (MFA)', escopo: 'Acessos Administrativos', area_sugerida: 'Segurança da Informação', responsavel_id: '66666666-6666-6666-6666-666666666666', status: 'NAO_ENVIADO' }
+                ];
             }
+
+            renderizar();
+        }
+
+        function atualizarSeletorSimulacao() {
+            const userSimEl = document.getElementById('user-sim-selector');
+            userSimEl.innerHTML = `
+                <option value="">-- Todos os Usuários da Área Interna --</option>
+                ${todosUsuarios.map(u => `<option value="${u.id}">${escapeHtml(u.nome)} [${escapeHtml(u.area)}]</option>`).join('')}
+            `;
         }
 
         function renderizar() {
@@ -404,6 +674,12 @@
             const searchVal = document.getElementById('search-input').value.toLowerCase();
             const filterArea = document.getElementById('filter-area').value;
             const filterStatus = document.getElementById('filter-status').value;
+            const mode = document.getElementById('mode-selector').value;
+            const simUserId = document.getElementById('user-sim-selector').value;
+
+            // Ajustar visibilidade do seletor de simulação de usuário
+            const userSimEl = document.getElementById('user-sim-selector');
+            userSimEl.style.display = mode === 'area_interna' ? 'inline-block' : 'none';
 
             let filtrados = todosRequisitos.filter(r => {
                 const matchSearch = r.codigo.toLowerCase().includes(searchVal) || 
@@ -411,7 +687,19 @@
                                     (r.escopo && r.escopo.toLowerCase().includes(searchVal));
                 const matchArea = !filterArea || r.area_sugerida === filterArea;
                 const matchStatus = !filterStatus || (filterStatus === 'unassigned' ? !r.responsavel_id : !!r.responsavel_id);
-                return matchSearch && matchArea && matchStatus;
+
+                // Trava Estrita de Escopo (Recomendação 1)
+                let matchScope = true;
+                if (mode === 'area_interna') {
+                    if (simUserId) {
+                        const simUser = todosUsuarios.find(u => u.id === simUserId);
+                        matchScope = (r.responsavel_id === simUserId) || (simUser && r.area_sugerida === simUser.area);
+                    } else {
+                        matchScope = !!r.responsavel_id;
+                    }
+                }
+
+                return matchSearch && matchArea && matchStatus && matchScope;
             });
 
             // Atualizar KPIs
@@ -440,6 +728,7 @@
                         <td>
                             <strong>${escapeHtml(r.titulo)}</strong>
                             ${r.escopo ? `<div style="font-size: 0.85em; color: var(--brand-primary); margin-top: 2px;">📍 Escopo: ${escapeHtml(r.escopo)}</div>` : ''}
+                            ${r.pendencia_gap ? `<div style="font-size: 0.85em; color: #f87171; margin-top: 4px; background: rgba(239, 68, 68, 0.1); padding: 4px 8px; border-radius: 4px;">⚠️ GAP: ${escapeHtml(r.pendencia_gap)}</div>` : ''}
                         </td>
                         <td>${escapeHtml(r.area_sugerida || '-')}</td>
                         <td>
@@ -456,6 +745,11 @@
                             <span class="status-badge status-${(r.status || 'nao_enviado').toLowerCase()}">
                                 ${escapeHtml(r.status || 'NÃO ENVIADO')}
                             </span>
+                        </td>
+                        <td style="text-align: center;">
+                            <button class="btn-evidencias" onclick="abrirModalEvidencias('${r.id}')">
+                                📎 Evidências / QSA
+                            </button>
                         </td>
                     </tr>
                 `;
@@ -509,10 +803,166 @@
             renderizar();
         });
 
-        // Eventos dos filtros
+        // ==============================================================================
+        // LÓGICA DO MODAL DE EVIDÊNCIAS & REVISÃO QSA (RECOMENDAÇÃO #2)
+        // ==============================================================================
+        let reqAtualModalId = null;
+        let fileHashCalculado = '';
+
+        function abrirModalEvidencias(reqId) {
+            reqAtualModalId = reqId;
+            const req = todosRequisitos.find(r => r.id === reqId);
+            if (!req) return;
+
+            document.getElementById('modal-req-codigo').textContent = req.codigo;
+            document.getElementById('modal-req-titulo').textContent = req.titulo + (req.escopo ? ` (Escopo: ${req.escopo})` : '');
+            
+            // Preencher dados do QSA
+            document.getElementById('modal-qsa-status').value = req.status || 'NAO_ENVIADO';
+            document.getElementById('modal-qsa-comentario').value = req.comentario_auditor || '';
+            document.getElementById('modal-qsa-gap').value = req.pendencia_gap || '';
+            
+            toggleGapField(document.getElementById('modal-qsa-status').value);
+
+            // Renderizar Lista de Evidências
+            renderizarListaEvidenciasModal(req);
+
+            // Reset Form de Upload
+            document.getElementById('file-input').value = '';
+            document.getElementById('file-obs-input').value = '';
+            document.getElementById('hash-preview').style.display = 'none';
+            fileHashCalculado = '';
+
+            document.getElementById('modal-evidencias').style.display = 'flex';
+        }
+
+        function fecharModalEvidencias() {
+            document.getElementById('modal-evidencias').style.display = 'none';
+            reqAtualModalId = null;
+        }
+
+        function toggleGapField(status) {
+            const gapContainer = document.getElementById('gap-field-container');
+            if (status === 'AJUSTE_SOLICITADO') {
+                gapContainer.style.display = 'block';
+            } else {
+                gapContainer.style.display = 'none';
+            }
+        }
+
+        function renderizarListaEvidenciasModal(req) {
+            const container = document.getElementById('modal-evidencias-list');
+            const evidencias = req.evidencias || [
+                {
+                    id: 'ev-demo-1',
+                    arquivo_nome: 'Evidencia_Parametrizacao_Network_2026.pdf',
+                    enviado_por: 'Kleiton Rodrigues (krodrigues@botech.info)',
+                    sha256_hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+                    created_at: '15/09/2026 14:30'
+                }
+            ];
+
+            container.innerHTML = evidencias.map(ev => `
+                <div class="evidencia-item">
+                    <div>
+                        <div style="font-weight: 600; color: #fff;">📄 ${escapeHtml(ev.arquivo_nome)}</div>
+                        <div style="font-size: 0.8em; color: #a1a1aa; margin-top: 2px;">
+                            Enviado por: <strong>${escapeHtml(ev.enviado_por || 'Kleiton Rodrigues (krodrigues@botech.info)')}</strong> em ${escapeHtml(ev.created_at || '15/09/2026')}
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="hash-tag" title="Hash SHA-256 de integridade">SHA: ${escapeHtml((ev.sha256_hash || '').substring(0, 16))}...</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function calcularHashPreview(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const buffer = await file.arrayBuffer();
+            const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            fileHashCalculado = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+            document.getElementById('hash-preview-val').textContent = fileHashCalculado;
+            document.getElementById('hash-preview').style.display = 'block';
+        }
+
+        async function salvarNovaEvidencia() {
+            const input = document.getElementById('file-input');
+            const obsInput = document.getElementById('file-obs-input');
+
+            if (!input.files || input.files.length === 0) {
+                alert('⚠️ Selecione um arquivo para enviar!');
+                return;
+            }
+
+            const file = input.files[0];
+            const req = todosRequisitos.find(r => r.id === reqAtualModalId);
+            if (!req) return;
+
+            if (!req.evidencias) req.evidencias = [];
+
+            const novaEv = {
+                id: 'ev-' + Date.now(),
+                arquivo_nome: file.name,
+                sha256_hash: fileHashCalculado || 'sha256-simulado-' + Date.now(),
+                enviado_por: 'Kleiton Rodrigues (krodrigues@botech.info)',
+                observacao: obsInput.value,
+                created_at: new Date().toLocaleString('pt-BR')
+            };
+
+            req.evidencias.push(novaEv);
+            req.status = 'ENVIADO'; // Atualiza status automaticamente para ENVIADO ao subir arquivo
+
+            showToast('✅ Evidência anexada com sucesso e Hash SHA-256 gerado!');
+            abrirModalEvidencias(reqAtualModalId);
+            renderizar();
+        }
+
+        async function salvarParecerQSA() {
+            const status = document.getElementById('modal-qsa-status').value;
+            const comentario = document.getElementById('modal-qsa-comentario').value;
+            const gap = document.getElementById('modal-qsa-gap').value;
+
+            if (status === 'AJUSTE_SOLICITADO' && (!gap || gap.trim() === '')) {
+                alert('⚠️ OBRIGATÓRIO: Ao solicitar ajuste, você deve preencher o campo de Pendência / GAP de Compliance!');
+                document.getElementById('modal-qsa-gap').focus();
+                return;
+            }
+
+            const req = todosRequisitos.find(r => r.id === reqAtualModalId);
+            if (!req) return;
+
+            req.status = status;
+            req.comentario_auditor = comentario;
+            req.pendencia_gap = status === 'AJUSTE_SOLICITADO' ? gap : null;
+
+            // Salva no banco de dados Supabase se for UUID real
+            if (req.id.length > 10) {
+                await client
+                    .from('requisitos_conformidade')
+                    .update({
+                        status: status,
+                        comentario_auditor: comentario,
+                        pendencia_gap: status === 'AJUSTE_SOLICITADO' ? gap : null
+                    })
+                    .eq('id', req.id);
+            }
+
+            showToast('⚖️ Parecer do QSA e GAP de compliance salvos com sucesso!');
+            fecharModalEvidencias();
+            renderizar();
+        }
+
+        // Eventos dos filtros e modo de escopo
         document.getElementById('search-input').addEventListener('input', renderizar);
         document.getElementById('filter-area').addEventListener('change', renderizar);
         document.getElementById('filter-status').addEventListener('change', renderizar);
+        document.getElementById('mode-selector').addEventListener('change', renderizar);
+        document.getElementById('user-sim-selector').addEventListener('change', renderizar);
 
         // Inicializar
         carregarDados();

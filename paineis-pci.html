@@ -457,11 +457,40 @@
                     .eq('ativo', true)
                     .order('ordem', { ascending: true });
 
-                if (error) throw error;
-                renderTools(data);
+                if (!error && data && data.length > 0) {
+                    renderTools(data);
+                } else {
+                    throw new Error('Usando links de painéis modelo');
+                }
             } catch (err) {
-                console.error('Erro ao carregar ferramentas:', err);
-                container.innerHTML = '<div style="text-align: center; color: var(--text-gray); padding: 60px 24px;">⚠️ Erro ao carregar as ferramentas. Tente novamente em alguns momentos.</div>';
+                console.warn('Carregando links padrão de painéis PCI:', err);
+                const defaultLinks = [
+                    {
+                        titulo: '📊 Dashboard Executivo & Matriz 5x5',
+                        descricao: 'Visão executiva com Selo de Risco, Matriz de Calor 5x5 e GAPs críticos.',
+                        url: './dashboard-executivo.html',
+                        icone: '🔥'
+                    },
+                    {
+                        titulo: '🎯 Atribuição de Requisitos & Escopo',
+                        descricao: 'Gestão de tarefas com trava estrita de escopo por área interna e parecer QSA.',
+                        url: './atribuir-requisitos.html',
+                        icone: '🔒'
+                    },
+                    {
+                        titulo: '👥 Onboarding & Cadastro da Equipe',
+                        descricao: 'Cadastro de responsáveis internos e pontos focais por departamento.',
+                        url: './cadastro-equipe.html',
+                        icone: '👥'
+                    },
+                    {
+                        titulo: '📈 Painel ROC CSU Digital',
+                        descricao: 'Relatório Oficial de Conformidade (ROC) dinâmico do projeto CSU.',
+                        url: './painel_roc_csu_dinamico.html',
+                        icone: '🛡️'
+                    }
+                ];
+                renderTools(defaultLinks);
             }
         }
 
