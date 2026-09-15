@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Operacional PCI DSS - CSU Digital</title>
+    <style>
+        :root {
+            --brand-primary: #ffb366;
+            --brand-secondary: #ffc480;
+            --brand-dark: #18181b;
+            --text-light: #f4f4f5;
+            --text-gray: #a1a1aa;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #18181b 0%, #09090b 100%);
+            min-height: 100vh;
+            color: var(--text-light);
+            line-height: 1.6;
+            padding: 30px 20px;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(39, 39, 42, 0.8);
+            border: 1px solid rgba(255, 179, 102, 0.2);
+            padding: 14px 24px;
+            border-radius: 14px;
+            margin-bottom: 28px;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .user-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--brand-primary); color: #111;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.1em;
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-logout:hover { background: #ef4444; color: white; }
+
+        .badge-client {
+            display: inline-block;
+            background: rgba(255, 179, 102, 0.15);
+            color: var(--brand-primary);
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.78em;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: 1px solid rgba(255, 179, 102, 0.3);
+            margin-bottom: 8px;
+        }
+
+        h1 { font-size: 1.8em; color: var(--text-light); margin-bottom: 4px; }
+        p.subtitle { color: var(--text-gray); font-size: 0.92em; margin-bottom: 24px; }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background: #27272a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 179, 102, 0.15);
+            box-shadow: var(--shadow-md);
+        }
+
+        .kpi-title { font-size: 0.8em; color: var(--text-gray); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+        .kpi-value { font-size: 1.8em; font-weight: 800; color: var(--brand-primary); }
+
+        /* Alert Box */
+        .alert-box {
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 10px;
+            padding: 14px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        /* Table Card */
+        .card-table {
+            background: #27272a;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255, 179, 102, 0.2);
+        }
+
+        .table-responsive { overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9em; }
+        th, td { padding: 14px 16px; border-bottom: 1px solid #3f3f46; vertical-align: middle; }
+        th { color: var(--brand-primary); font-weight: 600; text-transform: uppercase; font-size: 0.78em; letter-spacing: 0.5px; }
+
+        .code-tag {
+            font-weight: 800; color: var(--brand-primary);
+            background: rgba(255, 179, 102, 0.1);
+            padding: 3px 8px; border-radius: 6px; display: inline-block;
+        }
+
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.8em; font-weight: 600; }
+        .status-nao_enviado { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+        .status-enviado { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .status-em_revisao { background: rgba(245, 158, 11, 0.2); color: #fcd34d; }
+        .status-ajuste_solicitado { background: rgba(239, 68, 68, 0.25); color: #f87171; border: 1px solid #f87171; }
+        .status-aceito { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+
+        .btn-upload {
+            background: var(--brand-primary);
+            color: #111; font-weight: 700; border: none;
+            padding: 8px 14px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 0.85em;
+        }
+        .btn-upload:hover { background: var(--brand-secondary); }
+
+        /* Modal Evidências */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
+            display: none; align-items: center; justify-content: center; z-index: 9999; padding: 20px;
+        }
+
+        .modal-container {
+            background: #18181b; border: 1px solid rgba(255, 179, 102, 0.3); border-radius: 12px;
+            width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 24px; color: #f4f4f5;
+        }
+
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3f3f46; padding-bottom: 16px; margin-bottom: 20px; }
+        .modal-close { background: none; border: none; color: #a1a1aa; font-size: 1.5em; cursor: pointer; }
+
+        .hash-tag { font-family: monospace; font-size: 0.75em; background: #09090b; color: #f59e0b; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+        .notification-toast {
+            position: fixed; bottom: 24px; right: 24px; background: #10b981; color: #111;
+            font-weight: 700; padding: 12px 24px; border-radius: 8px; display: none; z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Barra de Navegação de Sessão -->
+        <div class="top-navbar">
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">AR</div>
+                <div>
+                    <div style="font-weight: 700; color: var(--brand-primary); font-size: 0.95em;" id="user-name">Ana Ribeiro</div>
+                    <div style="font-size: 0.8em; color: var(--text-gray);" id="user-role">Ponto Focal Operacional (Área Interna)</div>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="fazerLogout()">🚪 Sair do Painel</button>
+        </div>
+
+        <span class="badge-client">CSU Digital · PCI DSS v4.0.1</span>
+        <h1>🧑‍💻 Painel Exclusivo: Ponto Focal Operacional</h1>
+        <p class="subtitle">Gerencie suas evidências, acompanhe os prazos dos seus requisitos e envie correções para o QSA.</p>
+
+        <!-- Grade de KPIs Operacionais -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">Requisitos Atribuídos</div>
+                <div class="kpi-value" id="kpi-assigned">3</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Aguardando Envio</div>
+                <div class="kpi-value" style="color: var(--warning);" id="kpi-pending">1</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Em Revisão QSA</div>
+                <div class="kpi-value" style="color: #60a5fa;" id="kpi-review">1</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Com Prazo Vencido</div>
+                <div class="kpi-value" style="color: #f87171;" id="kpi-overdue">2</div>
+            </div>
+        </div>
+
+        <!-- Alerta Dinâmico -->
+        <div class="alert-box">
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 0.9em;">
+                <span style="font-size: 1.3em;">⚠️</span>
+                <span><strong>Atenção Ana Ribeiro:</strong> Existem 2 requisito(s) com prazo de evidência vencido sob sua responsabilidade. Reenvie os arquivos com o Hash SHA-256.</span>
+            </div>
+            <span class="code-tag" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">Urgente</span>
+        </div>
+
+        <!-- Tabela de Requisitos Operacionais -->
+        <div class="card-table">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="color: var(--brand-primary); font-size: 1.1em;">📋 Meus Requisitos & Evidências</h3>
+                <input type="text" id="search-input" oninput="renderizar()" placeholder="Buscar código ou título..." style="padding: 8px 14px; border-radius: 8px; border: 1px solid #555; background: #18181b; color: white; font-size: 0.85em; min-width: 240px;">
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;">Código</th>
+                            <th>Título do Requisito & Escopo</th>
+                            <th>Prazo Final</th>
+                            <th style="width: 160px;">Status Evidência</th>
+                            <th style="width: 160px; text-align: center;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="req-list">
+                        <!-- Preenchido via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Upload de Evidência -->
+    <div id="modal-evidencias" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div style="font-size: 1.2em; font-weight: 700; color: var(--brand-primary);">
+                    📎 Upload de Evidência & Hash SHA-256: <span id="modal-req-codigo" class="code-tag"></span>
+                </div>
+                <button class="modal-close" onclick="fecharModal()">&times;</button>
+            </div>
+
+            <div id="modal-req-titulo" style="font-size: 1em; margin-bottom: 16px; color: #e4e4e7;"></div>
+
+            <!-- Parecer do QSA se houver ajustamento -->
+            <div id="modal-gap-warning" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid #f87171; border-radius: 8px; padding: 12px; margin-bottom: 18px;">
+                <div style="font-size: 0.85em; font-weight: 700; color: #f87171; margin-bottom: 4px;">💬 SOLICITAÇÃO DE AJUSTE DO QSA:</div>
+                <div id="modal-gap-text" style="font-size: 0.9em; color: #f4f4f5;"></div>
+            </div>
+
+            <div style="display: grid; gap: 14px;">
+                <div>
+                    <label style="font-size: 0.85em; color: #a1a1aa; display: block; margin-bottom: 4px;">Selecione o Arquivo (PDF, ZIP, PNG, DOCX)</label>
+                    <input type="file" id="file-input" onchange="calcularHash(this)" style="background: #27272a; border: 1px solid #3f3f46; color: white; padding: 8px; border-radius: 6px; width: 100%;">
+                </div>
+
+                <div id="hash-preview" style="display: none; font-size: 0.8em; color: #f59e0b;">
+                    🔐 <strong>SHA-256 Calculado:</strong> <span id="hash-preview-val" class="hash-tag"></span>
+                </div>
+
+                <div>
+                    <label style="font-size: 0.85em; color: #a1a1aa; display: block; margin-bottom: 4px;">Observações sobre a Evidência</label>
+                    <input type="text" id="file-obs-input" placeholder="Ex: Print do arquivo de configuração com carimbo de data/hora visível." style="background: #27272a; border: 1px solid #3f3f46; color: white; padding: 10px; border-radius: 6px; width: 100%;">
+                </div>
+
+                <button class="btn-upload" onclick="enviarEvidencia()" style="justify-self: start; padding: 10px 20px;">📤 Enviar Evidência para Avaliação do QSA</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="notification-toast"></div>
+
+    <script>
+        let todosRequisitos = [
+            { id: 'req-1', codigo: '1.2.7', titulo: 'Revisão semestral de configurações dos NSCs (firewalls)', escopo: 'Firewalls e Roteadores', prazo: '26/08/2026', status: 'NAO_ENVIADO', responsavel: 'Ana Ribeiro' },
+            { id: 'req-2', codigo: '1.2.8', titulo: 'Proteção dos arquivos de configuração dos NSCs', escopo: 'Arquivos de Configuração', prazo: '26/08/2026', status: 'AJUSTE_SOLICITADO', responsavel: 'Ana Ribeiro', pendencia_gap: 'O print enviado não mostra a data da última alteração. Reenviar com o carimbo de data/hora visível.' },
+            { id: 'req-3', codigo: '2.2.1-B', titulo: 'System Hardening Servidores Linux & Windows', escopo: 'Servidores de Aplicação', prazo: '15/10/2026', status: 'EM_REVISAO', responsavel: 'Ana Ribeiro' }
+        ];
+
+        let reqAtualId = null;
+        let fileHashCalculado = '';
+
+        function validarSessao() {
+            const salvo = localStorage.getItem('thyreos_sessao_usuario');
+            if (salvo) {
+                const s = JSON.parse(salvo);
+                document.getElementById('user-name').textContent = s.nome || 'Ana Ribeiro';
+                document.getElementById('user-avatar').textContent = s.avatar || 'AR';
+                document.getElementById('user-role').textContent = s.area || 'Ponto Focal Operacional';
+            }
+        }
+
+        function fazerLogout() {
+            localStorage.removeItem('thyreos_sessao_usuario');
+            window.location.href = './login.html';
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        function carregarDados() {
+            const salvo = localStorage.getItem('portal_pci_requisitos');
+            if (salvo) {
+                try { todosRequisitos = JSON.parse(salvo); } catch(e){}
+            }
+            renderizar();
+        }
+
+        function renderizar() {
+            const listEl = document.getElementById('req-list');
+            const search = document.getElementById('search-input').value.toLowerCase();
+
+            const filtrados = todosRequisitos.filter(r => 
+                r.codigo.toLowerCase().includes(search) || r.titulo.toLowerCase().includes(search)
+            );
+
+            // Atualizar KPIs
+            const total = filtrados.length;
+            const pending = filtrados.filter(r => r.status === 'NAO_ENVIADO').length;
+            const review = filtrados.filter(r => r.status === 'EM_REVISAO' || r.status === 'ENVIADO').length;
+            const overdue = filtrados.filter(r => r.status === 'NAO_ENVIADO' || r.status === 'AJUSTE_SOLICITADO').length;
+
+            document.getElementById('kpi-assigned').textContent = total;
+            document.getElementById('kpi-pending').textContent = pending;
+            document.getElementById('kpi-review').textContent = review;
+            document.getElementById('kpi-overdue').textContent = overdue;
+
+            listEl.innerHTML = filtrados.map(r => `
+                <tr>
+                    <td><span class="code-tag">${r.codigo}</span></td>
+                    <td>
+                        <strong>${r.titulo}</strong>
+                        ${r.escopo ? `<div style="font-size: 0.83em; color: var(--brand-primary); margin-top: 2px;">📍 Escopo: ${r.escopo}</div>` : ''}
+                        ${r.pendencia_gap ? `<div style="font-size: 0.83em; color: #f87171; margin-top: 4px; background: rgba(239,68,68,0.1); padding: 4px 8px; border-radius: 4px;">💬 QSA: ${r.pendencia_gap}</div>` : ''}
+                    </td>
+                    <td><span style="color: #f87171; font-weight: 600;">📅 ${r.prazo || '26/08/2026'}</span></td>
+                    <td><span class="status-badge status-${(r.status || 'nao_enviado').toLowerCase()}">${r.status || 'NÃO ENVIADO'}</span></td>
+                    <td style="text-align: center;">
+                        <button class="btn-upload" onclick="abrirModal('${r.id}')">
+                            ${r.status === 'AJUSTE_SOLICITADO' ? '🔄 Reenviar Evidência' : '📤 Enviar Evidência'}
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function abrirModal(reqId) {
+            reqAtualId = reqId;
+            const req = todosRequisitos.find(r => r.id === reqId);
+            if (!req) return;
+
+            document.getElementById('modal-req-codigo').textContent = req.codigo;
+            document.getElementById('modal-req-titulo').textContent = req.titulo;
+
+            const gapBox = document.getElementById('modal-gap-warning');
+            if (req.pendencia_gap) {
+                document.getElementById('modal-gap-text').textContent = req.pendencia_gap;
+                gapBox.style.display = 'block';
+            } else {
+                gapBox.style.display = 'none';
+            }
+
+            document.getElementById('file-input').value = '';
+            document.getElementById('file-obs-input').value = '';
+            document.getElementById('hash-preview').style.display = 'none';
+            fileHashCalculado = '';
+
+            document.getElementById('modal-evidencias').style.display = 'flex';
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-evidencias').style.display = 'none';
+        }
+
+        async function calcularHash(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const buffer = await file.arrayBuffer();
+            const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            fileHashCalculado = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+            document.getElementById('hash-preview-val').textContent = fileHashCalculado;
+            document.getElementById('hash-preview').style.display = 'block';
+        }
+
+        function enviarEvidencia() {
+            const input = document.getElementById('file-input');
+            if (!input.files || input.files.length === 0) {
+                alert('⚠️ Selecione um arquivo de evidência!');
+                return;
+            }
+
+            const req = todosRequisitos.find(r => r.id === reqAtualId);
+            if (!req) return;
+
+            req.status = 'EM_REVISAO';
+            req.pendencia_gap = null;
+            req.hash_sha256 = fileHashCalculado || 'sha256-simulado-' + Date.now();
+
+            localStorage.setItem('portal_pci_requisitos', JSON.stringify(todosRequisitos));
+            showToast('✅ Evidência enviada e enviada para o QSA Auditor com Hash SHA-256!');
+            fecharModal();
+            renderizar();
+        }
+
+        validarSessao();
+        carregarDados();
+    </script>
+</body>
+</html>

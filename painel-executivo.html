@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Executivo & Matriz 5x5 - Thyreos Guardian</title>
+    <style>
+        :root {
+            --brand-primary: #ffb366;
+            --brand-secondary: #ffc480;
+            --brand-dark: #18181b;
+            --text-light: #f4f4f5;
+            --text-gray: #a1a1aa;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #18181b 0%, #09090b 100%);
+            min-height: 100vh;
+            color: var(--text-light);
+            line-height: 1.6;
+            padding: 30px 20px;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(39, 39, 42, 0.8);
+            border: 1px solid rgba(255, 179, 102, 0.2);
+            padding: 14px 24px;
+            border-radius: 14px;
+            margin-bottom: 28px;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .user-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: #34d399; color: #111;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.1em;
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.15); color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px;
+            border-radius: 8px; font-weight: 700; font-size: 0.85em; cursor: pointer; text-decoration: none;
+        }
+        .btn-logout:hover { background: #ef4444; color: white; }
+
+        .badge-client {
+            display: inline-block; background: rgba(255, 179, 102, 0.15); color: var(--brand-primary);
+            padding: 4px 12px; border-radius: 16px; font-size: 0.78em; font-weight: 700;
+            text-transform: uppercase; border: 1px solid rgba(255, 179, 102, 0.3); margin-bottom: 8px;
+        }
+
+        h1 { font-size: 1.8em; color: var(--text-light); margin-bottom: 4px; }
+        p.subtitle { color: var(--text-gray); font-size: 0.92em; margin-bottom: 24px; }
+
+        /* KPI Grid */
+        .kpi-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px; margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background: #27272a; border-radius: 12px; padding: 20px;
+            border: 1px solid rgba(255, 179, 102, 0.15); box-shadow: var(--shadow-md);
+        }
+
+        .kpi-title { font-size: 0.8em; color: var(--text-gray); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+        .kpi-value { font-size: 1.8em; font-weight: 800; color: #34d399; }
+
+        /* 5x5 Matrix Styles */
+        .matrix-container {
+            background: #27272a; border-radius: 16px; padding: 24px;
+            border: 1px solid rgba(255, 179, 102, 0.2); margin-bottom: 28px;
+        }
+
+        .matrix-grid-5x5 {
+            display: grid; grid-template-columns: 40px repeat(5, 1fr);
+            grid-template-rows: repeat(5, 52px) 30px; gap: 6px; margin-top: 14px;
+        }
+        .cell-axis-5x5 { display: flex; align-items: center; justify-content: center; font-size: 0.8em; font-weight: 700; color: #a1a1aa; }
+        .cell-5x5 { border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.15s; font-size: 0.85em; font-weight: 700; }
+        .cell-5x5:hover { transform: scale(1.04); z-index: 5; box-shadow: 0 4px 14px rgba(0,0,0,0.6); }
+
+        .cell-r-low { background: rgba(16, 185, 129, 0.25); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .cell-r-med { background: rgba(234, 179, 8, 0.25); color: #fde047; border: 1px solid rgba(234, 179, 8, 0.4); }
+        .cell-r-high { background: rgba(249, 115, 22, 0.3); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.5); }
+        .cell-r-crit { background: rgba(239, 68, 68, 0.35); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.6); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Top Navbar -->
+        <div class="top-navbar">
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">DIR</div>
+                <div>
+                    <div style="font-weight: 700; color: #34d399; font-size: 0.95em;" id="user-name">Diretoria Executiva CSU</div>
+                    <div style="font-size: 0.8em; color: var(--text-gray);" id="user-role">Ponto Focal Executivo</div>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="fazerLogout()">🚪 Sair do Painel</button>
+        </div>
+
+        <span class="badge-client">CSU Digital · PCI DSS v4.0.1</span>
+        <h1>📊 Painel Exclusivo: Ponto Focal Executivo</h1>
+        <p class="subtitle">Visão consolidada do Selo de Risco, Matriz 5x5 (Probabilidade x Impacto) e indicadores por departamento.</p>
+
+        <!-- Grade de KPIs Executivos -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">% Conformidade Geral</div>
+                <div class="kpi-value" style="color: #34d399;" id="kpi-pct">33%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Requisitos no Escopo</div>
+                <div class="kpi-value" style="color: var(--brand-primary);" id="kpi-total">3</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">GAPs Críticos</div>
+                <div class="kpi-value" style="color: #f87171;" id="kpi-gaps">1</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Selo de Risco Geral</div>
+                <div class="kpi-value" style="color: #f59e0b;" id="kpi-risk">MODERADO</div>
+            </div>
+        </div>
+
+        <!-- Container Matriz 5x5 -->
+        <div class="matrix-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+                <div>
+                    <h2 style="color: var(--brand-primary); font-size: 1.25em;">🔥 Matriz de Risco 5x5 (Probabilidade x Impacto)</h2>
+                    <p style="color: var(--text-gray); font-size: 0.88em;">Classificação dos riscos e pendências de compliance no escopo PCI DSS v4.0.1</p>
+                </div>
+                <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid var(--brand-primary); padding: 10px 18px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 1.3em; font-weight: 800; color: #f59e0b;">NÍVEL MODERADO</div>
+                    <div style="font-size: 0.72em; color: var(--text-gray); text-transform: uppercase;">Status do Selo de Risco</div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <div style="writing-mode: vertical-lr; transform: rotate(180deg); text-align: center; font-weight: 700; font-size: 0.8em; color: #a1a1aa; letter-spacing: 1px;">PROBABILIDADE</div>
+                <div style="flex-grow: 1;">
+                    <div class="matrix-grid-5x5">
+                        <div class="cell-axis-5x5">5</div>
+                        <div class="cell-5x5 cell-r-med">5 (0)</div>
+                        <div class="cell-5x5 cell-r-high">10 (1)</div>
+                        <div class="cell-5x5 cell-r-high">15 (0)</div>
+                        <div class="cell-5x5 cell-r-crit">20 (1)</div>
+                        <div class="cell-5x5 cell-r-crit">25 (0)</div>
+
+                        <div class="cell-axis-5x5">4</div>
+                        <div class="cell-5x5 cell-r-low">4 (0)</div>
+                        <div class="cell-5x5 cell-r-med">8 (0)</div>
+                        <div class="cell-5x5 cell-r-high">12 (1)</div>
+                        <div class="cell-5x5 cell-r-high">16 (0)</div>
+                        <div class="cell-5x5 cell-r-crit">20 (0)</div>
+
+                        <div class="cell-axis-5x5">3</div>
+                        <div class="cell-5x5 cell-r-low">3 (1)</div>
+                        <div class="cell-5x5 cell-r-med">6 (0)</div>
+                        <div class="cell-5x5 cell-r-med">9 (0)</div>
+                        <div class="cell-5x5 cell-r-high">12 (0)</div>
+                        <div class="cell-5x5 cell-r-high">15 (0)</div>
+
+                        <div class="cell-axis-5x5">2</div>
+                        <div class="cell-5x5 cell-r-low">2 (0)</div>
+                        <div class="cell-5x5 cell-r-low">4 (0)</div>
+                        <div class="cell-5x5 cell-r-med">6 (0)</div>
+                        <div class="cell-5x5 cell-r-med">8 (0)</div>
+                        <div class="cell-5x5 cell-r-high">10 (0)</div>
+
+                        <div class="cell-axis-5x5">1</div>
+                        <div class="cell-5x5 cell-r-low">1 (0)</div>
+                        <div class="cell-5x5 cell-r-low">2 (0)</div>
+                        <div class="cell-5x5 cell-r-low">3 (0)</div>
+                        <div class="cell-5x5 cell-r-low">4 (0)</div>
+                        <div class="cell-5x5 cell-r-med">5 (0)</div>
+
+                        <div></div>
+                        <div class="cell-axis-5x5">1</div>
+                        <div class="cell-axis-5x5">2</div>
+                        <div class="cell-axis-5x5">3</div>
+                        <div class="cell-axis-5x5">4</div>
+                        <div class="cell-axis-5x5">5</div>
+                    </div>
+                    <div style="text-align: center; font-weight: 700; font-size: 0.8em; color: #a1a1aa; letter-spacing: 1px; margin-top: 8px;">IMPACTO</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function validarSessao() {
+            const salvo = localStorage.getItem('thyreos_sessao_usuario');
+            if (salvo) {
+                const s = JSON.parse(salvo);
+                document.getElementById('user-name').textContent = s.nome || 'Diretoria Executiva CSU';
+                document.getElementById('user-avatar').textContent = s.avatar || 'DIR';
+            }
+        }
+
+        function fazerLogout() {
+            localStorage.removeItem('thyreos_sessao_usuario');
+            window.location.href = './login.html';
+        }
+
+        function carregarKPIsExecutivos() {
+            const salvo = localStorage.getItem('portal_pci_requisitos');
+            if (salvo) {
+                try {
+                    const reqs = JSON.parse(salvo);
+                    const total = reqs.length;
+                    const aceitos = reqs.filter(r => r.status === 'ACEITO').length;
+                    const pct = total > 0 ? Math.round((aceitos / total) * 100) : 0;
+                    const gaps = reqs.filter(r => r.status === 'AJUSTE_SOLICITADO' || r.pendencia_gap).length;
+
+                    document.getElementById('kpi-pct').textContent = `${pct}%`;
+                    document.getElementById('kpi-total').textContent = total;
+                    document.getElementById('kpi-gaps').textContent = gaps;
+                } catch(e){}
+            }
+        }
+
+        validarSessao();
+        carregarKPIsExecutivos();
+    </script>
+</body>
+</html>

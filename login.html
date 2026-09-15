@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Login - Thyreos Compliance PCI DSS v4.0.1</title>
+    <style>
+        :root {
+            --brand-primary: #ffb366;
+            --brand-secondary: #ffc480;
+            --brand-dark: #18181b;
+            --text-light: #f4f4f5;
+            --text-gray: #a1a1aa;
+            --accent-glow: rgba(255, 179, 102, 0.15);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: radial-gradient(circle at top right, #2a2a2a 0%, #121214 60%, #09090b 100%);
+            min-height: 100vh;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: rgba(24, 24, 27, 0.85);
+            border: 1px solid rgba(255, 179, 102, 0.25);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(16px);
+            overflow: hidden;
+        }
+
+        @media (max-width: 850px) {
+            .login-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .brand-side {
+            background: linear-gradient(135deg, rgba(255, 179, 102, 0.1) 0%, rgba(18, 18, 20, 0.95) 100%);
+            padding: 48px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .badge-client {
+            display: inline-block;
+            background: var(--accent-glow);
+            color: var(--brand-primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 179, 102, 0.3);
+        }
+
+        .brand-side h1 {
+            font-size: 2.2em;
+            color: var(--brand-primary);
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .brand-side p {
+            color: var(--text-gray);
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .features-list {
+            margin-top: 32px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9em;
+            color: var(--text-light);
+        }
+
+        .feature-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 179, 102, 0.15);
+            color: var(--brand-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .form-side {
+            padding: 48px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header {
+            margin-bottom: 28px;
+        }
+
+        .form-header h2 {
+            font-size: 1.5em;
+            color: var(--text-light);
+            margin-bottom: 6px;
+        }
+
+        .form-header p {
+            font-size: 0.88em;
+            color: var(--text-gray);
+        }
+
+        /* Profile Cards Switcher */
+        .profile-selector-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .profile-card-option {
+            background: #18181b;
+            border: 1px solid #3f3f46;
+            border-radius: 10px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-card-option:hover {
+            border-color: var(--brand-primary);
+            background: rgba(255, 179, 102, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .profile-card-option.selected {
+            border-color: var(--brand-primary);
+            background: rgba(255, 179, 102, 0.15);
+            box-shadow: 0 4px 14px rgba(255, 179, 102, 0.2);
+        }
+
+        .profile-avatar-sm {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--brand-primary);
+            color: #111;
+            font-weight: 800;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .profile-card-info {
+            line-height: 1.2;
+        }
+
+        .profile-card-title {
+            font-size: 0.85em;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        .profile-card-sub {
+            font-size: 0.72em;
+            color: var(--text-gray);
+            margin-top: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.82em;
+            color: var(--text-gray);
+            font-weight: 600;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid #3f3f46;
+            background: #18181b;
+            color: white;
+            font-size: 0.9em;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--brand-primary);
+        }
+
+        .btn-login {
+            width: 100%;
+            background: var(--brand-primary);
+            color: #111;
+            font-weight: 800;
+            font-size: 0.95em;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 16px rgba(255, 179, 102, 0.3);
+            margin-top: 8px;
+        }
+
+        .btn-login:hover {
+            background: var(--brand-secondary);
+            transform: translateY(-1px);
+        }
+
+        .back-portal {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-portal a {
+            color: var(--brand-primary);
+            text-decoration: none;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .back-portal a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-wrapper">
+        <!-- Lado da Marca & Benefícios -->
+        <div class="brand-side">
+            <div>
+                <span class="badge-client">CSU Digital · PCI DSS v4.0.1</span>
+                <h1>Thyreos Compliance Manager</h1>
+                <p>Plataforma oficial para gestão de conformidade, atribuição de requisitos e emissão de pareceres QSA.</p>
+
+                <div class="features-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">🛡️</div>
+                        <span>Acessos com permissões por perfil de atuação.</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🔐</div>
+                        <span>Validação de evidências com Hash SHA-256.</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📊</div>
+                        <span>Matriz de Risco 5x5 e relatórios executivos.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="font-size: 0.8em; color: var(--text-gray); margin-top: 40px;">
+                © 2026 Thyreos Trust Platform · Todos os direitos reservados
+            </div>
+        </div>
+
+        <!-- Lado do Formulário de Login -->
+        <div class="form-side">
+            <div class="form-header">
+                <h2>Selecione o Perfil de Acesso</h2>
+                <p>Clique no perfil desejado para entrar no painel exclusivo.</p>
+            </div>
+
+            <!-- Grade de Seleção Rápida de Perfil -->
+            <div class="profile-selector-grid">
+                <div class="profile-card-option selected" id="card-operacional" onclick="selecionarPerfil('operacional', 'ana.ribeiro@csu.com.br', 'Ana Ribeiro (Ponto Focal)')">
+                    <div class="profile-avatar-sm">AR</div>
+                    <div class="profile-card-info">
+                        <div class="profile-card-title">Operacional</div>
+                        <div class="profile-card-sub">Ana Ribeiro</div>
+                    </div>
+                </div>
+
+                <div class="profile-card-option" id="card-executivo" onclick="selecionarPerfil('executivo', 'diretoria@csu.com.br', 'Diretoria Executiva CSU')">
+                    <div class="profile-avatar-sm" style="background: #34d399;">DIR</div>
+                    <div class="profile-card-info">
+                        <div class="profile-card-title">Executivo</div>
+                        <div class="profile-card-sub">Matriz 5x5 & Riscos</div>
+                    </div>
+                </div>
+
+                <div class="profile-card-option" id="card-qsa" onclick="selecionarPerfil('qsa', 'auditor@thyreos.io', 'Auditor Lead QSA')">
+                    <div class="profile-avatar-sm" style="background: #60a5fa;">QSA</div>
+                    <div class="profile-card-info">
+                        <div class="profile-card-title">Auditor QSA</div>
+                        <div class="profile-card-sub">Parecer & GAPs</div>
+                    </div>
+                </div>
+
+                <div class="profile-card-option" id="card-admin" onclick="selecionarPerfil('admin', 'krodrigues@botech.info', 'Kleiton Rodrigues')">
+                    <div class="profile-avatar-sm" style="background: #f59e0b;">KR</div>
+                    <div class="profile-card-info">
+                        <div class="profile-card-title">Admin Governança</div>
+                        <div class="profile-card-sub">Equipe & Escopo</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulário de Login -->
+            <form onsubmit="executarLogin(event)">
+                <div class="form-group">
+                    <label>E-mail Corporativo</label>
+                    <input type="email" id="email-input" class="form-input" value="ana.ribeiro@csu.com.br" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Senha de Acesso</label>
+                    <input type="password" id="password-input" class="form-input" value="••••••••••••" required>
+                </div>
+
+                <button type="submit" class="btn-login" id="btn-submit">
+                    🔑 Entrar no Painel Operacional
+                </button>
+            </form>
+
+            <div class="back-portal">
+                <a href="./index.html">← Voltar ao Portal GuardianTech</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let perfilSelecionado = 'operacional';
+
+        const mapaPerfis = {
+            operacional: {
+                email: 'ana.ribeiro@csu.com.br',
+                nome: 'Ana Ribeiro',
+                avatar: 'AR',
+                area: 'Ponto Focal Operacional',
+                btnText: '🔑 Entrar no Painel Operacional',
+                dest: './painel-operacional.html'
+            },
+            executivo: {
+                email: 'diretoria@csu.com.br',
+                nome: 'Diretoria & Gestão CSU',
+                avatar: 'DIR',
+                area: 'Ponto Focal Executivo',
+                btnText: '📊 Entrar no Painel Executivo',
+                dest: './painel-executivo.html'
+            },
+            qsa: {
+                email: 'auditor@thyreos.io',
+                nome: 'Auditor QSA (Thyreos Trust)',
+                avatar: 'QSA',
+                area: 'QSA Auditor Lead',
+                btnText: '🛡️ Entrar no Painel do QSA Auditor',
+                dest: './painel-qsa.html'
+            },
+            admin: {
+                email: 'krodrigues@botech.info',
+                nome: 'Kleiton Rodrigues',
+                avatar: 'KR',
+                area: 'Admin de Governança',
+                btnText: '⚙️ Entrar no Painel de Admin',
+                dest: './painel-admin.html'
+            }
+        };
+
+        function selecionarPerfil(role, emailDefault, nomeDefault) {
+            perfilSelecionado = role;
+            
+            // Atualizar Cards
+            document.querySelectorAll('.profile-card-option').forEach(c => c.classList.remove('selected'));
+            const cardEl = document.getElementById(`card-${role}`);
+            if (cardEl) cardEl.classList.add('selected');
+
+            // Atualizar Inputs
+            const info = mapaPerfis[role];
+            document.getElementById('email-input').value = info.email;
+            document.getElementById('btn-submit').textContent = info.btnText;
+        }
+
+        function executarLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email-input').value;
+            const info = mapaPerfis[perfilSelecionado] || mapaPerfis.operacional;
+
+            const sessao = {
+                perfil: perfilSelecionado,
+                nome: info.nome,
+                email: email,
+                avatar: info.avatar,
+                area: info.area,
+                logado_em: new Date().toLocaleString('pt-BR')
+            };
+
+            localStorage.setItem('thyreos_sessao_usuario', JSON.stringify(sessao));
+            window.location.href = info.dest;
+        }
+    </script>
+</body>
+</html>
