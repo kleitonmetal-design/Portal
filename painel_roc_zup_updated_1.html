@@ -138,6 +138,8 @@ h1{
 @keyframes spin{ to{ transform:rotate(360deg); } }
 .refresh-meta{font-size:11px; color:var(--ink-faint); width:100%; text-align:right; margin-top:-2px;}
 
+#genDate{font-size:11px; color:var(--ink-faint); white-space:nowrap; margin-top:8px;}
+
 /* summary strip */
 .strip{
   display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:28px;
@@ -264,16 +266,19 @@ footer{margin-top:32px; padding-top:18px; border-top:1px solid var(--line); font
       <p class="eyebrow">PCI DSS v4.0.1 · Painel de preenchimento do ROC 2026</p>
     </div>
     <div class="header-actions">
-      <div class="overall">
-        <svg class="ring" viewBox="0 0 64 64">
-          <circle cx="32" cy="32" r="27" fill="none" stroke="var(--surface-2)" stroke-width="7"/>
-          <circle id="ringFill" cx="32" cy="32" r="27" fill="none" stroke="var(--accent)" stroke-width="7"
-            stroke-linecap="round" transform="rotate(-90 32 32)" stroke-dasharray="169.6" stroke-dashoffset="169.6"/>
-        </svg>
-        <div>
-          <div class="overall-num mono" id="overallPct">0%</div>
-          <div class="overall-label">geral concluído</div>
+      <div style="display:flex; flex-direction:column; align-items:flex-end;">
+        <div class="overall">
+          <svg class="ring" viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="27" fill="none" stroke="var(--surface-2)" stroke-width="7"/>
+            <circle id="ringFill" cx="32" cy="32" r="27" fill="none" stroke="var(--accent)" stroke-width="7"
+              stroke-linecap="round" transform="rotate(-90 32 32)" stroke-dasharray="169.6" stroke-dashoffset="169.6"/>
+          </svg>
+          <div>
+            <div class="overall-num mono" id="overallPct">0%</div>
+            <div class="overall-label">geral concluído</div>
+          </div>
         </div>
+        <div id="genDate"></div>
       </div>
       <button id="refreshBtn" class="refresh-btn" title="Recarrega esta página buscando a versão mais recente publicada, ignorando qualquer cache do navegador">
         <span class="refresh-icon">🔄</span>
@@ -310,7 +315,6 @@ footer{margin-top:32px; padding-top:18px; border-top:1px solid var(--line); font
 
   <footer>
     <span>Fonte: API dinâmica servida por n8n (workflow <span class="mono">ROC ZUP API Status</span>) — dados originam de reextração estrutural de <span class="mono">ROC-Zup-2026.docx</span>. Atualiza a cada 30 segundos.</span>
-    <span id="genDate"></span>
   </footer>
 </div>
 
