@@ -446,6 +446,13 @@ function updateStats(){
 }
 
 function updateUI(){
+  DATA.forEach(req => {
+    const unfilled = req.unfilled_ids || [];
+    const pending = req.pending_ids || [];
+    const truly_filled = req.total - unfilled.length - pending.length;
+    req.filled = truly_filled;
+    req.pct = req.total ? Math.round((truly_filled / req.total) * 1000) / 10 : 0;
+  });
   render();
   updateStats();
   const now = new Date();
