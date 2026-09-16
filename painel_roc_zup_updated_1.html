@@ -226,6 +226,9 @@ h1{
 .detail-empty{font-size:13px; color:var(--ink-dim);}
 .detail-sub{font-size:12.5px; color:var(--ink-dim); margin-bottom:12px;}
 
+.pending-badge{display:inline-block; font-size:11px; padding:4px 8px; border-radius:999px; font-weight:600; margin-left:6px; background:var(--orange-soft); color:var(--orange); border:1px solid var(--orange-line); white-space:nowrap;}
+.idchip.pending-chip{background:var(--orange-soft); color:var(--orange); border-color:var(--orange-line);}
+
 .qa-banner{
   background:var(--surface); border:1px solid var(--line-strong); border-left:3px solid var(--orange);
   border-radius:12px; padding:14px 18px; margin-bottom:24px; font-size:13px; color:var(--ink-dim); line-height:1.6;
@@ -353,6 +356,8 @@ function render(){
     const st = status(req.pct);
     if(currentFilter !== 'all' && st !== currentFilter) return;
 
+    const pending = req.pending_ids || [];
+    const hasPending = pending.length > 0;
     const card = document.createElement('div');
     card.className = 'card';
     card.tabIndex = 0;
@@ -362,12 +367,12 @@ function render(){
         <div class="req-num mono">${String(req.num).padStart(2,'0')}</div>
         <div class="pill st-${st==='complete'?'green':st==='partial'?'orange':'amber'}">${STATUS_LABEL[st]}</div>
       </div>
-      <div class="req-title">${req.title || 'Requisito sem título'}</div>
+      <div class="req-title">${req.title || 'Requisito sem título'}${hasPending ? `<span class="pending-badge">⏳ ${pending.length} Pendente${pending.length > 1 ? 's' : ''}</span>` : ''}</div>
       <div class="req-meta"><span class="mono">${req.filled}/${req.total}</span> sub-requisitos preenchidos</div>
       <div class="bar-track"><div class="bar-fill" style="width:${req.pct}%; background:${STATUS_COLOR_VAR[st]}"></div></div>
       <div class="card-foot">
         <span class="pct mono" style="color:${STATUS_COLOR_VAR[st]}">${req.pct}%</span>
-        <span class="expand-hint">sem pendências</span>
+        <span class="expand-hint">${hasPending ? 'ver pendências →' : 'sem pendências'}</span>
       </div>
     `;
     card.addEventListener('click', () => toggleDetail(req, st));
@@ -381,15 +386,27 @@ function render(){
 }
 
 function buildDetail(req, st){
+  const pending = req.pending_ids || [];
   const d = document.createElement('div');
   d.className = 'detail';
-  d.innerHTML = `
+
+  let detailHtml = `
     <div class="detail-head">
-      <h3>Requisito ${req.num}</h3>
+      <h3>Requisito ${req.num} — detalhes</h3>
       <button class="close-btn" aria-label="Fechar">✕</button>
     </div>
-    <div class="detail-empty">Dados: ${req.filled}/${req.total} preenchidos (${req.pct}%)</div>
   `;
+
+  if(pending.length){
+    detailHtml += `
+      <div class="detail-sub"><strong>Aguardando Confirmação:</strong> ${pending.length} sub-requisito${pending.length > 1 ? 's' : ''} com evidências à espera de confirmação do cliente.</div>
+      <div class="id-grid">${pending.map(id => `<span class="idchip pending-chip">⏳ ${id}</span>`).join('')}</div>
+    `;
+  }
+
+  detailHtml += `<div class="detail-sub" style="margin-top:12px;">Dados: ${req.filled}/${req.total} preenchidos (${req.pct}%)</div>`;
+
+  d.innerHTML = detailHtml;
   d.querySelector('.close-btn').addEventListener('click', (e) => { e.stopPropagation(); openCard = null; render(); });
   return d;
 }
