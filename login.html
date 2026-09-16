@@ -302,37 +302,45 @@
                 <p>Clique no perfil desejado para entrar no painel exclusivo.</p>
             </div>
 
-            <!-- Grade de Seleção Rápida de Perfil -->
-            <div class="profile-selector-grid">
-                <div class="profile-card-option selected" id="card-operacional" onclick="selecionarPerfil('operacional', 'ana.ribeiro@csu.com.br', 'Ana Ribeiro (Ponto Focal)')">
-                    <div class="profile-avatar-sm">AR</div>
-                    <div class="profile-card-info">
-                        <div class="profile-card-title">Operacional</div>
-                        <div class="profile-card-sub">Ana Ribeiro</div>
-                    </div>
-                </div>
-
-                <div class="profile-card-option" id="card-executivo" onclick="selecionarPerfil('executivo', 'diretoria@csu.com.br', 'Diretoria Executiva CSU')">
+            <!-- Grade de Seleção Rápida de Perfil (5 Perfis) -->
+            <div class="profile-selector-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                <div class="profile-card-option selected" id="card-executivo" onclick="selecionarPerfil('executivo')">
                     <div class="profile-avatar-sm" style="background: #34d399;">DIR</div>
                     <div class="profile-card-info">
-                        <div class="profile-card-title">Executivo</div>
-                        <div class="profile-card-sub">Matriz 5x5 & Riscos</div>
+                        <div class="profile-card-title">Perfil Executivo</div>
+                        <div class="profile-card-sub">Gráficos & Status do Projeto</div>
                     </div>
                 </div>
 
-                <div class="profile-card-option" id="card-qsa" onclick="selecionarPerfil('qsa', 'auditor@thyreos.io', 'Auditor Lead QSA')">
-                    <div class="profile-avatar-sm" style="background: #60a5fa;">QSA</div>
+                <div class="profile-card-option" id="card-governanca" onclick="selecionarPerfil('governanca')">
+                    <div class="profile-avatar-sm" style="background: var(--brand-primary);">GOV</div>
+                    <div class="profile-card-info">
+                        <div class="profile-card-title">Ponto Focal & Governança</div>
+                        <div class="profile-card-sub">Gráficos + Atribuição + Cadastrar Equipe</div>
+                    </div>
+                </div>
+
+                <div class="profile-card-option" id="card-operacional" onclick="selecionarPerfil('operacional')">
+                    <div class="profile-avatar-sm" style="background: #60a5fa;">OP</div>
+                    <div class="profile-card-info">
+                        <div class="profile-card-title">Ponto Focal Operacional</div>
+                        <div class="profile-card-sub">Requisitos Atribuídos & Evidências</div>
+                    </div>
+                </div>
+
+                <div class="profile-card-option" id="card-qsa" onclick="selecionarPerfil('qsa')">
+                    <div class="profile-avatar-sm" style="background: #a855f7;">QSA</div>
                     <div class="profile-card-info">
                         <div class="profile-card-title">Auditor QSA</div>
-                        <div class="profile-card-sub">Parecer & GAPs</div>
+                        <div class="profile-card-sub">Avaliação & Emissão de GAPs</div>
                     </div>
                 </div>
 
-                <div class="profile-card-option" id="card-admin" onclick="selecionarPerfil('admin', 'krodrigues@botech.info', 'Kleiton Rodrigues')">
-                    <div class="profile-avatar-sm" style="background: #f59e0b;">KR</div>
+                <div class="profile-card-option" id="card-admin" onclick="selecionarPerfil('admin')">
+                    <div class="profile-avatar-sm" style="background: #ef4444;">ADM</div>
                     <div class="profile-card-info">
-                        <div class="profile-card-title">Admin Governança</div>
-                        <div class="profile-card-sub">Equipe & Escopo</div>
+                        <div class="profile-card-title">Admin da Plataforma</div>
+                        <div class="profile-card-sub">Super Admin (Acesso Total)</div>
                     </div>
                 </div>
             </div>
@@ -341,7 +349,7 @@
             <form onsubmit="executarLogin(event)">
                 <div class="form-group">
                     <label>E-mail Corporativo</label>
-                    <input type="email" id="email-input" class="form-input" value="ana.ribeiro@csu.com.br" required>
+                    <input type="email" id="email-input" class="form-input" value="diretoria@csu.com.br" required>
                 </div>
 
                 <div class="form-group">
@@ -350,7 +358,7 @@
                 </div>
 
                 <button type="submit" class="btn-login" id="btn-submit">
-                    🔑 Entrar no Painel Operacional
+                    📊 Entrar no Painel Executivo
                 </button>
             </form>
 
@@ -361,44 +369,52 @@
     </div>
 
     <script>
-        let perfilSelecionado = 'operacional';
+        let perfilSelecionado = 'executivo';
 
         const mapaPerfis = {
-            operacional: {
-                email: 'ana.ribeiro@csu.com.br',
-                nome: 'Ana Ribeiro',
-                avatar: 'AR',
-                area: 'Ponto Focal Operacional',
-                btnText: '🔑 Entrar no Painel Operacional',
-                dest: './painel-operacional.html'
-            },
             executivo: {
                 email: 'diretoria@csu.com.br',
-                nome: 'Diretoria & Gestão CSU',
+                nome: 'Mariana Silva (Diretoria CSU)',
                 avatar: 'DIR',
-                area: 'Ponto Focal Executivo',
+                area: 'Perfil Executivo',
                 btnText: '📊 Entrar no Painel Executivo',
                 dest: './painel-executivo.html'
             },
+            governanca: {
+                email: 'bruno.compliance@csu.com.br',
+                nome: 'Bruno Compliance (Líder)',
+                avatar: 'GOV',
+                area: 'Ponto Focal & Governança',
+                btnText: '🛡️ Entrar no Painel de Governança',
+                dest: './atribuir-requisitos.html'
+            },
+            operacional: {
+                email: 'ana.ribeiro@csu.com.br',
+                nome: 'Ana Ribeiro (Dev & Eng)',
+                avatar: 'OP',
+                area: 'Ponto Focal Operacional',
+                btnText: '🧑‍💻 Entrar no Painel Operacional',
+                dest: './painel-operacional.html'
+            },
             qsa: {
-                email: 'auditor@thyreos.io',
-                nome: 'Auditor QSA (Thyreos Trust)',
+                email: 'carlos.costa@thyreos.io',
+                nome: 'Carlos Costa (Auditor QSA)',
                 avatar: 'QSA',
-                area: 'QSA Auditor Lead',
-                btnText: '🛡️ Entrar no Painel do QSA Auditor',
+                area: 'Auditor QSA Lead',
+                btnText: '⚖️ Entrar na Bancada do QSA Auditor',
                 dest: './painel-qsa.html'
             },
             admin: {
                 email: 'krodrigues@botech.info',
                 nome: 'Kleiton Rodrigues',
-                avatar: 'KR',
-                area: 'Admin de Governança',
-                btnText: '⚙️ Entrar no Painel de Admin',
+                avatar: 'ADM',
+                area: 'Admin da Plataforma',
+                btnText: '👑 Entrar como Admin da Plataforma',
                 dest: './painel-admin.html'
             }
         };
 
-        function selecionarPerfil(role, emailDefault, nomeDefault) {
+        function selecionarPerfil(role) {
             perfilSelecionado = role;
             
             // Atualizar Cards
@@ -407,7 +423,7 @@
             if (cardEl) cardEl.classList.add('selected');
 
             // Atualizar Inputs
-            const info = mapaPerfis[role];
+            const info = mapaPerfis[role] || mapaPerfis.executivo;
             document.getElementById('email-input').value = info.email;
             document.getElementById('btn-submit').textContent = info.btnText;
         }
@@ -415,7 +431,7 @@
         function executarLogin(e) {
             e.preventDefault();
             const email = document.getElementById('email-input').value;
-            const info = mapaPerfis[perfilSelecionado] || mapaPerfis.operacional;
+            const info = mapaPerfis[perfilSelecionado] || mapaPerfis.executivo;
 
             const sessao = {
                 perfil: perfilSelecionado,

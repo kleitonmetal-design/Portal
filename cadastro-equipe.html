@@ -82,8 +82,15 @@
 <body>
     <div class="container">
         <a href="./paineis-pci.html" class="back-link">← Voltar aos Painéis PCI</a>
-        <h1 class="header-title">👥 Onboarding & Cadastro da Equipe Interna</h1>
-        <p style="color: var(--text-muted); margin-bottom: 24px;">Cadastre os pontos focais responsáveis por cada área interna e configure as notificações automatizadas por e-mail.</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
+            <div>
+                <h1 class="header-title">👥 Onboarding & Cadastro da Equipe Interna</h1>
+                <p style="color: var(--text-muted);">Cadastre os membros da equipe (Perfil Operacional e Executivo) e configure os gatilhos de notificações por e-mail.</p>
+            </div>
+            <span style="background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); padding:6px 14px; border-radius:20px; font-size:0.8em; font-weight:700;">
+                🔒 Acesso Restrito: Governança & Admin
+            </span>
+        </div>
 
         <!-- Formulário de Cadastro -->
         <div class="card-panel">
@@ -92,31 +99,29 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Nome Completo</label>
-                        <input type="text" id="nome" class="form-control" placeholder="Ex: Kleiton Rodrigues" required>
+                        <input type="text" id="nome" class="form-control" placeholder="Ex: Ana Ribeiro" required>
                     </div>
                     <div class="form-group">
                         <label>E-mail Corporativo (Para Notificações)</label>
-                        <input type="email" id="email" class="form-control" placeholder="Ex: krodrigues@botech.info" required>
+                        <input type="email" id="email" class="form-control" placeholder="Ex: ana.ribeiro@csu.com.br" required>
                     </div>
                     <div class="form-group">
                         <label>Área Interna / Departamento</label>
                         <select id="area" class="form-control" required>
-                            <option value="Segurança da Informação">Segurança da Informação</option>
-                            <option value="Infraestrutura e Redes">Infraestrutura e Redes</option>
                             <option value="Sistemas e Desenvolvimento">Sistemas e Desenvolvimento</option>
+                            <option value="Infraestrutura e Redes">Infraestrutura e Redes</option>
+                            <option value="Segurança da Informação">Segurança da Informação</option>
                             <option value="Banco de Dados (DBA)">Banco de Dados (DBA)</option>
                             <option value="Recursos Humanos">Recursos Humanos</option>
                             <option value="Físico & Facilities">Físico & Facilities</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Perfil de Acesso</label>
+                        <label>Perfil de Acesso do Integrante</label>
                         <select id="perfil" class="form-control" required>
-                            <option value="Operacional">Ponto Focal Operacional</option>
-                            <option value="Coordenador">Ponto Focal Coordenador</option>
-                            <option value="Executivo">Ponto Focal Executivo</option>
-                            <option value="Auditor QSA">Auditor QSA Lead</option>
-                            <option value="Admin Governança">Admin Governança</option>
+                            <option value="Ponto Focal Operacional">Ponto Focal Operacional (Membro da Equipe)</option>
+                            <option value="Ponto Focal & Governança">Ponto Focal & Governança (Líder Compliance)</option>
+                            <option value="Perfil Executivo">Perfil Executivo (Diretoria)</option>
                         </select>
                     </div>
                 </div>

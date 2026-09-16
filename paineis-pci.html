@@ -467,45 +467,57 @@
                 const defaultLinks = [
                     {
                         titulo: '⭐ Demonstração Multiperfil Unificada (Todos os Perfis)',
-                        descricao: 'Ambiente completo de simulação interativo. Alternação dinâmica em tempo real entre Operacional, Executivo, QSA Auditor Lead e Admin.',
+                        descricao: 'Ambiente completo de simulação interativo. Alternação dinâmica em tempo real entre Executivo, Governança & Ponto Focal, Operacional, QSA e Admin.',
                         url: './demo-perfis-pci.html',
                         icone: '🛡️'
                     },
                     {
-                        titulo: '📬 Central de Alertas & Tarefas Direcionadas',
-                        descricao: 'Inbox de solicitações filtrada por Ponto Focal com formulário de resposta inline e prazos de SLA.',
-                        url: './alertas.html',
-                        icone: '📬'
-                    },
-                    {
-                        titulo: '🔐 Portal de Login por Perfil (Exclusivo)',
-                        descricao: 'Acesso às telas exclusivas dedicadas a cada perfil (Operacional, Executivo, QSA e Admin).',
+                        titulo: '🔑 Portal de Login por Perfil (Exclusivo)',
+                        descricao: 'Acesso às telas exclusivas dedicadas a cada perfil (Executivo, Governança, Operacional, QSA e Admin).',
                         url: './login.html',
                         icone: '🔑'
                     },
                     {
-                        titulo: '📊 Dashboard Executivo & Matriz 5x5',
-                        descricao: 'Visão executiva com Selo de Risco, Matriz de Calor 5x5 e GAPs críticos.',
+                        titulo: '📊 Perfil Executivo (Diretoria & CISO)',
+                        descricao: 'Visão executiva do projeto com Matriz 5x5 (Probabilidade x Impacto), Selo de Risco Geral e % de conformidade.',
                         url: './painel-executivo.html',
                         icone: '🔥'
                     },
                     {
-                        titulo: '🎯 Atribuição de Requisitos & Escopo',
-                        descricao: 'Gestão de tarefas com trava estrita de escopo por área interna e parecer QSA.',
+                        titulo: '🛡️ Ponto Focal & Governança (Líder Compliance)',
+                        descricao: 'Gráficos executivos + Atribuição de requisitos + Cadastro da equipe operacional + Resposta a requisitos próprios.',
                         url: './atribuir-requisitos.html',
-                        icone: '🔒'
+                        icone: '🛡️'
                     },
                     {
-                        titulo: '👥 Onboarding & Cadastro da Equipe',
-                        descricao: 'Cadastro de responsáveis internos e pontos focais por departamento.',
+                        titulo: '🧑‍💻 Ponto Focal Operacional (Dev/Eng, Infra, DBA)',
+                        descricao: 'Visão exclusiva de tarefas atribuídas à área com envio de evidências e validação Hash SHA-256.',
+                        url: './painel-operacional.html',
+                        icone: '🧑‍💻'
+                    },
+                    {
+                        titulo: '⚖️ Auditor QSA Lead (Carlos Costa)',
+                        descricao: 'Bancada de auditoria para homologação de evidências, validação SHA-256 e emissão de pareceres/GAPs.',
+                        url: './painel-qsa.html',
+                        icone: '⚖️'
+                    },
+                    {
+                        titulo: '👑 Admin da Plataforma (Super Admin GuardianTech)',
+                        descricao: 'Gestão da plataforma GuardianTech, parametrização global de SLAs, logs e controle de clientes.',
+                        url: './painel-admin.html',
+                        icone: '👑'
+                    },
+                    {
+                        titulo: '👥 Onboarding & Cadastro da Equipe (Restrito)',
+                        descricao: 'Formulário de cadastro da equipe (acessível pelos perfis Ponto Focal & Governança e Admin da Plataforma).',
                         url: './cadastro-equipe.html',
                         icone: '👥'
                     },
                     {
-                        titulo: '📈 Painel ROC CSU Digital',
-                        descricao: 'Relatório Oficial de Conformidade (ROC) dinâmico do projeto CSU.',
-                        url: './painel_roc_csu_dinamico.html',
-                        icone: '🛡️'
+                        titulo: '📬 Central de Alertas & Inbox por Usuário',
+                        descricao: 'Inbox de solicitações e tarefas direcionadas por ponto focal com resposta em linha e prazos de SLA.',
+                        url: './alertas.html',
+                        icone: '📬'
                     }
                 ];
                 renderTools(defaultLinks);

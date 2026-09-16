@@ -8,13 +8,13 @@
 
 ## 1. Matriz Resumo das Permissões por Perfil
 
-| Perfil de Usuário | Telas Acessíveis | Escopo dos Dados | Envia Evidências? | Aprova/Ajusta? | Configura Áreas? | Página Dedicada |
-|---|---|---|---|---|---|---|
-| **1. Admin / Governança** | `/painel-admin.html`, `/atribuir-requisitos.html` | Global (Todos os Projetos) | Sim | Sim | Sim | [`painel-admin.html`](https://portal.guardiantechit.com.br/painel-admin.html) |
-| **2. Ponto Focal Executivo** | `/painel-executivo.html`, `/dashboard-executivo.html` | Visão Estratégica / Matriz 5x5 | ❌ Somente Leitura | ❌ Somente Leitura | Não | [`painel-executivo.html`](https://portal.guardiantechit.com.br/painel-executivo.html) |
-| **3. QSA / Auditor Lead** | `/painel-qsa.html` | Todos os Controles da Auditoria | Não (Revisa) | ✅ **Aceita / Pede Ajuste** | Não | [`painel-qsa.html`](https://portal.guardiantechit.com.br/painel-qsa.html) |
-| **4. Ponto Focal Operacional** | `/painel-operacional.html`, `/atribuir-requisitos.html` | Tarefas da sua Área | ✅ **Sim (com Hash SHA-256)** | Reatribui | Não | [`painel-operacional.html`](https://portal.guardiantechit.com.br/painel-operacional.html) |
-| **5. Demonstração Unificada** | `/demo-perfis-pci.html` | Todos os Perfis em Tempo Real | Sim | Sim | Sim | [`demo-perfis-pci.html`](https://portal.guardiantechit.com.br/demo-perfis-pci.html) |
+| Perfil de Usuário | Categoria | Telas Acessíveis | Gráficos Executivos? | Atribui Requisitos? | Cadastra Equipe Operacional? | Responde Requisitos? | Página Dedicada |
+|---|---|---|---|---|---|---|---|
+| **1. Perfil Executivo** | Cliente | `/painel-executivo.html` | ✅ Sim (Matriz 5x5 & Status) | ❌ Não | ❌ Não | ❌ Somente Leitura | [`painel-executivo.html`](https://portal.guardiantechit.com.br/painel-executivo.html) |
+| **2. Ponto Focal & Governança** | Cliente | `/atribuir-requisitos.html`, `/cadastro-equipe.html` | ✅ Sim | ✅ Sim | ✅ Sim (`cadastro-equipe.html`) | ✅ Sim (Requisitos Próprios) | [`atribuir-requisitos.html`](https://portal.guardiantechit.com.br/atribuir-requisitos.html) |
+| **3. Ponto Focal Operacional** | Cliente | `/painel-operacional.html`, `/alertas.html` | ❌ Não | ❌ Não | ❌ Não | ✅ **Sim (com Hash SHA-256)** | [`painel-operacional.html`](https://portal.guardiantechit.com.br/painel-operacional.html) |
+| **4. Auditor QSA Lead** | Auditoria | `/painel-qsa.html` | ❌ Não | ❌ Não | ❌ Não | ⚖️ **Homologa & Emite GAPs** | [`painel-qsa.html`](https://portal.guardiantechit.com.br/painel-qsa.html) |
+| **5. Admin da Plataforma** | Plataforma | `/painel-admin.html`, Todas as Páginas | ✅ Sim | ✅ Sim | ✅ Sim | 👑 **Super Admin (Acesso Total)** | [`painel-admin.html`](https://portal.guardiantechit.com.br/painel-admin.html) |
 
 ---
 

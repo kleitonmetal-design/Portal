@@ -575,10 +575,11 @@
                     <div class="profile-select-wrapper">
                         <span class="profile-select-label">Perfil Ativo:</span>
                         <select id="simProfileDropdown" class="profile-dropdown" onchange="switchProfile(this.value)">
-                            <option value="operacional">1. Ponto Focal Operacional (Ana Ribeiro)</option>
-                            <option value="executivo">2. Ponto Focal Executivo (Mariana Silva)</option>
-                            <option value="qsa">3. QSA Auditor Lead (Carlos Costa)</option>
-                            <option value="admin">4. Admin / Governança (Kleiton Rodrigues)</option>
+                            <option value="executivo">1. Perfil Executivo (Mariana Silva - Diretoria)</option>
+                            <option value="governanca">2. Ponto Focal & Governança (Bruno Compliance)</option>
+                            <option value="operacional">3. Ponto Focal Operacional (Ana Ribeiro)</option>
+                            <option value="qsa">4. Auditor QSA Lead (Carlos Costa)</option>
+                            <option value="admin">5. Admin da Plataforma (Kleiton Rodrigues - Super Admin)</option>
                         </select>
                     </div>
                     <button class="btn-action-sm btn-reset" onclick="resetDemoData()">🔄 Resetar Demo</button>
@@ -588,17 +589,20 @@
 
             <!-- Profile Switcher Quick Pills -->
             <div class="role-pills">
-                <button class="role-pill active" id="pill-operacional" onclick="switchProfile('operacional')">
-                    👩‍💻 Operacional (Dev & Eng)
+                <button class="role-pill active" id="pill-executivo" onclick="switchProfile('executivo')">
+                    📊 Executivo (Gráficos)
                 </button>
-                <button class="role-pill" id="pill-executivo" onclick="switchProfile('executivo')">
-                    📊 Executivo (Diretoria)
+                <button class="role-pill" id="pill-governanca" onclick="switchProfile('governanca')">
+                    🛡️ Governança & Ponto Focal
+                </button>
+                <button class="role-pill" id="pill-operacional" onclick="switchProfile('operacional')">
+                    🧑‍💻 Operacional (Dev/Eng)
                 </button>
                 <button class="role-pill" id="pill-qsa" onclick="switchProfile('qsa')">
-                    🔍 QSA Auditor Lead
+                    🔍 Auditor QSA Lead
                 </button>
                 <button class="role-pill" id="pill-admin" onclick="switchProfile('admin')">
-                    ⚙️ Admin / Governança
+                    👑 Admin da Plataforma
                 </button>
             </div>
         </div>
@@ -926,6 +930,8 @@
                 container.innerHTML = renderOperacionalView();
             } else if (currentRole === 'executivo') {
                 container.innerHTML = renderExecutivoView();
+            } else if (currentRole === 'governanca') {
+                container.innerHTML = renderGovernancaView();
             } else if (currentRole === 'qsa') {
                 container.innerHTML = renderQsaView();
             } else if (currentRole === 'admin') {
@@ -939,11 +945,21 @@
             if (currentRole === 'operacional') {
                 content = `
                     <div class="profile-user-details">
-                        <h1>Ana Ribeiro <span class="user-tag" style="background:rgba(255,179,102,0.2); color:#ffb366;">Dev & Engenharia</span></h1>
-                        <p>Ponto Focal Operacional — Responsável pela coleta de evidências técnicas e correções de apontamentos.</p>
+                        <h1>Ana Ribeiro <span class="user-tag" style="background:rgba(255,179,102,0.2); color:#ffb366;">Ponto Focal Operacional (Dev & Eng)</span></h1>
+                        <p>Visualiza seus requisitos atribuídos, responde a solicitações e anexa evidências com validação Hash SHA-256.</p>
                     </div>
                     <div style="font-size:0.85em; background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3); padding:8px 16px; border-radius:10px; font-weight:700;">
-                        🚨 Alert: Requisitos Expirados (29 dias de atraso)
+                        🚨 Requisitos Vencidos no seu Escopo
+                    </div>
+                `;
+            } else if (currentRole === 'governanca') {
+                content = `
+                    <div class="profile-user-details">
+                        <h1>Bruno Compliance <span class="user-tag" style="background:rgba(245,158,11,0.2); color:#f59e0b;">Ponto Focal & Governança (Líder)</span></h1>
+                        <p>Possui gráficos executivos, gerencia a atribuição de requisitos, cadastra a equipe operacional e responde aos seus requisitos próprios.</p>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <a href="cadastro-equipe.html" target="_blank" class="btn-action-sm" style="background:var(--brand-primary); color:#111; font-weight:700; text-decoration:none;">👥 Cadastrar Integrantes da Equipe</a>
                     </div>
                 `;
             } else if (currentRole === 'executivo') {
@@ -953,32 +969,32 @@
 
                 content = `
                     <div class="profile-user-details">
-                        <h1>Mariana Silva <span class="user-tag" style="background:rgba(52,211,153,0.2); color:#34d399;">CISO / Diretora</span></h1>
-                        <p>Visão Executiva & Matriz de Risco 5x5 — Indicadores Consolidados de Conformidade PCI DSS v4.0.1.</p>
+                        <h1>Mariana Silva <span class="user-tag" style="background:rgba(52,211,153,0.2); color:#34d399;">Perfil Executivo (Diretoria)</span></h1>
+                        <p>Visão de alto nível para a Diretoria — Matriz de Risco 5x5, Selo de Risco Geral e Indicadores de Conformidade.</p>
                     </div>
                     <div style="text-align:right;">
-                        <span style="background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.4); padding:6px 14px; border-radius:20px; font-weight:800; font-size:0.85em; text-transform:uppercase;">🔴 ALTO RISCO</span>
+                        <span style="background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.4); padding:6px 14px; border-radius:20px; font-weight:800; font-size:0.85em; text-transform:uppercase;">🔴 MODERADO / ALTO RISCO</span>
                         <div style="font-size:1.8em; font-weight:800; color:var(--brand-primary); margin-top:2px;">${perc}% Conformidade</div>
                     </div>
                 `;
             } else if (currentRole === 'qsa') {
                 content = `
                     <div class="profile-user-details">
-                        <h1>Carlos Costa <span class="user-tag" style="background:rgba(96,165,250,0.2); color:#60a5fa;">QSA Lead Auditor #40291</span></h1>
-                        <p>Bancada do Auditor QSA — Homologação de evidências, validação de integridade SHA-256 e emissão de pareceres.</p>
+                        <h1>Carlos Costa <span class="user-tag" style="background:rgba(96,165,250,0.2); color:#60a5fa;">Auditor QSA Lead #40291</span></h1>
+                        <p>Bancada do Auditor QSA — Homologação de evidências, validação de integridade SHA-256 e emissão de pareceres de GAP.</p>
                     </div>
                     <div style="font-size:0.85em; background:rgba(96,165,250,0.15); color:#60a5fa; border:1px solid rgba(96,165,250,0.3); padding:8px 16px; border-radius:10px; font-weight:700;">
-                        🔍 Validação de Evidências em Tempo Real
+                        🔍 Validação QSA em Tempo Real
                     </div>
                 `;
             } else if (currentRole === 'admin') {
                 content = `
                     <div class="profile-user-details">
-                        <h1>Kleiton Rodrigues <span class="user-tag" style="background:rgba(168,85,247,0.2); color:#c084fc;">Admin Governança</span></h1>
-                        <p>Painel de Governança & Atribuição de Equipe — Gestão de responsáveis, escopo de auditoria e onboarding.</p>
+                        <h1>Kleiton Rodrigues <span class="user-tag" style="background:rgba(239,68,68,0.2); color:#f87171;">Admin da Plataforma (GuardianTech)</span></h1>
+                        <p>Super Admin da plataforma — Gestão total de instâncias, parametrização global de SLAs, automação por e-mail e suporte.</p>
                     </div>
-                    <div style="font-size:0.85em; background:rgba(168,85,247,0.15); color:#c084fc; border:1px solid rgba(168,85,247,0.3); padding:8px 16px; border-radius:10px; font-weight:700;">
-                        ⚙️ Gestão de Escopo & Responsáveis
+                    <div style="font-size:0.85em; background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3); padding:8px 16px; border-radius:10px; font-weight:700;">
+                        👑 Acesso Total da Plataforma
                     </div>
                 `;
             }
@@ -1204,6 +1220,73 @@
                             </div>
                             <span class="status-badge status-pendente">Pendente</span>
                         </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Governança View HTML Generator (Visão Consolidada + Atribuição + Cadastro de Equipe)
+        function renderGovernancaView() {
+            const total = requirements.length;
+            const accepted = requirements.filter(r => r.status === 'aceito').length;
+            const myReqs = requirements.filter(r => r.focal === "Bruno Compliance" || r.focal === "Kleiton Rodrigues");
+
+            return `
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-title">% Conformidade Geral</div>
+                        <div class="kpi-value warning">${Math.round((accepted/total)*100)}%</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">Requisitos Atribuídos a Mim</div>
+                        <div class="kpi-value info">${myReqs.length}</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">Equipe Operacional</div>
+                        <div class="kpi-value success">4 MEMBROS</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">Gestão de Onboarding</div>
+                        <div class="kpi-value" style="color:var(--brand-primary); font-size:1.2em; cursor:pointer;" onclick="window.location.href='cadastro-equipe.html'">👥 CADASTRAR PARCEIROS</div>
+                    </div>
+                </div>
+
+                <div class="card-panel">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                        <h3>📋 Delegação de Requisitos para a Equipe Operacional</h3>
+                        <a href="cadastro-equipe.html" target="_blank" class="btn-upload">➕ Cadastrar Novo Integrante Operacional</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Título do Requisito</th>
+                                    <th>Área Responsável</th>
+                                    <th>Atribuir Ponto Focal Operacional</th>
+                                    <th>Status Atual</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${requirements.map(r => `
+                                    <tr>
+                                        <td><strong style="color:var(--brand-primary);">${r.code}</strong></td>
+                                        <td>${r.title}</td>
+                                        <td>${r.area}</td>
+                                        <td>
+                                            <select class="form-control" style="padding:4px 8px; font-size:0.85em;" onchange="reassignFocal('${r.code}', this.value)">
+                                                <option value="Bruno Compliance" ${r.focal==='Bruno Compliance'?'selected':''}>Bruno Compliance (Governança Lead)</option>
+                                                <option value="Ana Ribeiro" ${r.focal==='Ana Ribeiro'?'selected':''}>Ana Ribeiro (Dev & Eng)</option>
+                                                <option value="Marcos Lima" ${r.focal==='Marcos Lima'?'selected':''}>Marcos Lima (Infra & Cloud)</option>
+                                                <option value="Roberto Alves" ${r.focal==='Roberto Alves'?'selected':''}>Roberto Alves (Facilities)</option>
+                                                <option value="Patricia Souza" ${r.focal==='Patricia Souza'?'selected':''}>Patricia Souza (RH)</option>
+                                            </select>
+                                        </td>
+                                        <td><span class="status-badge status-${r.status}">${formatStatus(r.status)}</span></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             `;
