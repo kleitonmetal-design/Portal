@@ -427,7 +427,16 @@ function updateStats(){
 function updateUI(){
   render();
   updateStats();
-  document.getElementById('genDate').textContent = 'Última busca: ' + new Date().toLocaleTimeString('pt-BR');
+  const now = new Date();
+  const formatted = now.toLocaleString('pt-BR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+  document.getElementById('genDate').textContent = 'Última atualização: ' + formatted;
 }
 
 const root = document.documentElement;
