@@ -169,6 +169,61 @@
                 </table>
             </div>
         </div>
+
+        <!-- Tabela de SLAs por Área & Permissões -->
+        <div class="card-table">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+                <h3 style="color: #f59e0b; font-size: 1.1em;">⏱️ Parametrização de SLAs por Área & Permissões</h3>
+                <span style="font-size: 0.8em; color: var(--text-gray);">Configurações Globais por Departamento</span>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Área / Departamento</th>
+                            <th>SLA Máximo de Coleta</th>
+                            <th>Permissão: Anexar Evidências</th>
+                            <th>Permissão: Aprovar Internamente</th>
+                            <th>Alertas de E-mail SLA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Desenvolvimento & Engenharia</strong></td>
+                            <td><input type="number" value="5" style="width:60px; padding:4px; border-radius:4px; border:1px solid #555; background:#18181b; color:#fff; text-align:center;"> dias</td>
+                            <td><input type="checkbox" checked> Habilitado</td>
+                            <td><input type="checkbox"> Desabilitado</td>
+                            <td><input type="checkbox" checked> Ativo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Infraestrutura & Cloud</strong></td>
+                            <td><input type="number" value="7" style="width:60px; padding:4px; border-radius:4px; border:1px solid #555; background:#18181b; color:#fff; text-align:center;"> dias</td>
+                            <td><input type="checkbox" checked> Habilitado</td>
+                            <td><input type="checkbox" checked> Habilitado</td>
+                            <td><input type="checkbox" checked> Ativo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Segurança da Informação</strong></td>
+                            <td><input type="number" value="5" style="width:60px; padding:4px; border-radius:4px; border:1px solid #555; background:#18181b; color:#fff; text-align:center;"> dias</td>
+                            <td><input type="checkbox" checked> Habilitado</td>
+                            <td><input type="checkbox" checked> Habilitado</td>
+                            <td><input type="checkbox" checked> Ativo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Físico & Facilities</strong></td>
+                            <td><input type="number" value="10" style="width:60px; padding:4px; border-radius:4px; border:1px solid #555; background:#18181b; color:#fff; text-align:center;"> dias</td>
+                            <td><input type="checkbox" checked> Habilitado</td>
+                            <td><input type="checkbox"> Desabilitado</td>
+                            <td><input type="checkbox" checked> Ativo</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="display:flex; justify-content:flex-end; margin-top:16px;">
+                <button class="btn-action" onclick="showToast('💾 SLA e Permissões das áreas salvas!')">💾 Salvar SLAs & Permissões</button>
+            </div>
+        </div>
     </div>
 
     <div id="toast" class="notification-toast"></div>

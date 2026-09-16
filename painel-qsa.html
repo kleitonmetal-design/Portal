@@ -352,10 +352,15 @@
                     ${r.arquivo ? `
                         <div style="background: #18181b; border: 1px solid #3f3f46; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                             <div>
-                                <div style="font-weight: 600; font-size: 0.88em; color: #fff;">📄 ${r.arquivo}</div>
-                                <div style="font-size: 0.78em; color: var(--text-gray);">Enviado por: ${r.uploader || r.responsavel}</div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <div style="font-weight: 600; font-size: 0.88em; color: #fff;">📄 ${r.arquivo}</div>
+                                    <span style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); padding:2px 8px; border-radius:12px; font-size:0.72em; font-weight:700;">☁️ ShareFile Synced</span>
+                                </div>
+                                <div style="font-size: 0.78em; color: var(--text-gray); margin-top: 4px;">
+                                    Enviado por: <strong style="color:#fff;">${r.uploader || r.responsavel}</strong> · Versão: <span style="color:#60a5fa; font-weight:700;">v1.2 (15.09.2026 às 14:30)</span>
+                                </div>
                             </div>
-                            <span class="hash-tag">SHA: ${(r.hash || 'e3b0c44298fc1c149afbf4c8996fb924').substring(0, 16)}...</span>
+                            <span class="hash-tag">SHA-256: ${(r.hash || 'e3b0c44298fc1c149afbf4c8996fb924').substring(0, 16)}...</span>
                         </div>
                     ` : ''}
 
