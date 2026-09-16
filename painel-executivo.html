@@ -160,6 +160,260 @@
             font-weight: 800; color: var(--brand-primary); background: rgba(255, 179, 102, 0.1);
             padding: 2px 6px; border-radius: 4px; font-size: 0.8em;
         }
+
+        /* Dynamic Cards & Filter Bar matching reference image */
+        .filter-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0 24px 0;
+            flex-wrap: wrap;
+        }
+
+        .filter-label {
+            font-size: 0.9em;
+            color: #a1a1aa;
+            margin-right: 4px;
+        }
+
+        .filter-btn {
+            background: rgba(39, 39, 42, 0.6);
+            border: 1px solid #3f3f46;
+            color: #a1a1aa;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            background: #27272a;
+            color: #f4f4f5;
+        }
+
+        .filter-btn.active {
+            background: #27272a;
+            color: #ffffff;
+            border-color: #71717a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .filter-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot-all { background: #a1a1aa; }
+        .dot-complete { background: #34d399; }
+        .dot-partial { background: #ffb366; }
+        .dot-empty { background: #71717a; }
+
+        .req-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 1024px) {
+            .req-cards-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 640px) {
+            .req-cards-grid { grid-template-columns: 1fr; }
+        }
+
+        .req-exec-card {
+            background: #181920;
+            border: 1px solid #27272a;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 220px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .req-exec-card:hover {
+            border-color: rgba(255, 179, 102, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .req-exec-card.card-selected {
+            border: 2px solid var(--brand-primary);
+            box-shadow: 0 0 15px rgba(255, 179, 102, 0.25);
+            background: #1c1d26;
+        }
+
+        .card-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .req-big-num {
+            font-size: 2.4em;
+            font-weight: 800;
+            color: #52525b;
+            line-height: 1;
+            font-family: Georgia, 'Times New Roman', serif;
+        }
+
+        .status-badge-top {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+        .badge-completo { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; }
+        .badge-parcial { background: rgba(255, 179, 102, 0.15); border: 1px solid rgba(255, 179, 102, 0.35); color: #ffb366; }
+        .badge-embranco { background: rgba(113, 113, 122, 0.2); border: 1px solid rgba(113, 113, 122, 0.4); color: #a1a1aa; }
+
+        .card-title-box {
+            margin-bottom: 14px;
+        }
+
+        .card-req-title {
+            font-size: 1.05em;
+            font-weight: 700;
+            color: #f4f4f5;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .pending-badge-sm {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 179, 102, 0.15);
+            border: 1px solid rgba(255, 179, 102, 0.35);
+            color: #ffb366;
+            font-size: 0.75em;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .subreq-count-text {
+            font-size: 0.82em;
+            color: #a1a1aa;
+            margin-bottom: 8px;
+        }
+
+        .card-bottom-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 14px;
+            padding-top: 10px;
+        }
+
+        .pct-value-text {
+            font-size: 1.1em;
+            font-weight: 800;
+        }
+        .pct-completo { color: #34d399; }
+        .pct-parcial { color: #ffb366; }
+        .pct-embranco { color: #71717a; }
+
+        .btn-details-link {
+            font-size: 0.82em;
+            color: #a1a1aa;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+        .req-exec-card:hover .btn-details-link {
+            color: var(--brand-primary);
+        }
+
+        /* Inline Expansion Detail Box */
+        .inline-detail-box {
+            background: #181920;
+            border: 1px solid rgba(255, 179, 102, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            animation: fadeIn 0.3s ease-in-out;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .inline-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .inline-detail-title {
+            font-size: 1.4em;
+            font-weight: 800;
+            color: #ffffff;
+            font-family: Georgia, 'Times New Roman', serif;
+        }
+
+        .btn-close-inline {
+            background: rgba(39, 39, 42, 0.8);
+            border: 1px solid #3f3f46;
+            color: #a1a1aa;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.2s ease;
+        }
+        .btn-close-inline:hover {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        .inline-detail-subtitle {
+            font-size: 0.9em;
+            color: #a1a1aa;
+            margin-bottom: 16px;
+        }
+
+        .subreq-pills-flex {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .subreq-pill {
+            background: rgba(255, 179, 102, 0.12);
+            border: 1px solid rgba(255, 179, 102, 0.3);
+            color: #ffb366;
+            font-size: 0.82em;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
     </style>
 </head>
 <body>
@@ -263,26 +517,6 @@
                             <span>Aceito (Conforme)</span>
                             <span style="color: #34d399; font-weight: 700;">2 requisitos (20%)</span>
                         </div>
-                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 20%; background: #10b981;"></div></div>
-                    </div>
-                </div>
-
-                <!-- Pílulas de Progresso REQ 1 a REQ 12 -->
-                <div style="margin-top: 24px;">
-                    <div style="font-size: 0.85em; font-weight: 700; color: var(--text-gray); margin-bottom: 8px; text-transform: uppercase;">Progresso por Requisito Geral (Clique para Detalhar)</div>
-                    <div class="req-pills-grid">
-                        <div class="req-pill pending" style="cursor:pointer;" onclick="openReqDetailModal('REQ 1')">REQ 1<br>0%</div>
-                        <div class="req-pill pending" style="cursor:pointer;" onclick="openReqDetailModal('REQ 2')">REQ 2<br>0%</div>
-                        <div class="req-pill in-progress" style="cursor:pointer;" onclick="openReqDetailModal('REQ 3')">REQ 3<br>50%</div>
-                        <div class="req-pill pending" style="cursor:pointer;" onclick="openReqDetailModal('REQ 4')">REQ 4<br>0%</div>
-                        <div class="req-pill pending" style="cursor:pointer;" onclick="openReqDetailModal('REQ 5')">REQ 5<br>0%</div>
-                        <div class="req-pill in-progress" style="cursor:pointer;" onclick="openReqDetailModal('REQ 6')">REQ 6<br>33%</div>
-                        <div class="req-pill completed" style="cursor:pointer;" onclick="openReqDetailModal('REQ 7')">REQ 7<br>100%</div>
-                        <div class="req-pill pending" style="cursor:pointer;" onclick="openReqDetailModal('REQ 8')">REQ 8<br>0%</div>
-                        <div class="req-pill in-progress" style="cursor:pointer;" onclick="openReqDetailModal('REQ 9')">REQ 9<br>50%</div>
-                        <div class="req-pill completed" style="cursor:pointer;" onclick="openReqDetailModal('REQ 10')">REQ 10<br>100%</div>
-                        <div class="req-pill pending" style="cursor:pointer;" onclick="openReqDetailModal('REQ 11')">REQ 11<br>0%</div>
-                        <div class="req-pill pending" style="cursor:pointer;" onclick="openReqDetailModal('REQ 12')">REQ 12<br>0%</div>
                     </div>
                 </div>
             </div>
@@ -376,6 +610,29 @@
             </div>
         </div>
 
+        <!-- Bloco Requisitos PCI DSS v4.0.1 (01 a 12) com Detalhes Expandidos (Estilo Demo Perfis) -->
+        <div class="dashboard-card" style="margin-bottom: 28px;">
+            <div class="card-header-title">
+                <span>📌 Requisitos PCI DSS v4.0.1 (Visão Detalhada 01 a 12)</span>
+                <span style="font-size: 0.8em; color: var(--text-gray);">Clique no card para expandir o detalhamento</span>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar-container">
+                <span class="filter-label">Filtrar:</span>
+                <button class="filter-btn active" id="filter-btn-todos" onclick="filtrarGridReqs('todos')"><span class="filter-dot dot-all"></span> Todos (12)</button>
+                <button class="filter-btn" id="filter-btn-completo" onclick="filtrarGridReqs('completo')"><span class="filter-dot dot-complete"></span> Completo (4)</button>
+                <button class="filter-btn" id="filter-btn-parcial" onclick="filtrarGridReqs('parcial')"><span class="filter-dot dot-partial"></span> Parcial (5)</button>
+                <button class="filter-btn" id="filter-btn-embranco" onclick="filtrarGridReqs('embranco')"><span class="filter-dot dot-empty"></span> Em branco (3)</button>
+            </div>
+
+            <!-- Contêiner de Expansão Inline (renderizado dinamicamente acima do grid) -->
+            <div id="inline-detail-container" style="display:none;"></div>
+
+            <!-- Grid de Cards 01 a 12 (renderizado via JS) -->
+            <div id="reqs-cards-grid" class="req-cards-grid"></div>
+        </div>
+
         <!-- Bloco 2: Pendências por Área Responsável -->
         <div class="dashboard-card" style="margin-bottom: 28px;">
             <div class="card-header-title">
@@ -432,50 +689,412 @@
         </div>
     </div>
 
-    <!-- Requirement Detail Modal (Executivo Drill-down) -->
-    <div style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; z-index:1000; padding:20px;" id="reqDetailModal">
-        <div style="background:#27272a; border:1px solid rgba(255,179,102,0.3); border-radius:16px; width:100%; max-width:620px; padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.6);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                <div>
-                    <span id="detailReqCode" class="code-tag">REQ</span>
-                    <h3 id="detailReqTitle" style="margin-top:6px; font-size:1.15em; color:white;">Título do Requisito</h3>
-                </div>
-                <button onclick="closeModal()" style="background:none; border:none; color:#888; font-size:1.5em; cursor:pointer;">&times;</button>
-            </div>
-            
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; font-size:0.88em; background:rgba(24,24,27,0.7); padding:14px; border-radius:10px; border:1px solid rgba(255,255,255,0.08);">
-                <div>
-                    <span style="color:var(--text-gray); display:block; font-size:0.8em; font-weight:600;">PONTO FOCAL RESPONSÁVEL:</span>
-                    <strong id="detailFocal" style="color:var(--brand-primary); font-size:1.05em;">Ana Ribeiro</strong>
-                    <div id="detailArea" style="color:var(--text-gray); font-size:0.85em;">Dev & Engenharia</div>
-                </div>
-                <div>
-                    <span style="color:var(--text-gray); display:block; font-size:0.8em; font-weight:600;">STATUS DA AUDITORIA:</span>
-                    <span id="detailStatusBadge" style="padding:4px 10px; border-radius:12px; font-size:0.75em; font-weight:700; text-transform:uppercase;">Pendente</span>
-                    <div id="detailSla" style="color:#f87171; font-weight:700; font-size:0.82em; margin-top:4px;">Prazo: Expira em 15.03</div>
-                </div>
-            </div>
-
-            <!-- Checklists: Ações Finalizadas vs Pendentes -->
-            <div style="margin-bottom:16px;">
-                <label style="font-weight:700; font-size:0.85em; color:var(--text-gray); display:block; margin-bottom:6px;">📋 Checklist de Ações do Requisito</label>
-                <div id="detailActionsList" style="background:#18181b; border:1px solid #444; border-radius:10px; padding:12px; font-size:0.88em; display:grid; gap:8px;">
-                    <!-- Rendered by JS -->
-                </div>
-            </div>
-
-            <!-- Evidências & Parecer QSA -->
-            <div id="detailEvidenceSection" style="margin-bottom:16px;">
-                <!-- Rendered by JS -->
-            </div>
-
-            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
-                <button onclick="closeModal()" style="background:var(--brand-primary); color:#111; border:none; padding:8px 18px; border-radius:8px; font-weight:700; cursor:pointer;">Fechar Detalhes</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- Requirement Detail Modal / Inline Card Expansion Container -->
     <script>
+        const datasetReqs12 = [
+            {
+                num: "01",
+                code: "REQ 1",
+                title: "Install and Maintain Network Security Controls",
+                titlePt: "Instalar e Manter Controles de Segurança de Rede (NSCs / Firewalls)",
+                status: "parcial",
+                statusText: "Parcial",
+                pendingCount: 3,
+                subTotal: 19,
+                subDone: 16,
+                pct: 84.2,
+                subPills: ["⏳ 1.2.4", "⏳ 1.2.7", "⏳ 1.3.2"],
+                subText: "Aguardando Confirmação: 3 sub-requisitos com evidências à espera de confirmação do cliente.",
+                focal: "Marcos Lima",
+                area: "Infraestrutura e Redes",
+                due: "15/03/2026",
+                slaOverdue: 0,
+                actionsDone: ["✅ Mapeamento das regras de ingress/egress dos Firewalls", "✅ Diagrama de arquitetura de rede CDE atualizado", "✅ Bloqueio de portas de alto risco (Telnet, FTP, RDP exposto)"],
+                actionsPending: ["❌ Revisão semestral documentada dos NSCs (Sub-requisito 1.2.7)", "❌ Evidência de sincronia de horários via NTP autenticado"],
+                qsaComment: "Aguardando homologação da amostra de regras dos firewalls de borda.",
+                evidence: "Relatorio_Firewalls_Q1_2026.pdf",
+                hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                num: "02",
+                code: "REQ 2",
+                title: "Apply Secure Configurations to All System Components",
+                titlePt: "Aplicar Configurações Seguras em Todos os Componentes do Sistema (Hardening)",
+                status: "completo",
+                statusText: "Completo",
+                pendingCount: 0,
+                subTotal: 11,
+                subDone: 11,
+                pct: 100,
+                subPills: ["✅ 2.2.1", "✅ 2.2.2", "✅ 2.2.7"],
+                subText: "Todos os 11 sub-requisitos de hardening de servidores e bancos de dados concluídos.",
+                focal: "Marcos Lima",
+                area: "Infraestrutura e Redes",
+                due: "20/02/2026",
+                slaOverdue: 0,
+                actionsDone: ["✅ Remoção de contas padrão e senhas default dos servidores Linux/Windows", "✅ Checklist de hardening aplicado em 100% das VMs do CDE", "✅ Desativação de serviços desnecessários e daemon vulneráveis"],
+                actionsPending: [],
+                qsaComment: "Parecer QSA: Amostragem de servidores auditada e 100% conforme.",
+                evidence: "Hardening_Base_v2.docx",
+                hash: "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"
+            },
+            {
+                num: "03",
+                code: "REQ 3",
+                title: "Protect Stored Account Data",
+                titlePt: "Proteger os Dados de Conta Armazenados (PAN & Criptografia em Repouso)",
+                status: "parcial",
+                statusText: "Parcial",
+                pendingCount: 5,
+                subTotal: 28,
+                subDone: 5,
+                pct: 17.9,
+                subPills: ["🚨 3.4.1", "⏳ 3.5.1", "⏳ 3.6.1"],
+                subText: "Atenção Crítica: 5 sub-requisitos com GAP pendente de correção técnica.",
+                focal: "Ana Ribeiro",
+                area: "Segurança da Informação",
+                due: "22/01/2026",
+                slaOverdue: 55,
+                actionsDone: ["✅ Mascaramento do PAN no exibições de telas (Primeiros 6 / Últimos 4)"],
+                actionsPending: ["❌ Rotação de chaves HSM expirada há mais de 12 meses (Sub 3.4.1)", "❌ Apresentar inventário completo das chaves criptográficas de repouso"],
+                qsaComment: "GAP Identificado pelo QSA Lead: Apresentar relatório formal da rotação de chaves no HSM.",
+                evidence: "Criptografia_DB_V1.pdf",
+                hash: "7d793037a0760186574b0282f2f435e767166766e0123456789abcdef0123456",
+                gap: "Falta comprovação da rotação de chaves no módulo HSM nos últimos 12 meses."
+            },
+            {
+                num: "04",
+                code: "REQ 4",
+                title: "Protect Cardholder Data with Strong Cryptography During Transmission",
+                titlePt: "Proteger Dados do Portador de Cartão em Trânsito (TLS 1.3)",
+                status: "parcial",
+                statusText: "Parcial",
+                pendingCount: 2,
+                subTotal: 6,
+                subDone: 4,
+                pct: 66.7,
+                subPills: ["⏳ 4.2.1", "⏳ 4.2.2"],
+                subText: "2 sub-requisitos pendentes de validação nos ambientes de homologação.",
+                focal: "Ana Ribeiro",
+                area: "Dev & Engenharia",
+                due: "10/04/2026",
+                slaOverdue: 0,
+                actionsDone: ["✅ TLS 1.3 habilitado nos endpoints públicos de pagamento", "✅ Criptografia forte ativa em todas as comunicações de API internas"],
+                actionsPending: ["❌ Teste de varredura SSL Labs com nota A+ no gateway homologação"],
+                qsaComment: "Em andamento: Evidência técnica de TLS 1.3 parcial entregue.",
+                evidence: "Relatorio_SSL_Labs_A_Plus.pdf",
+                hash: "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"
+            },
+            {
+                num: "05",
+                code: "REQ 5",
+                title: "Protect All Systems and Networks Against Malicious Software",
+                titlePt: "Proteger Todos os Sistemas Contra Malware (Antivírus / EDR)",
+                status: "embranco",
+                statusText: "Em branco",
+                pendingCount: 4,
+                subTotal: 8,
+                subDone: 0,
+                pct: 0,
+                subPills: ["❌ 5.2.1", "❌ 5.3.1"],
+                subText: "Pendente de início: Aguardando relatório do console central de EDR.",
+                focal: "Marcos Lima",
+                area: "Infraestrutura e Redes",
+                due: "15/03/2026",
+                slaOverdue: 0,
+                actionsDone: [],
+                actionsPending: ["❌ Coletar relatório de endpoints com agentes EDR ativos no CDE", "❌ Evidência de atualização diária da base de vacinas e assinaturas"],
+                qsaComment: "Pendente de envio pelo responsável da infraestrutura."
+            },
+            {
+                num: "06",
+                code: "REQ 6",
+                title: "Develop and Maintain Secure Systems and Software",
+                titlePt: "Desenvolver e Manter Sistemas Seguros (DevSecOps & CSP Header)",
+                status: "parcial",
+                statusText: "Parcial",
+                pendingCount: 3,
+                subTotal: 15,
+                subDone: 5,
+                pct: 33.3,
+                subPills: ["🚨 6.4.3", "⏳ 6.3.1"],
+                subText: "Atraso Detectado: Gestão de scripts de terceiros na Web (Header CSP) vencido.",
+                focal: "Ana Ribeiro",
+                area: "Dev & Engenharia",
+                due: "05/02/2026",
+                slaOverdue: 29,
+                actionsDone: ["✅ Pipeline DevSecOps com análise estática de código (SAST) integrada"],
+                actionsPending: ["❌ Implementar política Content-Security-Policy (CSP) no checkout (Sub 6.4.3)", "❌ Treinamento de desenvolvimento seguro atualizado para a equipe"],
+                qsaComment: "Atraso no atendimento do sub-requisito 6.4.3 de scripts Web."
+            },
+            {
+                num: "07",
+                code: "REQ 7",
+                title: "Restrict Access to System Components and Cardholder Data",
+                titlePt: "Restringir Acesso aos Dados por Necessidade de Conhecer (Menor Privilégio)",
+                status: "completo",
+                statusText: "Completo",
+                pendingCount: 0,
+                subTotal: 5,
+                subDone: 5,
+                pct: 100,
+                subPills: ["✅ 7.2.1", "✅ 7.2.2"],
+                subText: "Todos os 5 sub-requisitos de controle de acesso baseados na função validados.",
+                focal: "Ana Ribeiro",
+                area: "Segurança da Informação",
+                due: "18/03/2026",
+                slaOverdue: 0,
+                actionsDone: ["✅ Matriz de acessos RBAC implementada e revisada no Active Directory", "✅ Aprovação formal para conceder privilégios administrativos"],
+                actionsPending: [],
+                qsaComment: "Parecer QSA: Conforme e aprovado sem ressalvas.",
+                evidence: "Matriz_Acessos_Q1.xlsx"
+            },
+            {
+                num: "08",
+                code: "REQ 8",
+                title: "Identify Users and Authenticate Access to System Components",
+                titlePt: "Identificar Usuários e Autenticar Acesso (MFA Obrigatório no CDE)",
+                status: "parcial",
+                statusText: "Parcial",
+                pendingCount: 2,
+                subTotal: 12,
+                subDone: 6,
+                pct: 50,
+                subPills: ["⏳ 8.3.6", "⏳ 8.4.1"],
+                subText: "Evidência de MFA nos acessos administrativos enviada. Aguardando QSA.",
+                focal: "Ana Ribeiro",
+                area: "Segurança da Informação",
+                due: "01/03/2026",
+                slaOverdue: 0,
+                actionsDone: ["✅ MFA obrigatório configurado no Okta para todos os acessos ao CDE", "✅ Política de complexidade de senhas forte aplicada"],
+                actionsPending: ["❌ Homologação dos logs de autenticação pelo auditor QSA"],
+                qsaComment: "Evidências de MFA em análise pela auditoria QSA.",
+                evidence: "Logs_MFA_Okta.csv",
+                hash: "4b227777d4da16911ca761956cd336e3a9cbb31b402801458e0a29486c4e135d"
+            },
+            {
+                num: "09",
+                code: "REQ 9",
+                title: "Restrict Physical Access to Cardholder Data",
+                titlePt: "Restringir o Acesso Físico aos Dados do Portador de Cartão",
+                status: "embranco",
+                statusText: "Em branco",
+                pendingCount: 4,
+                subTotal: 10,
+                subDone: 0,
+                pct: 0,
+                subPills: ["🚨 9.1.1", "❌ 9.2.1"],
+                subText: "Alerta de Prazo: 16 dias de atraso na inspeção de dispositivos físicos.",
+                focal: "Roberto Alves",
+                area: "Físico & Facilities",
+                due: "28/02/2026",
+                slaOverdue: 16,
+                actionsDone: [],
+                actionsPending: ["❌ Apresentar os registros de inspeção física dos terminais de captura", "❌ Relatório de visitantes e controle de crachás no Data Center"],
+                qsaComment: "Pendente de envio pela equipe de Facilities."
+            },
+            {
+                num: "10",
+                code: "REQ 10",
+                title: "Log and Monitor All Access to System Components and Data",
+                titlePt: "Registrar e Monitorar Acessos a Recursos de Rede e Dados (SIEM)",
+                status: "completo",
+                statusText: "Completo",
+                pendingCount: 0,
+                subTotal: 14,
+                subDone: 14,
+                pct: 100,
+                subPills: ["✅ 10.2.1", "✅ 10.3.1"],
+                subText: "100% dos logs auditáveis centralizados no SIEM Splunk com retenção de 1 ano.",
+                focal: "Marcos Lima",
+                area: "Infraestrutura e Redes",
+                due: "30/03/2026",
+                slaOverdue: 0,
+                actionsDone: ["✅ Retenção de logs auditáveis por 90 dias online e 365 dias em cold storage", "✅ Alertas de segurança em tempo real configurados para anomalias"],
+                actionsPending: [],
+                qsaComment: "Parecer QSA: Validação de logs SIEM aprovada.",
+                evidence: "Logs_Retencao_Splunk.pdf"
+            },
+            {
+                num: "11",
+                code: "REQ 11",
+                title: "Test Security of Systems and Networks Regularly",
+                titlePt: "Testar a Segurança de Sistemas e Redes Regularmente (Pentest & Scans)",
+                status: "embranco",
+                statusText: "Em branco",
+                pendingCount: 6,
+                subTotal: 12,
+                subDone: 0,
+                pct: 0,
+                subPills: ["❌ 11.3.1", "❌ 11.4.1"],
+                subText: "Aguardando conclusão do relatório de Teste de Invasão (Pentest) anual.",
+                focal: "Ana Ribeiro",
+                area: "Segurança da Informação",
+                due: "15/04/2026",
+                slaOverdue: 0,
+                actionsDone: [],
+                actionsPending: ["❌ Agendar varreduras de vulnerabilidades ASV trimestrais externas", "❌ Entregar o Relatório Final Executivo do Pentest Interno/Externo"],
+                qsaComment: "Pentest agendado para o próximo trimestre."
+            },
+            {
+                num: "12",
+                code: "REQ 12",
+                title: "Support Information Security with Organizational Policies",
+                titlePt: "Manter Política de Segurança da Informação Organizacional",
+                status: "completo",
+                statusText: "Completo",
+                pendingCount: 0,
+                subTotal: 8,
+                subDone: 8,
+                pct: 100,
+                subPills: ["✅ 12.1.1", "✅ 12.6.1"],
+                subText: "Políticas de Segurança da Informação atualizadas e aprovadas pela Diretoria.",
+                focal: "Patricia Souza",
+                area: "Recursos Humanos",
+                due: "30/03/2026",
+                slaOverdue: 0,
+                actionsDone: ["✅ Política de Segurança PCI DSS v4.0.1 assinada pela diretoria executiva", "✅ 100% dos colaboradores com treinamento de conscientização concluído"],
+                actionsPending: [],
+                qsaComment: "Parecer QSA: Política organizacional e conscientização conforme.",
+                evidence: "Politica_SegInfo_2026.pdf"
+            }
+        ];
+
+        let filtroReqAtivo = 'todos';
+        let reqExpandedNum = null;
+
+        function filtrarGridReqs(filtro) {
+            filtroReqAtivo = filtro;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            const btnEl = document.getElementById(`filter-btn-${filtro}`);
+            if(btnEl) btnEl.classList.add('active');
+
+            renderizarGridReqs();
+        }
+
+        function toggleExpandReq(num) {
+            if (reqExpandedNum === num) {
+                reqExpandedNum = null;
+            } else {
+                reqExpandedNum = num;
+            }
+            renderizarGridReqs();
+        }
+
+        function renderizarGridReqs() {
+            const container = document.getElementById('reqs-cards-grid');
+            const inlineContainer = document.getElementById('inline-detail-container');
+
+            if (!container) return;
+
+            let filtrados = datasetReqs12;
+            if (filtroReqAtivo === 'completo') filtrados = datasetReqs12.filter(r => r.status === 'completo');
+            else if (filtroReqAtivo === 'parcial') filtrados = datasetReqs12.filter(r => r.status === 'parcial');
+            else if (filtroReqAtivo === 'embranco') filtrados = datasetReqs12.filter(r => r.status === 'embranco');
+
+            // Render Cards Grid
+            container.innerHTML = filtrados.map(r => {
+                const isSelected = reqExpandedNum === r.num;
+                const progressColor = r.status === 'completo' ? '#10b981' : (r.status === 'parcial' ? '#f59e0b' : '#71717a');
+                
+                return `
+                    <div class="req-exec-card ${isSelected ? 'card-selected' : ''}" onclick="toggleExpandReq('${r.num}')">
+                        <div>
+                            <div class="card-top-row">
+                                <span class="card-number">${r.num}</span>
+                                <span class="status-pill pill-${r.status}">${r.statusText}</span>
+                            </div>
+
+                            <div class="card-title-box">
+                                <div class="card-req-title">${r.title}</div>
+                                ${r.pendingCount > 0 ? `<span class="pending-badge-sm">⏳ ${r.pendingCount} Pendentes</span>` : ''}
+                            </div>
+
+                            <div class="subreq-count-text">${r.subDone}/${r.subTotal} sub-requisitos concluídos</div>
+                            
+                            <div class="progress-bar-bg" style="height: 8px;">
+                                <div class="progress-bar-fill" style="width: ${r.pct}%; background: ${progressColor};"></div>
+                            </div>
+                        </div>
+
+                        <div class="card-bottom-row">
+                            <span class="pct-value-text pct-${r.status}">${r.pct}%</span>
+                            <span class="btn-details-link">
+                                ${isSelected ? 'ocultar detalhes ⨉' : (r.status === 'completo' ? 'sem pendências' : 'ver detalhes →')}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Render Inline Detail Expansion Card if selected
+            if (reqExpandedNum && inlineContainer) {
+                const item = datasetReqs12.find(r => r.num === reqExpandedNum);
+                if (item) {
+                    inlineContainer.style.display = 'block';
+                    inlineContainer.innerHTML = `
+                        <div class="inline-detail-box">
+                            <div class="inline-detail-header">
+                                <div class="inline-detail-title">Requisito ${parseInt(item.num, 10)} — detalhes</div>
+                                <button class="btn-close-inline" onclick="toggleExpandReq('${item.num}')">&times;</button>
+                            </div>
+
+                            <div class="inline-detail-subtitle">${item.subText}</div>
+
+                            <div class="subreq-pills-flex">
+                                ${item.subPills.map(p => `<span class="subreq-pill">${p}</span>`).join('')}
+                            </div>
+
+                            <!-- Info Grid -->
+                            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:14px; margin-bottom:16px; background:#121215; padding:16px; border-radius:10px; border:1px solid #3f3f46;">
+                                <div>
+                                    <span style="font-size:0.75em; color:var(--text-gray); font-weight:700; text-transform:uppercase; display:block;">Ponto Focal Responsável</span>
+                                    <strong style="color:var(--brand-primary); font-size:1em;">${item.focal}</strong>
+                                    <div style="font-size:0.82em; color:var(--text-gray);">${item.area}</div>
+                                </div>
+                                <div>
+                                    <span style="font-size:0.75em; color:var(--text-gray); font-weight:700; text-transform:uppercase; display:block;">Status & Prazo SLA</span>
+                                    <span class="status-pill pill-${item.status}">${item.statusText}</span>
+                                    <div style="font-size:0.82em; color:${item.slaOverdue > 0 ? '#f87171' : '#34d399'}; font-weight:700; margin-top:4px;">
+                                        ${item.slaOverdue > 0 ? `🚨 Vencido há ${item.slaOverdue} dias (${item.due})` : `📅 Prazo de Coleta: ${item.due}`}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Checklists -->
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:16px;">
+                                <div style="background:#121215; padding:14px; border-radius:10px; border:1px solid #27272a;">
+                                    <div style="font-size:0.82em; font-weight:700; color:#34d399; margin-bottom:8px; text-transform:uppercase;">✅ Ações Concluídas</div>
+                                    ${item.actionsDone.length > 0 ? item.actionsDone.map(a => `<div style="font-size:0.85em; color:#e4e4e7; margin-bottom:6px;">${a}</div>`).join('') : '<div style="font-size:0.82em; color:#71717a;">Nenhuma ação concluída ainda.</div>'}
+                                </div>
+                                <div style="background:#121215; padding:14px; border-radius:10px; border:1px solid #27272a;">
+                                    <div style="font-size:0.82em; font-weight:700; color:#f87171; margin-bottom:8px; text-transform:uppercase;">❌ Ações Pendentes / GAPs</div>
+                                    ${item.actionsPending.length > 0 ? item.actionsPending.map(a => `<div style="font-size:0.85em; color:#e4e4e7; margin-bottom:6px;">${a}</div>`).join('') : '<div style="font-size:0.82em; color:#34d399;">Sem pendências abertas!</div>'}
+                                </div>
+                            </div>
+
+                            ${item.evidence ? `
+                                <div style="background:rgba(255,179,102,0.08); border:1px solid rgba(255,179,102,0.25); border-radius:10px; padding:12px 16px; font-size:0.85em; margin-bottom:12px;">
+                                    <strong>📎 Evidência Anexada:</strong> ${item.evidence}
+                                    ${item.hash ? `<div style="font-family:monospace; font-size:0.75em; color:#34d399; margin-top:4px;">SHA-256 Hash Integridade OK: ${item.hash}</div>` : ''}
+                                </div>
+                            ` : ''}
+
+                            ${item.qsaComment ? `
+                                <div style="background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.3); border-radius:10px; padding:12px 16px; font-size:0.85em; color:#93c5fd;">
+                                    <strong>💬 Parecer da Auditoria QSA Lead:</strong> ${item.qsaComment}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+            } else if (inlineContainer) {
+                inlineContainer.style.display = 'none';
+                inlineContainer.innerHTML = '';
+            }
+        }
+
         function validarSessao() {
             const salvo = localStorage.getItem('thyreos_sessao_usuario');
             if (salvo) {
@@ -490,157 +1109,8 @@
             window.location.href = './login.html';
         }
 
-        function closeModal() {
-            document.getElementById('reqDetailModal').style.display = 'none';
-        }
-
-        function openReqDetailModal(code) {
-            const defaultDataset = [
-                { code: "REQ 1", title: "Configuração de Firewalls e Roteadores", area: "Infraestrutura & Cloud", focal: "Marcos Lima", due: "15.03.2026", status: "aceito", evidence: "Relatorio_Firewall_Q1_2026.pdf", qsaComment: "Evidência revisada e conforme." },
-                { code: "REQ 2", title: "Remoção de Senhas Padronizadas e Servidores", area: "Infraestrutura & Cloud", focal: "Marcos Lima", due: "20.02.2026", status: "em_revisao", evidence: "Hardening_Base_v2.docx", qsaComment: "Aguardando amostragem de servidores." },
-                { code: "REQ 3", title: "Criptografia de Dados de Cartão (PAN) em Repouso", area: "Segurança da Informação", focal: "Ana Ribeiro", due: "22.01.2026", status: "ajustes", overdueDays: 55, evidence: "Criptografia_DB_V1.pdf", gap: "Chaves HSM expiradas", qsaComment: "GAP Identificado: Rotação de chaves expirada nos últimos 12 meses." },
-                { code: "REQ 4", title: "Protocolos Fortes de Criptografia TLS 1.3 em Trânsito", area: "Dev & Engenharia", focal: "Ana Ribeiro", due: "10.04.2026", status: "aceito", evidence: "Relatorio_SSL_Labs_A_Plus.pdf", qsaComment: "Suporte exclusivo TLS 1.3 homologado." },
-                { code: "REQ 5", title: "Mecanismo Antivírus / EDR Atualizado e Ativo", area: "Infraestrutura & Cloud", focal: "Marcos Lima", due: "15.03.2026", status: "pendente" },
-                { code: "REQ 6", title: "Gestão de Scripts de Terceiros na Web (Header CSP)", area: "Dev & Engenharia", focal: "Ana Ribeiro", due: "05.02.2026", status: "pendente", overdueDays: 29 },
-                { code: "REQ 7", title: "Controle de Acesso Baseado no Menor Privilégio", area: "Segurança da Informação", focal: "Ana Ribeiro", due: "18.03.2026", status: "aceito", evidence: "Matriz_Acessos_Q1.xlsx" },
-                { code: "REQ 8", title: "Autenticação Multi-Fator (MFA) Obrigatória para Acesso ao CDE", area: "Segurança da Informação", focal: "Ana Ribeiro", due: "01.03.2026", status: "em_revisao", evidence: "Logs_MFA_Okta.csv" },
-                { code: "REQ 9", title: "Inspeção Contínua de Dispositivos de Captura de Cartão", area: "Físico & Facilities", focal: "Roberto Alves", due: "28.02.2026", status: "pendente", overdueDays: 16 },
-                { code: "REQ 10", title: "Centralização e Retenção de Logs Auditáveis (SIEM)", area: "Infraestrutura & Cloud", focal: "Marcos Lima", due: "30.03.2026", status: "aceito", evidence: "Logs_Retencao_Splunk.pdf" },
-                { code: "REQ 11", title: "Testes Periódicos de Segurança e Pentest", area: "Segurança da Informação", focal: "Ana Ribeiro", due: "15.04.2026", status: "pendente" },
-                { code: "REQ 12", title: "Políticas e Procedimentos de Segurança da Informação", area: "Recursos Humanos / SegInfo", focal: "Patricia Souza", due: "30.03.2026", status: "aceito", evidence: "Politica_SegInfo_2026.pdf" }
-            ];
-
-            let req = defaultDataset.find(r => r.code === code);
-            
-            // Check if user has dynamic storage
-            const salvo = localStorage.getItem('portal_pci_requisitos');
-            if(salvo) {
-                try {
-                    const dynamicReqs = JSON.parse(salvo);
-                    const dynFound = dynamicReqs.find(r => r.code.startsWith(code));
-                    if(dynFound) {
-                        req = {
-                            code: code,
-                            title: dynFound.title || req.title,
-                            area: dynFound.area || req.area,
-                            focal: dynFound.focal || req.focal,
-                            due: dynFound.due || req.due,
-                            status: dynFound.status.toLowerCase(),
-                            overdueDays: dynFound.overdueDays || 0,
-                            evidence: dynFound.evidence || req.evidence,
-                            hash: dynFound.hash,
-                            qsaComment: dynFound.qsaComment || req.qsaComment,
-                            gap: dynFound.gap
-                        };
-                    }
-                } catch(e){}
-            }
-
-            if(!req) {
-                req = { code: code, title: "Controle de Segurança PCI", area: "Segurança da Informação", focal: "Ana Ribeiro", due: "30.03.2026", status: "pendente" };
-            }
-
-            document.getElementById('detailReqCode').innerText = req.code;
-            document.getElementById('detailReqTitle').innerText = req.title;
-            document.getElementById('detailFocal').innerText = req.focal;
-            document.getElementById('detailArea').innerText = req.area;
-
-            const badge = document.getElementById('detailStatusBadge');
-            if(req.status === 'aceito' || req.status === 'aceito') {
-                badge.style.background = 'rgba(16,185,129,0.2)'; badge.style.color = '#34d399'; badge.innerText = 'ACEITO (CONFORME)';
-            } else if(req.status === 'em_revisao' || req.status === 'enviado') {
-                badge.style.background = 'rgba(96,165,250,0.2)'; badge.style.color = '#60a5fa'; badge.innerText = 'EM REVISÃO QSA';
-            } else if(req.status === 'ajustes' || req.status === 'ajuste_solicitado') {
-                badge.style.background = 'rgba(239,68,68,0.2)'; badge.style.color = '#f87171'; badge.innerText = 'AJUSTE / GAP';
-            } else {
-                badge.style.background = 'rgba(245,158,11,0.2)'; badge.style.color = '#fcd34d'; badge.innerText = 'PENDENTE';
-            }
-
-            const sla = document.getElementById('detailSla');
-            if(req.overdueDays > 0) {
-                sla.innerText = `🚨 PRAZO VENCIDO HÁ ${req.overdueDays} DIAS (${req.due})`;
-                sla.style.color = '#f87171';
-            } else {
-                sla.innerText = `📅 Prazo de Coleta: ${req.due}`;
-                sla.style.color = '#34d399';
-            }
-
-            // Render Actions List
-            const actionsContainer = document.getElementById('detailActionsList');
-            let actionsHtml = "";
-            if (req.status === 'aceito' || req.status === 'aceito') {
-                actionsHtml = `
-                    <div style="color:#34d399;">✅ Mapeamento do escopo do requisito concluído</div>
-                    <div style="color:#34d399;">✅ Evidência técnica coletada e assinada (${req.evidence||'Documento.pdf'})</div>
-                    <div style="color:#34d399;">✅ Assinatura SHA-256 validada pelo auditor QSA</div>
-                    <div style="color:#34d399;">✅ Parecer formal QSA de Conformidade emitido</div>
-                `;
-            } else if (req.status === 'em_revisao' || req.status === 'enviado') {
-                actionsHtml = `
-                    <div style="color:#34d399;">✅ Mapeamento de responsáveis concluído (${req.focal})</div>
-                    <div style="color:#34d399;">✅ Evidência submetida (${req.evidence})</div>
-                    <div style="color:#60a5fa;">⏳ Em análise formal pelo Auditor QSA Lead</div>
-                `;
-            } else if (req.status === 'ajustes' || req.status === 'ajuste_solicitado') {
-                actionsHtml = `
-                    <div style="color:#34d399;">✅ Mapeamento de escopo concluído</div>
-                    <div style="color:#f87171;">❌ Ajuste Solicitado pelo QSA: ${req.gap || 'Tratamento de GAP pendente'}</div>
-                    <div style="color:#fcd34d;">⚠️ Reenviar evidência com correções exigidas</div>
-                `;
-            } else {
-                actionsHtml = `
-                    <div style="color:#34d399;">✅ Ponto focal designado (${req.focal})</div>
-                    <div style="color:#f87171;">❌ Coleta de evidência técnica pendente</div>
-                    <div style="color:#f87171;">❌ Validação de integridade SHA-256 pendente</div>
-                `;
-            }
-            actionsContainer.innerHTML = actionsHtml;
-
-            // Render Evidence & QSA Notes Section
-            const evContainer = document.getElementById('detailEvidenceSection');
-            let evHtml = "";
-            if (req.evidence) {
-                evHtml += `
-                    <div style="background:rgba(24,24,27,0.6); border-radius:10px; padding:12px; margin-bottom:10px; font-size:0.88em; border:1px dashed rgba(255,255,255,0.1);">
-                        <strong>📎 Evidência Anexada:</strong> ${req.evidence}
-                        ${req.hash ? `<div style="font-family:monospace; font-size:0.75em; color:#34d399; margin-top:4px;">SHA-256: ${req.hash}</div>` : ''}
-                    </div>
-                `;
-            }
-            if (req.qsaComment) {
-                evHtml += `
-                    <div style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); border-radius:10px; padding:12px; font-size:0.88em; color:#fca5a5;">
-                        <strong>💬 Parecer do QSA Lead:</strong> ${req.qsaComment}
-                    </div>
-                `;
-            }
-            evContainer.innerHTML = evHtml;
-
-            document.getElementById('reqDetailModal').style.display = 'flex';
-        }
-
-        function carregarKPIsExecutivos() {
-            const salvo = localStorage.getItem('portal_pci_requisitos');
-            if (salvo) {
-                try {
-                    const reqs = JSON.parse(salvo);
-                    const total = reqs.length;
-                    const aceitos = reqs.filter(r => r.status === 'ACEITO' || r.status === 'aceito').length;
-                    const pct = total > 0 ? Math.round((aceitos / total) * 100) : 0;
-                    const gaps = reqs.filter(r => r.status === 'AJUSTE_SOLICITADO' || r.status === 'ajustes' || r.pendencia_gap).length;
-                    const inprogress = reqs.filter(r => r.status === 'EM_REVISAO' || r.status === 'em_revisao' || r.status === 'ENVIADO').length;
-
-                    document.getElementById('kpi-pct').textContent = `${pct}%`;
-                    document.getElementById('kpi-total').textContent = total;
-                    document.getElementById('kpi-accepted').textContent = aceitos;
-                    document.getElementById('kpi-inprogress').textContent = inprogress;
-                    document.getElementById('kpi-gaps').textContent = gaps;
-                } catch(e){}
-            }
-        }
-
         validarSessao();
-        carregarKPIsExecutivos();
+        renderizarGridReqs();
     </script>
 </body>
 </html>
