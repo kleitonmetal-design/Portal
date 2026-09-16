@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Executivo & Matriz 5x5 - Thyreos Guardian</title>
+    <title>Painel Executivo & Conformidade - Thyreos Guardian</title>
     <style>
         :root {
             --brand-primary: #ffb366;
@@ -14,6 +14,7 @@
             --success: #10b981;
             --warning: #f59e0b;
             --error: #ef4444;
+            --info: #60a5fa;
             --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
@@ -30,23 +31,17 @@
 
         .container { max-width: 1200px; margin: 0 auto; }
 
+        /* Top Navbar */
         .top-navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(39, 39, 42, 0.8);
-            border: 1px solid rgba(255, 179, 102, 0.2);
-            padding: 14px 24px;
-            border-radius: 14px;
-            margin-bottom: 28px;
-            backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(39, 39, 42, 0.8); border: 1px solid rgba(255, 179, 102, 0.25);
+            padding: 14px 24px; border-radius: 14px; margin-bottom: 28px; backdrop-filter: blur(10px);
         }
 
         .user-info { display: flex; align-items: center; gap: 12px; }
         .user-avatar {
             width: 40px; height: 40px; border-radius: 50%;
-            background: #34d399; color: #111;
-            display: flex; align-items: center; justify-content: center;
+            background: #34d399; color: #111; display: flex; align-items: center; justify-content: center;
             font-weight: 800; font-size: 1.1em;
         }
 
@@ -66,9 +61,22 @@
         h1 { font-size: 1.8em; color: var(--text-light); margin-bottom: 4px; }
         p.subtitle { color: var(--text-gray); font-size: 0.92em; margin-bottom: 24px; }
 
-        /* KPI Grid */
+        /* Readonly Banner */
+        .info-banner {
+            background: rgba(96, 165, 250, 0.12);
+            border: 1px solid rgba(96, 165, 250, 0.4);
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        /* KPI Cards Grid */
         .kpi-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px; margin-bottom: 24px;
         }
 
@@ -77,27 +85,81 @@
             border: 1px solid rgba(255, 179, 102, 0.15); box-shadow: var(--shadow-md);
         }
 
-        .kpi-title { font-size: 0.8em; color: var(--text-gray); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+        .kpi-title { font-size: 0.78em; color: var(--text-gray); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
         .kpi-value { font-size: 1.8em; font-weight: 800; color: #34d399; }
 
-        /* 5x5 Matrix Styles */
-        .matrix-container {
-            background: #27272a; border-radius: 16px; padding: 24px;
-            border: 1px solid rgba(255, 179, 102, 0.2); margin-bottom: 28px;
+        /* Dashboard Main Layout */
+        .exec-grid-2col {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px;
         }
 
+        @media (max-width: 900px) {
+            .exec-grid-2col { grid-template-columns: 1fr; }
+        }
+
+        .dashboard-card {
+            background: #27272a; border-radius: 16px; padding: 24px;
+            border: 1px solid rgba(255, 179, 102, 0.2); box-shadow: var(--shadow-md);
+        }
+
+        .card-header-title {
+            font-size: 1.1em; font-weight: 700; color: var(--brand-primary); margin-bottom: 16px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        /* Progress Donut & Bars */
+        .progress-bar-bg {
+            background: #18181b; border-radius: 10px; height: 12px; width: 100%; overflow: hidden; margin-top: 6px;
+        }
+
+        .progress-bar-fill {
+            height: 100%; border-radius: 10px; transition: width 0.5s ease;
+        }
+
+        .req-pills-grid {
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 16px;
+        }
+
+        .req-pill {
+            background: #18181b; border: 1px solid #3f3f46; border-radius: 8px;
+            padding: 8px 4px; text-align: center; font-size: 0.75em; font-weight: 700;
+        }
+        .req-pill.completed { background: rgba(16, 185, 129, 0.2); border-color: #34d399; color: #34d399; }
+        .req-pill.in-progress { background: rgba(245, 158, 11, 0.2); border-color: #f59e0b; color: #f59e0b; }
+        .req-pill.pending { background: rgba(239, 68, 68, 0.15); border-color: #f87171; color: #f87171; }
+
+        /* Tables & Lists */
+        .aging-list-item {
+            background: #18181b; border: 1px solid #3f3f46; border-radius: 8px;
+            padding: 12px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .days-tag {
+            font-weight: 800; font-size: 0.8em; padding: 4px 10px; border-radius: 6px;
+            background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .area-progress-item {
+            margin-bottom: 16px;
+        }
+        .area-name { font-size: 0.88em; font-weight: 600; display: flex; justify-content: space-between; margin-bottom: 4px; }
+
+        /* 5x5 Matrix Styles */
         .matrix-grid-5x5 {
             display: grid; grid-template-columns: 40px repeat(5, 1fr);
-            grid-template-rows: repeat(5, 52px) 30px; gap: 6px; margin-top: 14px;
+            grid-template-rows: repeat(5, 48px) 26px; gap: 4px; margin-top: 10px;
         }
-        .cell-axis-5x5 { display: flex; align-items: center; justify-content: center; font-size: 0.8em; font-weight: 700; color: #a1a1aa; }
-        .cell-5x5 { border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.15s; font-size: 0.85em; font-weight: 700; }
-        .cell-5x5:hover { transform: scale(1.04); z-index: 5; box-shadow: 0 4px 14px rgba(0,0,0,0.6); }
-
+        .cell-axis-5x5 { display: flex; align-items: center; justify-content: center; font-size: 0.75em; font-weight: 700; color: #a1a1aa; }
+        .cell-5x5 { border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.8em; font-weight: 700; }
         .cell-r-low { background: rgba(16, 185, 129, 0.25); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
         .cell-r-med { background: rgba(234, 179, 8, 0.25); color: #fde047; border: 1px solid rgba(234, 179, 8, 0.4); }
         .cell-r-high { background: rgba(249, 115, 22, 0.3); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.5); }
         .cell-r-crit { background: rgba(239, 68, 68, 0.35); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.6); }
+
+        .code-tag {
+            font-weight: 800; color: var(--brand-primary); background: rgba(255, 179, 102, 0.1);
+            padding: 2px 6px; border-radius: 4px; font-size: 0.8em;
+        }
     </style>
 </head>
 <body>
@@ -117,88 +179,254 @@
 
         <span class="badge-client">CSU Digital · PCI DSS v4.0.1</span>
         <h1>📊 Painel Exclusivo: Ponto Focal Executivo</h1>
-        <p class="subtitle">Visão consolidada do Selo de Risco, Matriz 5x5 (Probabilidade x Impacto) e indicadores por departamento.</p>
+        <p class="subtitle">Visão consolidada de conformidade, Matriz de Risco 5x5, aging de pendências e avanço por diretoria.</p>
 
-        <!-- Grade de KPIs Executivos -->
+        <!-- Readonly Banner -->
+        <div class="info-banner">
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 0.9em;">
+                <span style="font-size: 1.3em;">ℹ️</span>
+                <span><strong>Visão só de leitura:</strong> O envio de evidências e tratamento operacional é realizado pelos pontos focais de cada área.</span>
+            </div>
+            <span class="code-tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171; font-weight: 800; font-size: 0.85em;">Selo de Risco: ALTO</span>
+        </div>
+
+        <!-- Grade de KPIs Executivos Completos -->
         <div class="kpi-grid">
             <div class="kpi-card">
-                <div class="kpi-title">% Conformidade Geral</div>
-                <div class="kpi-value" style="color: #34d399;" id="kpi-pct">33%</div>
+                <div class="kpi-title">Total de Requisitos</div>
+                <div class="kpi-value" style="color: var(--brand-primary);" id="kpi-total">10</div>
             </div>
             <div class="kpi-card">
-                <div class="kpi-title">Requisitos no Escopo</div>
-                <div class="kpi-value" style="color: var(--brand-primary);" id="kpi-total">3</div>
+                <div class="kpi-title">Aceitos pelo QSA</div>
+                <div class="kpi-value" style="color: #34d399;" id="kpi-accepted">2</div>
             </div>
             <div class="kpi-card">
-                <div class="kpi-title">GAPs Críticos</div>
+                <div class="kpi-title">Em Andamento / Revisão</div>
+                <div class="kpi-value" style="color: #60a5fa;" id="kpi-inprogress">2</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Ajuste Solicitado (GAPs)</div>
                 <div class="kpi-value" style="color: #f87171;" id="kpi-gaps">1</div>
             </div>
             <div class="kpi-card">
-                <div class="kpi-title">Selo de Risco Geral</div>
-                <div class="kpi-value" style="color: #f59e0b;" id="kpi-risk">MODERADO</div>
+                <div class="kpi-title">Conformidade Consolidada</div>
+                <div class="kpi-value" style="color: #34d399;" id="kpi-pct">20%</div>
             </div>
         </div>
 
-        <!-- Container Matriz 5x5 -->
-        <div class="matrix-container">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
-                <div>
-                    <h2 style="color: var(--brand-primary); font-size: 1.25em;">🔥 Matriz de Risco 5x5 (Probabilidade x Impacto)</h2>
-                    <p style="color: var(--text-gray); font-size: 0.88em;">Classificação dos riscos e pendências de compliance no escopo PCI DSS v4.0.1</p>
+        <!-- Bloco Principal 2 Colunas -->
+        <div class="exec-grid-2col">
+            <!-- Coluna 1: Conformidade Consolidada & Status -->
+            <div class="dashboard-card">
+                <div class="card-header-title">
+                    <span>📈 Conformidade Consolidada</span>
+                    <span style="font-size: 0.8em; color: var(--text-gray);">PCI DSS v4.0.1</span>
                 </div>
-                <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid var(--brand-primary); padding: 10px 18px; border-radius: 8px; text-align: center;">
-                    <div style="font-size: 1.3em; font-weight: 800; color: #f59e0b;">NÍVEL MODERADO</div>
-                    <div style="font-size: 0.72em; color: var(--text-gray); text-transform: uppercase;">Status do Selo de Risco</div>
+
+                <div style="display: flex; align-items: center; justify-content: center; padding: 20px 0;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 3.5em; font-weight: 800; color: #34d399; line-height: 1;">20%</div>
+                        <div style="font-size: 0.85em; color: var(--text-gray); margin-top: 6px;">2 de 10 requisitos aprovados</div>
+                    </div>
+                </div>
+
+                <!-- Distribuição por Status -->
+                <div style="margin-top: 10px;">
+                    <div style="font-size: 0.85em; font-weight: 700; color: var(--text-gray); margin-bottom: 12px; text-transform: uppercase;">Distribuição por Status</div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.82em;">
+                            <span>Não Enviado (Pendente)</span>
+                            <span style="color: #f87171; font-weight: 700;">5 requisitos (50%)</span>
+                        </div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 50%; background: #ef4444;"></div></div>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.82em;">
+                            <span>Em Andamento / Revisão QSA</span>
+                            <span style="color: #60a5fa; font-weight: 700;">2 requisitos (20%)</span>
+                        </div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 20%; background: #60a5fa;"></div></div>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.82em;">
+                            <span>Ajuste Solicitado (GAP)</span>
+                            <span style="color: #f59e0b; font-weight: 700;">1 requisito (10%)</span>
+                        </div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 10%; background: #f59e0b;"></div></div>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.82em;">
+                            <span>Aceito (Conforme)</span>
+                            <span style="color: #34d399; font-weight: 700;">2 requisitos (20%)</span>
+                        </div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 20%; background: #10b981;"></div></div>
+                    </div>
+                </div>
+
+                <!-- Pílulas de Progresso REQ 1 a REQ 12 -->
+                <div style="margin-top: 24px;">
+                    <div style="font-size: 0.85em; font-weight: 700; color: var(--text-gray); margin-bottom: 8px; text-transform: uppercase;">Progresso por Requisito Geral</div>
+                    <div class="req-pills-grid">
+                        <div class="req-pill pending">REQ 1<br>0%</div>
+                        <div class="req-pill pending">REQ 2<br>0%</div>
+                        <div class="req-pill in-progress">REQ 3<br>50%</div>
+                        <div class="req-pill pending">REQ 4<br>0%</div>
+                        <div class="req-pill pending">REQ 5<br>0%</div>
+                        <div class="req-pill in-progress">REQ 6<br>33%</div>
+                        <div class="req-pill completed">REQ 7<br>100%</div>
+                        <div class="req-pill pending">REQ 8<br>0%</div>
+                        <div class="req-pill in-progress">REQ 9<br>50%</div>
+                        <div class="req-pill completed">REQ 10<br>100%</div>
+                        <div class="req-pill pending">REQ 11<br>0%</div>
+                        <div class="req-pill pending">REQ 12<br>0%</div>
+                    </div>
                 </div>
             </div>
 
-            <div style="display: flex; gap: 12px; align-items: center;">
-                <div style="writing-mode: vertical-lr; transform: rotate(180deg); text-align: center; font-weight: 700; font-size: 0.8em; color: #a1a1aa; letter-spacing: 1px;">PROBABILIDADE</div>
-                <div style="flex-grow: 1;">
-                    <div class="matrix-grid-5x5">
-                        <div class="cell-axis-5x5">5</div>
-                        <div class="cell-5x5 cell-r-med">5 (0)</div>
-                        <div class="cell-5x5 cell-r-high">10 (1)</div>
-                        <div class="cell-5x5 cell-r-high">15 (0)</div>
-                        <div class="cell-5x5 cell-r-crit">20 (1)</div>
-                        <div class="cell-5x5 cell-r-crit">25 (0)</div>
+            <!-- Coluna 2: Matriz 5x5 & Aging de Pendências -->
+            <div class="dashboard-card">
+                <div class="card-header-title">
+                    <span>🔥 Matriz de Risco 5x5</span>
+                    <span style="font-size: 0.8em; color: #f87171; font-weight: 700;">Selo: ALTO</span>
+                </div>
 
-                        <div class="cell-axis-5x5">4</div>
-                        <div class="cell-5x5 cell-r-low">4 (0)</div>
-                        <div class="cell-5x5 cell-r-med">8 (0)</div>
-                        <div class="cell-5x5 cell-r-high">12 (1)</div>
-                        <div class="cell-5x5 cell-r-high">16 (0)</div>
-                        <div class="cell-5x5 cell-r-crit">20 (0)</div>
+                <!-- Matriz 5x5 em miniatura -->
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <div style="writing-mode: vertical-lr; transform: rotate(180deg); text-align: center; font-weight: 700; font-size: 0.7em; color: #a1a1aa;">PROBABILIDADE</div>
+                    <div style="flex-grow: 1;">
+                        <div class="matrix-grid-5x5">
+                            <div class="cell-axis-5x5">5</div>
+                            <div class="cell-5x5 cell-r-med">5 (0)</div>
+                            <div class="cell-5x5 cell-r-high">10 (1)</div>
+                            <div class="cell-5x5 cell-r-high">15 (0)</div>
+                            <div class="cell-5x5 cell-r-crit">20 (1)</div>
+                            <div class="cell-5x5 cell-r-crit">25 (0)</div>
 
-                        <div class="cell-axis-5x5">3</div>
-                        <div class="cell-5x5 cell-r-low">3 (1)</div>
-                        <div class="cell-5x5 cell-r-med">6 (0)</div>
-                        <div class="cell-5x5 cell-r-med">9 (0)</div>
-                        <div class="cell-5x5 cell-r-high">12 (0)</div>
-                        <div class="cell-5x5 cell-r-high">15 (0)</div>
+                            <div class="cell-axis-5x5">4</div>
+                            <div class="cell-5x5 cell-r-low">4 (0)</div>
+                            <div class="cell-5x5 cell-r-med">8 (0)</div>
+                            <div class="cell-5x5 cell-r-high">12 (1)</div>
+                            <div class="cell-5x5 cell-r-high">16 (0)</div>
+                            <div class="cell-5x5 cell-r-crit">20 (0)</div>
 
-                        <div class="cell-axis-5x5">2</div>
-                        <div class="cell-5x5 cell-r-low">2 (0)</div>
-                        <div class="cell-5x5 cell-r-low">4 (0)</div>
-                        <div class="cell-5x5 cell-r-med">6 (0)</div>
-                        <div class="cell-5x5 cell-r-med">8 (0)</div>
-                        <div class="cell-5x5 cell-r-high">10 (0)</div>
+                            <div class="cell-axis-5x5">3</div>
+                            <div class="cell-5x5 cell-r-low">3 (1)</div>
+                            <div class="cell-5x5 cell-r-med">6 (0)</div>
+                            <div class="cell-5x5 cell-r-med">9 (0)</div>
+                            <div class="cell-5x5 cell-r-high">12 (0)</div>
+                            <div class="cell-5x5 cell-r-high">15 (0)</div>
 
-                        <div class="cell-axis-5x5">1</div>
-                        <div class="cell-5x5 cell-r-low">1 (0)</div>
-                        <div class="cell-5x5 cell-r-low">2 (0)</div>
-                        <div class="cell-5x5 cell-r-low">3 (0)</div>
-                        <div class="cell-5x5 cell-r-low">4 (0)</div>
-                        <div class="cell-5x5 cell-r-med">5 (0)</div>
+                            <div class="cell-axis-5x5">2</div>
+                            <div class="cell-5x5 cell-r-low">2 (0)</div>
+                            <div class="cell-5x5 cell-r-low">4 (0)</div>
+                            <div class="cell-5x5 cell-r-med">6 (0)</div>
+                            <div class="cell-5x5 cell-r-med">8 (0)</div>
+                            <div class="cell-5x5 cell-r-high">10 (0)</div>
 
-                        <div></div>
-                        <div class="cell-axis-5x5">1</div>
-                        <div class="cell-axis-5x5">2</div>
-                        <div class="cell-axis-5x5">3</div>
-                        <div class="cell-axis-5x5">4</div>
-                        <div class="cell-axis-5x5">5</div>
+                            <div class="cell-axis-5x5">1</div>
+                            <div class="cell-5x5 cell-r-low">1 (0)</div>
+                            <div class="cell-5x5 cell-r-low">2 (0)</div>
+                            <div class="cell-5x5 cell-r-low">3 (0)</div>
+                            <div class="cell-5x5 cell-r-low">4 (0)</div>
+                            <div class="cell-5x5 cell-r-med">5 (0)</div>
+
+                            <div></div>
+                            <div class="cell-axis-5x5">1</div>
+                            <div class="cell-axis-5x5">2</div>
+                            <div class="cell-axis-5x5">3</div>
+                            <div class="cell-axis-5x5">4</div>
+                            <div class="cell-axis-5x5">5</div>
+                        </div>
+                        <div style="text-align: center; font-weight: 700; font-size: 0.7em; color: #a1a1aa; margin-top: 4px;">IMPACTO</div>
                     </div>
-                    <div style="text-align: center; font-weight: 700; font-size: 0.8em; color: #a1a1aa; letter-spacing: 1px; margin-top: 8px;">IMPACTO</div>
+                </div>
+
+                <!-- Aging de Pendências Abertas -->
+                <div style="margin-top: 24px;">
+                    <div style="font-size: 0.85em; font-weight: 700; color: var(--text-gray); margin-bottom: 12px; text-transform: uppercase;">⏳ Pendências Abertas (Por Dias de Atraso)</div>
+                    
+                    <div class="aging-list-item">
+                        <div>
+                            <div style="font-weight: 700; font-size: 0.88em;"><span class="code-tag">REQ 9.2.1</span> Controle de acesso físico às instalações</div>
+                            <div style="font-size: 0.78em; color: var(--text-gray); margin-top: 2px;">📍 Físico & Facilities · Ponto Focal: Diego Alves</div>
+                        </div>
+                        <span class="days-tag">Aberto há 55 dias</span>
+                    </div>
+
+                    <div class="aging-list-item">
+                        <div>
+                            <div style="font-weight: 700; font-size: 0.88em;"><span class="code-tag">REQ 1.2.7</span> Revisão semestral de regras dos NSCs</div>
+                            <div style="font-size: 0.78em; color: var(--text-gray); margin-top: 2px;">📍 Infraestrutura & Cloud · Ponto Focal: Ana Ribeiro</div>
+                        </div>
+                        <span class="days-tag">Aberto há 29 dias</span>
+                    </div>
+
+                    <div class="aging-list-item">
+                        <div>
+                            <div style="font-weight: 700; font-size: 0.88em;"><span class="code-tag">REQ 1.2.8</span> Proteção dos arquivos de configuração dos NSCs</div>
+                            <div style="font-size: 0.78em; color: var(--text-gray); margin-top: 2px;">📍 Infraestrutura & Cloud · Ponto Focal: Ana Ribeiro</div>
+                        </div>
+                        <span class="days-tag" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border-color: rgba(245, 158, 11, 0.4);">Ajuste Solicitado</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloco 2: Pendências por Área Responsável -->
+        <div class="dashboard-card" style="margin-bottom: 28px;">
+            <div class="card-header-title">
+                <span>🏛️ Progresso de Conformidade por Área Responsável</span>
+                <span style="font-size: 0.8em; color: var(--text-gray);">5 Diretoria / Departamentos Mapeados</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 12px;">
+                <div class="area-progress-item">
+                    <div class="area-name">
+                        <span>Segurança da Informação</span>
+                        <span style="color: #34d399;">50% Conforme</span>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 50%; background: #10b981;"></div></div>
+                    <div style="font-size: 0.75em; color: var(--text-gray); margin-top: 4px;">1 de 2 requisitos concluídos</div>
+                </div>
+
+                <div class="area-progress-item">
+                    <div class="area-name">
+                        <span>Desenvolvimento & Engenharia</span>
+                        <span style="color: #f59e0b;">0% Conforme</span>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 0%; background: #ef4444;"></div></div>
+                    <div style="font-size: 0.75em; color: var(--text-gray); margin-top: 4px;">0 de 2 requisitos concluídos</div>
+                </div>
+
+                <div class="area-progress-item">
+                    <div class="area-name">
+                        <span>Físico & Facilities</span>
+                        <span style="color: #f59e0b;">0% Conforme</span>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 0%; background: #ef4444;"></div></div>
+                    <div style="font-size: 0.75em; color: var(--text-gray); margin-top: 4px;">0 de 2 requisitos concluídos</div>
+                </div>
+
+                <div class="area-progress-item">
+                    <div class="area-name">
+                        <span>Infraestrutura & Cloud</span>
+                        <span style="color: #34d399;">33% Conforme</span>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 33%; background: #f59e0b;"></div></div>
+                    <div style="font-size: 0.75em; color: var(--text-gray); margin-top: 4px;">1 de 3 requisitos concluídos</div>
+                </div>
+
+                <div class="area-progress-item">
+                    <div class="area-name">
+                        <span>Recursos Humanos</span>
+                        <span style="color: #34d399;">100% Conforme</span>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 100%; background: #10b981;"></div></div>
+                    <div style="font-size: 0.75em; color: var(--text-gray); margin-top: 4px;">1 de 1 requisito concluído</div>
                 </div>
             </div>
         </div>
@@ -228,9 +456,12 @@
                     const aceitos = reqs.filter(r => r.status === 'ACEITO').length;
                     const pct = total > 0 ? Math.round((aceitos / total) * 100) : 0;
                     const gaps = reqs.filter(r => r.status === 'AJUSTE_SOLICITADO' || r.pendencia_gap).length;
+                    const inprogress = reqs.filter(r => r.status === 'EM_REVISAO' || r.status === 'ENVIADO').length;
 
                     document.getElementById('kpi-pct').textContent = `${pct}%`;
                     document.getElementById('kpi-total').textContent = total;
+                    document.getElementById('kpi-accepted').textContent = aceitos;
+                    document.getElementById('kpi-inprogress').textContent = inprogress;
                     document.getElementById('kpi-gaps').textContent = gaps;
                 } catch(e){}
             }

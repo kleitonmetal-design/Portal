@@ -14,6 +14,7 @@
             --success: #10b981;
             --warning: #f59e0b;
             --error: #ef4444;
+            --info: #60a5fa;
             --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
@@ -22,10 +23,7 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #18181b 0%, #09090b 100%);
-            min-height: 100vh;
-            color: var(--text-light);
-            line-height: 1.6;
-            padding: 30px 20px;
+            min-height: 100vh; color: var(--text-light); line-height: 1.6; padding: 30px 20px;
         }
 
         .container { max-width: 1200px; margin: 0 auto; }
@@ -59,9 +57,16 @@
         h1 { font-size: 1.8em; color: var(--text-light); margin-bottom: 4px; }
         p.subtitle { color: var(--text-gray); font-size: 0.92em; margin-bottom: 24px; }
 
+        /* Informational Banner */
+        .info-banner {
+            background: rgba(96, 165, 250, 0.12); border: 1px solid rgba(96, 165, 250, 0.4);
+            border-radius: 10px; padding: 14px 20px; margin-bottom: 24px;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        }
+
         /* KPI Grid */
         .kpi-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px; margin-bottom: 24px;
         }
 
@@ -73,34 +78,43 @@
         .kpi-title { font-size: 0.8em; color: var(--text-gray); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
         .kpi-value { font-size: 1.8em; font-weight: 800; color: #60a5fa; }
 
-        /* Table Card */
-        .card-table {
-            background: #27272a; border-radius: 16px; padding: 24px;
-            box-shadow: var(--shadow-md); border: 1px solid rgba(96, 165, 250, 0.25);
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex; gap: 8px; margin-bottom: 20px; background: #18181b; padding: 4px; border-radius: 10px; border: 1px solid #3f3f46;
+        }
+        .filter-tab-btn {
+            flex: 1; background: transparent; color: #a1a1aa; border: none; padding: 8px 14px;
+            border-radius: 6px; font-weight: 700; font-size: 0.85em; cursor: pointer; transition: 0.2s; text-align: center;
+        }
+        .filter-tab-btn.active {
+            background: #60a5fa; color: #111; box-shadow: 0 2px 8px rgba(96, 165, 250, 0.3);
         }
 
-        .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9em; }
-        th, td { padding: 14px 16px; border-bottom: 1px solid #3f3f46; vertical-align: middle; }
-        th { color: #60a5fa; font-weight: 600; text-transform: uppercase; font-size: 0.78em; letter-spacing: 0.5px; }
+        /* QSA Review Cards */
+        .qsa-card-item {
+            background: #27272a; border-radius: 14px; padding: 20px; margin-bottom: 16px;
+            border: 1px solid rgba(96, 165, 250, 0.25); box-shadow: var(--shadow-md);
+        }
 
         .code-tag {
-            font-weight: 800; color: var(--brand-primary);
-            background: rgba(255, 179, 102, 0.1); padding: 3px 8px; border-radius: 6px; display: inline-block;
+            font-weight: 800; color: var(--brand-primary); background: rgba(255, 179, 102, 0.1);
+            padding: 3px 8px; border-radius: 6px; display: inline-block; font-size: 0.85em;
         }
 
         .status-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.8em; font-weight: 600; }
         .status-nao_enviado { background: rgba(239, 68, 68, 0.2); color: #f87171; }
         .status-enviado { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
         .status-em_revisao { background: rgba(245, 158, 11, 0.2); color: #fcd34d; }
-        .status-ajuste_solicitado { background: rgba(239, 68, 68, 0.25); color: #f87171; }
+        .status-ajuste_solicitado { background: rgba(239, 68, 68, 0.25); color: #f87171; border: 1px solid #f87171; }
         .status-aceito { background: rgba(16, 185, 129, 0.2); color: #34d399; }
 
+        .hash-tag { font-family: monospace; font-size: 0.75em; background: #09090b; color: #f59e0b; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(245, 158, 11, 0.3); }
+
         .btn-qsa-action {
-            background: rgba(96, 165, 250, 0.15); color: #60a5fa; border: 1px solid #60a5fa;
-            padding: 8px 14px; border-radius: 6px; font-size: 0.85em; font-weight: 700; cursor: pointer; transition: 0.2s;
+            background: #60a5fa; color: #111; border: none;
+            padding: 9px 18px; border-radius: 8px; font-size: 0.88em; font-weight: 700; cursor: pointer; transition: 0.2s;
         }
-        .btn-qsa-action:hover { background: #60a5fa; color: #111; }
+        .btn-qsa-action:hover { opacity: 0.9; }
 
         /* Modal Parecer QSA */
         .modal-overlay {
@@ -116,8 +130,6 @@
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3f3f46; padding-bottom: 16px; margin-bottom: 20px; }
         .modal-close { background: none; border: none; color: #a1a1aa; font-size: 1.5em; cursor: pointer; }
 
-        .hash-tag { font-family: monospace; font-size: 0.75em; background: #09090b; color: #f59e0b; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(245, 158, 11, 0.3); }
-
         .notification-toast {
             position: fixed; bottom: 24px; right: 24px; background: #10b981; color: #111;
             font-weight: 700; padding: 12px 24px; border-radius: 8px; display: none; z-index: 1000;
@@ -132,8 +144,8 @@
             <div class="user-info">
                 <div class="user-avatar" id="user-avatar">QSA</div>
                 <div>
-                    <div style="font-weight: 700; color: #60a5fa; font-size: 0.95em;" id="user-name">Auditor QSA (Thyreos Trust)</div>
-                    <div style="font-size: 0.8em; color: var(--text-gray);" id="user-role">QSA Auditor Lead</div>
+                    <div style="font-weight: 700; color: #60a5fa; font-size: 0.95em;" id="user-name">Carlos Costa (Auditor QSA)</div>
+                    <div style="font-size: 0.8em; color: var(--text-gray);" id="user-role">QSA Auditor Lead · Thyreos Trust</div>
                 </div>
             </div>
             <button class="btn-logout" onclick="fazerLogout()">🚪 Sair do Painel</button>
@@ -143,48 +155,46 @@
         <h1>🛡️ Painel Exclusivo: Auditor QSA Lead</h1>
         <p class="subtitle">Avaliação formal de evidências com Hash SHA-256, alteração de parecer técnico e emissão de GAPs de compliance.</p>
 
+        <!-- Informational Banner -->
+        <div class="info-banner">
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 0.9em;">
+                <span style="font-size: 1.3em;">ℹ️</span>
+                <span><strong>Fila de Auditoria em Tempo Real:</strong> Suas pareceres atualizam automaticamente o dashboard executivo e a matriz de conformidade.</span>
+            </div>
+            <span class="code-tag" style="background: rgba(96, 165, 250, 0.2); color: #60a5fa;">Auditor Conectado</span>
+        </div>
+
         <!-- Grade de KPIs QSA -->
         <div class="kpi-grid">
             <div class="kpi-card">
-                <div class="kpi-title">Em Análise QSA</div>
-                <div class="kpi-value" style="color: #60a5fa;" id="kpi-review">1</div>
+                <div class="kpi-title">Aguardando Revisão</div>
+                <div class="kpi-value" style="color: #60a5fa;" id="kpi-review">2</div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-title">Evidências Aceitas</div>
-                <div class="kpi-value" style="color: #34d399;" id="kpi-accepted">1</div>
+                <div class="kpi-value" style="color: #34d399;" id="kpi-accepted">2</div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-title">Ajustes Solicitados</div>
                 <div class="kpi-value" style="color: #f87171;" id="kpi-gaps">1</div>
             </div>
             <div class="kpi-card">
-                <div class="kpi-title">Total Avaliados</div>
-                <div class="kpi-value" style="color: var(--brand-primary);" id="kpi-total">3</div>
+                <div class="kpi-title">Pendentes de Envio</div>
+                <div class="kpi-value" style="color: #f59e0b;" id="kpi-pending">5</div>
             </div>
         </div>
 
-        <!-- Tabela Fila de Auditoria -->
-        <div class="card-table">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="color: #60a5fa; font-size: 1.1em;">⚖️ Fila de Auditoria & Validação de Evidências</h3>
-                <input type="text" id="search-input" oninput="renderizar()" placeholder="Buscar código ou título..." style="padding: 8px 14px; border-radius: 8px; border: 1px solid #555; background: #18181b; color: white; font-size: 0.85em; min-width: 240px;">
-            </div>
+        <!-- Filtros por Abas de Auditoria -->
+        <div class="filter-tabs">
+            <button class="filter-tab-btn active" id="tab-btn-revisao" onclick="filtrarStatus('revisao')">Aguardando Revisão (2)</button>
+            <button class="filter-tab-btn" id="tab-btn-aceitas" onclick="filtrarStatus('aceitas')">Aceitas (2)</button>
+            <button class="filter-tab-btn" id="tab-btn-ajustes" onclick="filtrarStatus('ajustes')">Ajustes Solicitados (1)</button>
+            <button class="filter-tab-btn" id="tab-btn-todas" onclick="filtrarStatus('todas')">Todas os 10 Requisitos</button>
+        </div>
 
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 100px;">Código</th>
-                            <th>Requisito & Ponto Focal Responsável</th>
-                            <th style="width: 160px;">Status Atual</th>
-                            <th style="width: 160px; text-align: center;">Ações QSA</th>
-                        </tr>
-                    </thead>
-                    <tbody id="req-list">
-                        <!-- Preenchido via JS -->
-                    </tbody>
-                </table>
-            </div>
+        <!-- Container de Cards Fila QSA -->
+        <div id="qsa-cards-container">
+            <!-- Preenchido via JS -->
         </div>
     </div>
 
@@ -193,7 +203,7 @@
         <div class="modal-container">
             <div class="modal-header">
                 <div style="font-size: 1.2em; font-weight: 700; color: #60a5fa;">
-                    ⚖️ Avaliação Técnica QSA: <span id="modal-req-codigo" class="code-tag"></span>
+                    ⚖️ Parecer da Auditoria QSA: <span id="modal-req-codigo" class="code-tag"></span>
                 </div>
                 <button class="modal-close" onclick="fecharModal()">&times;</button>
             </div>
@@ -202,17 +212,20 @@
 
             <!-- Evidências anexadas -->
             <div style="background: #27272a; border-radius: 8px; padding: 14px; margin-bottom: 18px; border: 1px solid #3f3f46;">
-                <div style="font-size: 0.85em; font-weight: 700; color: #d4d4d8; margin-bottom: 8px;">📂 Evidência Anexada (Hash SHA-256)</div>
-                <div style="font-size: 0.88em; color: #fff; font-weight: 600;">📄 Evidencia_Parametrizacao_NSC_2026.pdf</div>
+                <div style="font-size: 0.85em; font-weight: 700; color: #d4d4d8; margin-bottom: 8px;">📂 Evidência Anexada (Com Hash SHA-256)</div>
+                <div style="font-size: 0.88em; color: #fff; font-weight: 600;" id="modal-file-name">📄 Evidencia_Parametrizacao_NSC_2026.pdf</div>
                 <div style="font-size: 0.78em; color: #a1a1aa; margin-top: 4px;">
-                    🔐 <strong>SHA-256:</strong> <span class="hash-tag">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</span>
+                    Enviado por: <strong style="color: #fff;" id="modal-uploader">Ana Ribeiro (ana.ribeiro@csu.com.br)</strong>
+                </div>
+                <div style="font-size: 0.78em; color: #a1a1aa; margin-top: 4px;">
+                    🔐 <strong>SHA-256:</strong> <span class="hash-tag" id="modal-file-hash">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</span>
                 </div>
             </div>
 
             <!-- Form Parecer QSA -->
             <div style="display: grid; gap: 14px;">
                 <div>
-                    <label style="font-size: 0.85em; color: #a1a1aa; display: block; margin-bottom: 6px;">Parecer / Decisão da Auditoria</label>
+                    <label style="font-size: 0.85em; color: #a1a1aa; display: block; margin-bottom: 6px;">Status do Parecer do QSA</label>
                     <select id="qsa-status-select" onchange="toggleGapField(this.value)" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #555; background: #27272a; color: white; font-weight: 600;">
                         <option value="ENVIADO">ENVIADO (Aguardando Análise)</option>
                         <option value="EM_REVISAO">EM REVISÃO (QSA Analisando)</option>
@@ -222,7 +235,7 @@
                 </div>
 
                 <div>
-                    <label style="font-size: 0.85em; color: #a1a1aa; display: block; margin-bottom: 4px;">Comentário do QSA Auditor Lead</label>
+                    <label style="font-size: 0.85em; color: #a1a1aa; display: block; margin-bottom: 4px;">Comentário Geral do Auditor QSA</label>
                     <textarea id="qsa-comment-input" rows="2" placeholder="Comentário sobre a evidência analisada..." style="width: 100%; background: #27272a; border: 1px solid #3f3f46; color: white; padding: 10px; border-radius: 6px; font-family: inherit;"></textarea>
                 </div>
 
@@ -231,7 +244,7 @@
                     <label style="font-size: 0.85em; font-weight: 700; color: #f87171; display: block; margin-bottom: 4px;">
                         ⚠️ PENDÊNCIA / GAP DE COMPLIANCE (OBRIGATÓRIO AO SOLICITAR AJUSTE)
                     </label>
-                    <textarea id="qsa-gap-input" rows="3" placeholder="Especifique detalhadamente o ajuste necessário..." style="width: 100%; background: #18181b; border: 1px solid #f87171; color: white; padding: 10px; border-radius: 6px; font-family: inherit;"></textarea>
+                    <textarea id="qsa-gap-input" rows="3" placeholder="Especifique detalhadamente o que está faltando ou a correção necessária..." style="width: 100%; background: #18181b; border: 1px solid #f87171; color: white; padding: 10px; border-radius: 6px; font-family: inherit;"></textarea>
                 </div>
 
                 <button class="btn-qsa-action" onclick="salvarParecerQSA()" style="background: #60a5fa; color: #111; justify-self: start; padding: 10px 20px;">💾 Salvar Parecer da Auditoria</button>
@@ -243,18 +256,26 @@
 
     <script>
         let todosRequisitos = [
-            { id: 'req-1', codigo: '1.2.7', titulo: 'Revisão semestral de configurações dos NSCs (firewalls)', escopo: 'Firewalls e Roteadores', responsavel: 'Ana Ribeiro', status: 'EM_REVISAO' },
-            { id: 'req-2', codigo: '1.2.8', titulo: 'Proteção dos arquivos de configuração dos NSCs', escopo: 'Arquivos de Configuração', responsavel: 'Ana Ribeiro', status: 'AJUSTE_SOLICITADO', pendencia_gap: 'O print enviado não mostra a data da última alteração. Reenviar com o carimbo de data/hora visível.' },
-            { id: 'req-3', codigo: '2.2.1-B', titulo: 'System Hardening Servidores Linux & Windows', escopo: 'Servidores de Aplicação', responsavel: 'Ana Ribeiro', status: 'ACEITO' }
+            { id: 'req-1', codigo: 'REQ 1 · 1.2.7', titulo: 'Revisão semestral de configurações dos NSCs (firewalls)', escopo: 'Infraestrutura & Cloud', responsavel: 'Ana Ribeiro', uploader: 'Ana Ribeiro', arquivo: 'Firewall_Config_Review_Q3.pdf', hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', status: 'EM_REVISAO' },
+            { id: 'req-2', codigo: 'REQ 1 · 1.2.8', titulo: 'Proteção dos arquivos de configuração dos NSCs', escopo: 'Infraestrutura & Cloud', responsavel: 'Ana Ribeiro', uploader: 'Ana Ribeiro', arquivo: 'NSC_Backup_Protect.png', hash: '8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4', status: 'AJUSTE_SOLICITADO', pendencia_gap: 'O print enviado não mostra a data da última alteração. Reenviar com o carimbo de data/hora visível.' },
+            { id: 'req-3', codigo: 'REQ 2 · 2.2.1-B', titulo: 'System Hardening Servidores Linux & Windows', escopo: 'Infraestrutura & Cloud', responsavel: 'Ana Ribeiro', uploader: 'Ana Ribeiro', arquivo: 'Hardening_Baseline_v2.pdf', hash: 'a12781b9487c093a19b84a9e22394019284d720b0817c91929487c91a0817b9c', status: 'ACEITO' },
+            { id: 'req-4', codigo: 'REQ 7 · 7.2.1', titulo: 'Matriz de Acessos por Função e Necessidade de Conhecer', escopo: 'Recursos Humanos', responsavel: 'Marina Souza', uploader: 'Marina Souza', arquivo: 'Matriz_Acessos_RH_2026.xlsx', hash: 'b9487c91a0817b9ca12781b9487c093a19b84a9e22394019284d720b0817c919', status: 'ACEITO' },
+            { id: 'req-5', codigo: 'REQ 9 · 9.2.1', titulo: 'Controle de Acesso Físico às Instalações da Célula', escopo: 'Físico & Facilities', responsavel: 'Diego Alves', uploader: 'Diego Alves', arquivo: 'Relatorio_Catracas_Agosto.pdf', hash: '9487c91a0817b9ca12781b9487c093a19b84a9e22394019284d720b0817c919b', status: 'EM_REVISAO' },
+            { id: 'req-6', codigo: 'REQ 3 · 3.4.1', titulo: 'Proteção Criptográfica dos Dados de Cartão (PAN)', escopo: 'Segurança da Informação', responsavel: 'Bruno Silva', status: 'NAO_ENVIADO' },
+            { id: 'req-7', codigo: 'REQ 6 · 6.3.1', titulo: 'Gestão de Vulnerabilidades em Código Fonte e Aplicações', escopo: 'Desenvolvimento & Engenharia', responsavel: 'Lucas Mendes', status: 'NAO_ENVIADO' },
+            { id: 'req-8', codigo: 'REQ 8 · 8.3.1', titulo: 'Autenticação Múltiplo Fator (MFA) para Acessos Administrativos', escopo: 'Segurança da Informação', responsavel: 'Bruno Silva', status: 'NAO_ENVIADO' },
+            { id: 'req-9', codigo: 'REQ 11 · 11.3.1', titulo: 'Testes Semestrais de Penetração (PenTest Interno e Externo)', escopo: 'Segurança da Informação', responsavel: 'Bruno Silva', status: 'NAO_ENVIADO' },
+            { id: 'req-10', codigo: 'REQ 12 · 12.10.1', titulo: 'Plano de Resposta a Incidentes de Segurança e Testes Anuais', escopo: 'Segurança da Informação', responsavel: 'Bruno Silva', status: 'NAO_ENVIADO' }
         ];
 
+        let statusFiltroAtual = 'revisao';
         let reqAtualId = null;
 
         function validarSessao() {
             const salvo = localStorage.getItem('thyreos_sessao_usuario');
             if (salvo) {
                 const s = JSON.parse(salvo);
-                document.getElementById('user-name').textContent = s.nome || 'Auditor QSA (Thyreos Trust)';
+                document.getElementById('user-name').textContent = s.nome || 'Carlos Costa (Auditor QSA)';
                 document.getElementById('user-avatar').textContent = s.avatar || 'QSA';
             }
         }
@@ -279,40 +300,78 @@
             renderizar();
         }
 
+        function filtrarStatus(aba) {
+            statusFiltroAtual = aba;
+            document.querySelectorAll('.filter-tab-btn').forEach(btn => btn.classList.remove('active'));
+            const btnTarget = document.getElementById(`tab-btn-${aba}`);
+            if (btnTarget) btnTarget.classList.add('active');
+            renderizar();
+        }
+
         function renderizar() {
-            const listEl = document.getElementById('req-list');
-            const search = document.getElementById('search-input').value.toLowerCase();
+            const container = document.getElementById('qsa-cards-container');
 
-            const filtrados = todosRequisitos.filter(r => 
-                r.codigo.toLowerCase().includes(search) || r.titulo.toLowerCase().includes(search)
-            );
+            let filtrados = todosRequisitos;
+            if (statusFiltroAtual === 'revisao') {
+                filtrados = todosRequisitos.filter(r => r.status === 'EM_REVISAO' || r.status === 'ENVIADO');
+            } else if (statusFiltroAtual === 'aceitas') {
+                filtrados = todosRequisitos.filter(r => r.status === 'ACEITO');
+            } else if (statusFiltroAtual === 'ajustes') {
+                filtrados = todosRequisitos.filter(r => r.status === 'AJUSTE_SOLICITADO');
+            }
 
-            // Atualizar KPIs QSA
-            const review = filtrados.filter(r => r.status === 'EM_REVISAO' || r.status === 'ENVIADO').length;
-            const accepted = filtrados.filter(r => r.status === 'ACEITO').length;
-            const gaps = filtrados.filter(r => r.status === 'AJUSTE_SOLICITADO').length;
-            const total = filtrados.length;
+            // Atualizar KPIs
+            const review = todosRequisitos.filter(r => r.status === 'EM_REVISAO' || r.status === 'ENVIADO').length;
+            const accepted = todosRequisitos.filter(r => r.status === 'ACEITO').length;
+            const gaps = todosRequisitos.filter(r => r.status === 'AJUSTE_SOLICITADO').length;
+            const pending = todosRequisitos.filter(r => r.status === 'NAO_ENVIADO').length;
 
             document.getElementById('kpi-review').textContent = review;
             document.getElementById('kpi-accepted').textContent = accepted;
             document.getElementById('kpi-gaps').textContent = gaps;
-            document.getElementById('kpi-total').textContent = total;
+            document.getElementById('kpi-pending').textContent = pending;
 
-            listEl.innerHTML = filtrados.map(r => `
-                <tr>
-                    <td><span class="code-tag">${r.codigo}</span></td>
-                    <td>
-                        <strong>${r.titulo}</strong>
-                        <div style="font-size: 0.83em; color: var(--brand-primary); margin-top: 2px;">👤 Ponto Focal: <strong>${r.responsavel || 'Ana Ribeiro'}</strong></div>
-                        ${r.pendencia_gap ? `<div style="font-size: 0.83em; color: #f87171; margin-top: 4px; background: rgba(239,68,68,0.1); padding: 4px 8px; border-radius: 4px;">⚠️ GAP: ${r.pendencia_gap}</div>` : ''}
-                    </td>
-                    <td><span class="status-badge status-${(r.status || 'nao_enviado').toLowerCase()}">${r.status || 'NÃO ENVIADO'}</span></td>
-                    <td style="text-align: center;">
+            if (filtrados.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: var(--text-gray); padding: 40px; background: #27272a; border-radius: 12px;">Nenhum requisito nesta fila no momento.</div>';
+                return;
+            }
+
+            container.innerHTML = filtrados.map(r => `
+                <div class="qsa-card-item">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="code-tag">${r.codigo}</span>
+                            <span class="status-badge status-${(r.status || 'nao_enviado').toLowerCase()}">${r.status === 'AJUSTE_SOLICITADO' ? '⚠️ Ajuste Solicitado' : r.status || 'NÃO ENVIADO'}</span>
+                        </div>
+                        <div style="font-size: 0.82em; color: var(--text-gray);">📍 Área: <strong style="color: var(--brand-primary);">${r.escopo || 'TI'}</strong></div>
+                    </div>
+
+                    <h3 style="font-size: 1.05em; color: var(--text-light); margin-bottom: 6px;">${r.titulo}</h3>
+                    <div style="font-size: 0.83em; color: var(--text-gray); margin-bottom: 12px;">Ponto Focal Responsável: <strong style="color: #fff;">${r.responsavel || 'Ana Ribeiro'}</strong></div>
+
+                    ${r.arquivo ? `
+                        <div style="background: #18181b; border: 1px solid #3f3f46; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                            <div>
+                                <div style="font-weight: 600; font-size: 0.88em; color: #fff;">📄 ${r.arquivo}</div>
+                                <div style="font-size: 0.78em; color: var(--text-gray);">Enviado por: ${r.uploader || r.responsavel}</div>
+                            </div>
+                            <span class="hash-tag">SHA: ${(r.hash || 'e3b0c44298fc1c149afbf4c8996fb924').substring(0, 16)}...</span>
+                        </div>
+                    ` : ''}
+
+                    ${r.pendencia_gap ? `
+                        <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #f87171; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px;">
+                            <div style="font-size: 0.8em; font-weight: 700; color: #f87171;">💬 SEU PARECER ANTERIOR:</div>
+                            <div style="font-size: 0.88em; color: #f4f4f5;">"${r.pendencia_gap}"</div>
+                        </div>
+                    ` : ''}
+
+                    <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
                         <button class="btn-qsa-action" onclick="abrirModal('${r.id}')">
-                            ⚖️ Avaliar Evidência
+                            ⚖️ Revisar & Emitir Parecer
                         </button>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             `).join('');
         }
 
@@ -323,6 +382,10 @@
 
             document.getElementById('modal-req-codigo').textContent = req.codigo;
             document.getElementById('modal-req-titulo').textContent = req.titulo;
+            document.getElementById('modal-file-name').textContent = `📄 ${req.arquivo || 'Evidencia_Submetida.pdf'}`;
+            document.getElementById('modal-uploader').textContent = `${req.uploader || req.responsavel || 'Ana Ribeiro'}`;
+            document.getElementById('modal-file-hash').textContent = req.hash || 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+
             document.getElementById('qsa-status-select').value = req.status || 'EM_REVISAO';
             document.getElementById('qsa-comment-input').value = req.comentario_auditor || '';
             document.getElementById('qsa-gap-input').value = req.pendencia_gap || '';

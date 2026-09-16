@@ -31,51 +31,29 @@
         .container { max-width: 1200px; margin: 0 auto; }
 
         .top-navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(39, 39, 42, 0.8);
-            border: 1px solid rgba(255, 179, 102, 0.2);
-            padding: 14px 24px;
-            border-radius: 14px;
-            margin-bottom: 28px;
-            backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(39, 39, 42, 0.8); border: 1px solid rgba(255, 179, 102, 0.2);
+            padding: 14px 24px; border-radius: 14px; margin-bottom: 28px; backdrop-filter: blur(10px);
         }
 
         .user-info { display: flex; align-items: center; gap: 12px; }
         .user-avatar {
             width: 40px; height: 40px; border-radius: 50%;
-            background: var(--brand-primary); color: #111;
-            display: flex; align-items: center; justify-content: center;
+            background: var(--brand-primary); color: #111; display: flex; align-items: center; justify-content: center;
             font-weight: 800; font-size: 1.1em;
         }
 
         .btn-logout {
-            background: rgba(239, 68, 68, 0.15);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.85em;
-            cursor: pointer;
-            transition: 0.2s;
-            text-decoration: none;
+            background: rgba(239, 68, 68, 0.15); color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px;
+            border-radius: 8px; font-weight: 700; font-size: 0.85em; cursor: pointer; text-decoration: none;
         }
-
         .btn-logout:hover { background: #ef4444; color: white; }
 
         .badge-client {
-            display: inline-block;
-            background: rgba(255, 179, 102, 0.15);
-            color: var(--brand-primary);
-            padding: 4px 12px;
-            border-radius: 16px;
-            font-size: 0.78em;
-            font-weight: 700;
-            text-transform: uppercase;
-            border: 1px solid rgba(255, 179, 102, 0.3);
-            margin-bottom: 8px;
+            display: inline-block; background: rgba(255, 179, 102, 0.15); color: var(--brand-primary);
+            padding: 4px 12px; border-radius: 16px; font-size: 0.78em; font-weight: 700;
+            text-transform: uppercase; border: 1px solid rgba(255, 179, 102, 0.3); margin-bottom: 8px;
         }
 
         h1 { font-size: 1.8em; color: var(--text-light); margin-bottom: 4px; }
@@ -83,18 +61,13 @@
 
         /* KPI Cards */
         .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px; margin-bottom: 24px;
         }
 
         .kpi-card {
-            background: #27272a;
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255, 179, 102, 0.15);
-            box-shadow: var(--shadow-md);
+            background: #27272a; border-radius: 12px; padding: 20px;
+            border: 1px solid rgba(255, 179, 102, 0.15); box-shadow: var(--shadow-md);
         }
 
         .kpi-title { font-size: 0.8em; color: var(--text-gray); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
@@ -102,36 +75,36 @@
 
         /* Alert Box */
         .alert-box {
-            background: rgba(245, 158, 11, 0.12);
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            border-radius: 10px;
-            padding: 14px 20px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
+            background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 10px; padding: 14px 20px; margin-bottom: 24px;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
         }
 
-        /* Table Card */
-        .card-table {
-            background: #27272a;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 179, 102, 0.2);
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex; gap: 8px; margin-bottom: 20px; background: #18181b; padding: 4px; border-radius: 10px; border: 1px solid #3f3f46;
+        }
+        .filter-tab-btn {
+            flex: 1; background: transparent; color: #a1a1aa; border: none; padding: 8px 14px;
+            border-radius: 6px; font-weight: 700; font-size: 0.85em; cursor: pointer; transition: 0.2s; text-align: center;
+        }
+        .filter-tab-btn.active {
+            background: var(--brand-primary); color: #111; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
         }
 
-        .table-responsive { overflow-x: auto; }
+        /* Requirements List Cards */
+        .req-card-item {
+            background: #27272a; border-radius: 14px; padding: 20px; margin-bottom: 16px;
+            border: 1px solid rgba(255, 179, 102, 0.2); box-shadow: var(--shadow-md);
+        }
 
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9em; }
-        th, td { padding: 14px 16px; border-bottom: 1px solid #3f3f46; vertical-align: middle; }
-        th { color: var(--brand-primary); font-weight: 600; text-transform: uppercase; font-size: 0.78em; letter-spacing: 0.5px; }
+        .req-card-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;
+        }
 
         .code-tag {
-            font-weight: 800; color: var(--brand-primary);
-            background: rgba(255, 179, 102, 0.1);
-            padding: 3px 8px; border-radius: 6px; display: inline-block;
+            font-weight: 800; color: var(--brand-primary); background: rgba(255, 179, 102, 0.1);
+            padding: 3px 8px; border-radius: 6px; display: inline-block; font-size: 0.85em;
         }
 
         .status-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.8em; font-weight: 600; }
@@ -141,10 +114,14 @@
         .status-ajuste_solicitado { background: rgba(239, 68, 68, 0.25); color: #f87171; border: 1px solid #f87171; }
         .status-aceito { background: rgba(16, 185, 129, 0.2); color: #34d399; }
 
+        .delay-tag {
+            font-size: 0.78em; font-weight: 700; color: #f87171; background: rgba(239, 68, 68, 0.15);
+            padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(239, 68, 68, 0.3); margin-left: 8px;
+        }
+
         .btn-upload {
-            background: var(--brand-primary);
-            color: #111; font-weight: 700; border: none;
-            padding: 8px 14px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 0.85em;
+            background: var(--brand-primary); color: #111; font-weight: 700; border: none;
+            padding: 9px 18px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 0.88em;
         }
         .btn-upload:hover { background: var(--brand-secondary); }
 
@@ -179,7 +156,7 @@
                 <div class="user-avatar" id="user-avatar">AR</div>
                 <div>
                     <div style="font-weight: 700; color: var(--brand-primary); font-size: 0.95em;" id="user-name">Ana Ribeiro</div>
-                    <div style="font-size: 0.8em; color: var(--text-gray);" id="user-role">Ponto Focal Operacional (Área Interna)</div>
+                    <div style="font-size: 0.8em; color: var(--text-gray);" id="user-role">Ponto Focal Operacional (Infraestrutura & Cloud)</div>
                 </div>
             </div>
             <button class="btn-logout" onclick="fazerLogout()">🚪 Sair do Painel</button>
@@ -213,34 +190,22 @@
         <div class="alert-box">
             <div style="display: flex; align-items: center; gap: 10px; font-size: 0.9em;">
                 <span style="font-size: 1.3em;">⚠️</span>
-                <span><strong>Atenção Ana Ribeiro:</strong> Existem 2 requisito(s) com prazo de evidência vencido sob sua responsabilidade. Reenvie os arquivos com o Hash SHA-256.</span>
+                <span><strong>Atenção Ana Ribeiro:</strong> Existem 2 item(ns) com prazo de evidência vencido no seu escopo. Envie a evidência assim que possível.</span>
             </div>
             <span class="code-tag" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">Urgente</span>
         </div>
 
-        <!-- Tabela de Requisitos Operacionais -->
-        <div class="card-table">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="color: var(--brand-primary); font-size: 1.1em;">📋 Meus Requisitos & Evidências</h3>
-                <input type="text" id="search-input" oninput="renderizar()" placeholder="Buscar código ou título..." style="padding: 8px 14px; border-radius: 8px; border: 1px solid #555; background: #18181b; color: white; font-size: 0.85em; min-width: 240px;">
-            </div>
+        <!-- Filtros por Abas de Status -->
+        <div class="filter-tabs">
+            <button class="filter-tab-btn active" id="tab-btn-pendentes" onclick="filtrarStatus('pendentes')">Pendentes (2)</button>
+            <button class="filter-tab-btn" id="tab-btn-revisao" onclick="filtrarStatus('revisao')">Em Revisão (1)</button>
+            <button class="filter-tab-btn" id="tab-btn-aceitos" onclick="filtrarStatus('aceitos')">Aceitos (0)</button>
+            <button class="filter-tab-btn" id="tab-btn-todos" onclick="filtrarStatus('todos')">Todos (3)</button>
+        </div>
 
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 100px;">Código</th>
-                            <th>Título do Requisito & Escopo</th>
-                            <th>Prazo Final</th>
-                            <th style="width: 160px;">Status Evidência</th>
-                            <th style="width: 160px; text-align: center;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="req-list">
-                        <!-- Preenchido via JS -->
-                    </tbody>
-                </table>
-            </div>
+        <!-- Cards de Requisitos Operacionais -->
+        <div id="req-cards-container">
+            <!-- Preenchido via JS -->
         </div>
     </div>
 
@@ -249,7 +214,7 @@
         <div class="modal-container">
             <div class="modal-header">
                 <div style="font-size: 1.2em; font-weight: 700; color: var(--brand-primary);">
-                    📎 Upload de Evidência & Hash SHA-256: <span id="modal-req-codigo" class="code-tag"></span>
+                    📎 Enviar Evidência & Calcular Hash SHA-256: <span id="modal-req-codigo" class="code-tag"></span>
                 </div>
                 <button class="modal-close" onclick="fecharModal()">&times;</button>
             </div>
@@ -257,14 +222,14 @@
             <div id="modal-req-titulo" style="font-size: 1em; margin-bottom: 16px; color: #e4e4e7;"></div>
 
             <!-- Parecer do QSA se houver ajustamento -->
-            <div id="modal-gap-warning" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid #f87171; border-radius: 8px; padding: 12px; margin-bottom: 18px;">
+            <div id="modal-gap-warning" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid #f87171; border-radius: 8px; padding: 14px; margin-bottom: 18px;">
                 <div style="font-size: 0.85em; font-weight: 700; color: #f87171; margin-bottom: 4px;">💬 SOLICITAÇÃO DE AJUSTE DO QSA:</div>
                 <div id="modal-gap-text" style="font-size: 0.9em; color: #f4f4f5;"></div>
             </div>
 
             <div style="display: grid; gap: 14px;">
                 <div>
-                    <label style="font-size: 0.85em; color: #a1a1aa; display: block; margin-bottom: 4px;">Selecione o Arquivo (PDF, ZIP, PNG, DOCX)</label>
+                    <label style="font-size: 0.85em; color: #a1a1aa; display: block; margin-bottom: 4px;">Selecione o Arquivo de Evidência (PDF, ZIP, PNG, DOCX)</label>
                     <input type="file" id="file-input" onchange="calcularHash(this)" style="background: #27272a; border: 1px solid #3f3f46; color: white; padding: 8px; border-radius: 6px; width: 100%;">
                 </div>
 
@@ -273,8 +238,8 @@
                 </div>
 
                 <div>
-                    <label style="font-size: 0.85em; color: #a1a1aa; display: block; margin-bottom: 4px;">Observações sobre a Evidência</label>
-                    <input type="text" id="file-obs-input" placeholder="Ex: Print do arquivo de configuração com carimbo de data/hora visível." style="background: #27272a; border: 1px solid #3f3f46; color: white; padding: 10px; border-radius: 6px; width: 100%;">
+                    <label style="font-size: 0.85em; color: #a1a1aa; display: block; margin-bottom: 4px;">Observações para o QSA</label>
+                    <input type="text" id="file-obs-input" placeholder="Ex: Arquivo de parametrização enviado com carimbo de data/hora visível conforme solicitado." style="background: #27272a; border: 1px solid #3f3f46; color: white; padding: 10px; border-radius: 6px; width: 100%;">
                 </div>
 
                 <button class="btn-upload" onclick="enviarEvidencia()" style="justify-self: start; padding: 10px 20px;">📤 Enviar Evidência para Avaliação do QSA</button>
@@ -286,11 +251,12 @@
 
     <script>
         let todosRequisitos = [
-            { id: 'req-1', codigo: '1.2.7', titulo: 'Revisão semestral de configurações dos NSCs (firewalls)', escopo: 'Firewalls e Roteadores', prazo: '26/08/2026', status: 'NAO_ENVIADO', responsavel: 'Ana Ribeiro' },
-            { id: 'req-2', codigo: '1.2.8', titulo: 'Proteção dos arquivos de configuração dos NSCs', escopo: 'Arquivos de Configuração', prazo: '26/08/2026', status: 'AJUSTE_SOLICITADO', responsavel: 'Ana Ribeiro', pendencia_gap: 'O print enviado não mostra a data da última alteração. Reenviar com o carimbo de data/hora visível.' },
-            { id: 'req-3', codigo: '2.2.1-B', titulo: 'System Hardening Servidores Linux & Windows', escopo: 'Servidores de Aplicação', prazo: '15/10/2026', status: 'EM_REVISAO', responsavel: 'Ana Ribeiro' }
+            { id: 'req-1', codigo: 'REQ 1 · 1.2.7', titulo: 'Revisão semestral de configurações dos NSCs (firewalls)', escopo: 'Infraestrutura e Redes', prazo: '26/08/2026', atrasoDias: 29, status: 'NAO_ENVIADO', responsavel: 'Ana Ribeiro' },
+            { id: 'req-2', codigo: 'REQ 1 · 1.2.8', titulo: 'Proteção dos arquivos de configuração dos NSCs', escopo: 'Infraestrutura e Redes', prazo: '26/08/2026', atrasoDias: 29, status: 'AJUSTE_SOLICITADO', responsavel: 'Ana Ribeiro', pendencia_gap: 'O print enviado não mostra a data da última alteração. Reenviar com o carimbo de data/hora visível.' },
+            { id: 'req-3', codigo: 'REQ 2 · 2.2.1-B', titulo: 'System Hardening Servidores Linux & Windows', escopo: 'Servidores de Aplicação', prazo: '15/10/2026', atrasoDias: 0, status: 'EM_REVISAO', responsavel: 'Ana Ribeiro' }
         ];
 
+        let statusFiltroAtual = 'pendentes';
         let reqAtualId = null;
         let fileHashCalculado = '';
 
@@ -300,7 +266,7 @@
                 const s = JSON.parse(salvo);
                 document.getElementById('user-name').textContent = s.nome || 'Ana Ribeiro';
                 document.getElementById('user-avatar').textContent = s.avatar || 'AR';
-                document.getElementById('user-role').textContent = s.area || 'Ponto Focal Operacional';
+                document.getElementById('user-role').textContent = s.area || 'Ponto Focal Operacional (Infraestrutura & Cloud)';
             }
         }
 
@@ -324,41 +290,70 @@
             renderizar();
         }
 
-        function renderizar() {
-            const listEl = document.getElementById('req-list');
-            const search = document.getElementById('search-input').value.toLowerCase();
+        function filtrarStatus(aba) {
+            statusFiltroAtual = aba;
+            document.querySelectorAll('.filter-tab-btn').forEach(btn => btn.classList.remove('active'));
+            const btnTarget = document.getElementById(`tab-btn-${aba}`);
+            if (btnTarget) btnTarget.classList.add('active');
+            renderizar();
+        }
 
-            const filtrados = todosRequisitos.filter(r => 
-                r.codigo.toLowerCase().includes(search) || r.titulo.toLowerCase().includes(search)
-            );
+        function renderizar() {
+            const container = document.getElementById('req-cards-container');
+
+            let filtrados = todosRequisitos;
+            if (statusFiltroAtual === 'pendentes') {
+                filtrados = todosRequisitos.filter(r => r.status === 'NAO_ENVIADO' || r.status === 'AJUSTE_SOLICITADO');
+            } else if (statusFiltroAtual === 'revisao') {
+                filtrados = todosRequisitos.filter(r => r.status === 'EM_REVISAO' || r.status === 'ENVIADO');
+            } else if (statusFiltroAtual === 'aceitos') {
+                filtrados = todosRequisitos.filter(r => r.status === 'ACEITO');
+            }
 
             // Atualizar KPIs
-            const total = filtrados.length;
-            const pending = filtrados.filter(r => r.status === 'NAO_ENVIADO').length;
-            const review = filtrados.filter(r => r.status === 'EM_REVISAO' || r.status === 'ENVIADO').length;
-            const overdue = filtrados.filter(r => r.status === 'NAO_ENVIADO' || r.status === 'AJUSTE_SOLICITADO').length;
+            const total = todosRequisitos.length;
+            const pending = todosRequisitos.filter(r => r.status === 'NAO_ENVIADO' || r.status === 'AJUSTE_SOLICITADO').length;
+            const review = todosRequisitos.filter(r => r.status === 'EM_REVISAO' || r.status === 'ENVIADO').length;
+            const overdue = todosRequisitos.filter(r => r.atrasoDias > 0 || r.status === 'NAO_ENVIADO' || r.status === 'AJUSTE_SOLICITADO').length;
 
             document.getElementById('kpi-assigned').textContent = total;
             document.getElementById('kpi-pending').textContent = pending;
             document.getElementById('kpi-review').textContent = review;
             document.getElementById('kpi-overdue').textContent = overdue;
 
-            listEl.innerHTML = filtrados.map(r => `
-                <tr>
-                    <td><span class="code-tag">${r.codigo}</span></td>
-                    <td>
-                        <strong>${r.titulo}</strong>
-                        ${r.escopo ? `<div style="font-size: 0.83em; color: var(--brand-primary); margin-top: 2px;">📍 Escopo: ${r.escopo}</div>` : ''}
-                        ${r.pendencia_gap ? `<div style="font-size: 0.83em; color: #f87171; margin-top: 4px; background: rgba(239,68,68,0.1); padding: 4px 8px; border-radius: 4px;">💬 QSA: ${r.pendencia_gap}</div>` : ''}
-                    </td>
-                    <td><span style="color: #f87171; font-weight: 600;">📅 ${r.prazo || '26/08/2026'}</span></td>
-                    <td><span class="status-badge status-${(r.status || 'nao_enviado').toLowerCase()}">${r.status || 'NÃO ENVIADO'}</span></td>
-                    <td style="text-align: center;">
+            if (filtrados.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: var(--text-gray); padding: 40px; background: #27272a; border-radius: 12px;">Nenhum requisito encontrado para esta categoria.</div>';
+                return;
+            }
+
+            container.innerHTML = filtrados.map(r => `
+                <div class="req-card-item">
+                    <div class="req-card-header">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="code-tag">${r.codigo}</span>
+                            <span class="status-badge status-${(r.status || 'nao_enviado').toLowerCase()}">${r.status === 'AJUSTE_SOLICITADO' ? '⚠️ Ajuste Solicitado' : r.status || 'NÃO ENVIADO'}</span>
+                            ${r.atrasoDias ? `<span class="delay-tag">Vencido há ${r.atrasoDias} dias</span>` : ''}
+                        </div>
+                        <div style="font-size: 0.85em; color: var(--text-gray);">📅 Prazo: <strong style="color: #f87171;">${r.prazo || '26/08/2026'}</strong></div>
+                    </div>
+
+                    <h3 style="font-size: 1.1em; color: var(--text-light); margin-bottom: 6px;">${r.titulo}</h3>
+                    <div style="font-size: 0.85em; color: var(--brand-primary); margin-bottom: 12px;">📍 Escopo: ${r.escopo || 'Infraestrutura e Redes'}</div>
+
+                    ${r.pendencia_gap ? `
+                        <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #f87171; border-radius: 8px; padding: 12px; margin-bottom: 14px;">
+                            <div style="font-size: 0.82em; font-weight: 700; color: #f87171;">💬 PARECER / SOLICITAÇÃO DO QSA:</div>
+                            <div style="font-size: 0.9em; color: #f4f4f5; margin-top: 2px;">"${r.pendencia_gap}"</div>
+                        </div>
+                    ` : ''}
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; pt-12; border-top: 1px solid #3f3f46; padding-top: 12px;">
+                        <span style="font-size: 0.82em; color: var(--text-gray);">Responsável: <strong>${r.responsavel || 'Ana Ribeiro'}</strong></span>
                         <button class="btn-upload" onclick="abrirModal('${r.id}')">
                             ${r.status === 'AJUSTE_SOLICITADO' ? '🔄 Reenviar Evidência' : '📤 Enviar Evidência'}
                         </button>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             `).join('');
         }
 
@@ -418,7 +413,7 @@
             req.hash_sha256 = fileHashCalculado || 'sha256-simulado-' + Date.now();
 
             localStorage.setItem('portal_pci_requisitos', JSON.stringify(todosRequisitos));
-            showToast('✅ Evidência enviada e enviada para o QSA Auditor com Hash SHA-256!');
+            showToast('✅ Evidência enviada e encaminhada para avaliação do QSA com Hash SHA-256!');
             fecharModal();
             renderizar();
         }
