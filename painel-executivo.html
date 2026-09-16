@@ -269,20 +269,20 @@
 
                 <!-- Pílulas de Progresso REQ 1 a REQ 12 -->
                 <div style="margin-top: 24px;">
-                    <div style="font-size: 0.85em; font-weight: 700; color: var(--text-gray); margin-bottom: 8px; text-transform: uppercase;">Progresso por Requisito Geral</div>
+                    <div style="font-size: 0.85em; font-weight: 700; color: var(--text-gray); margin-bottom: 8px; text-transform: uppercase;">Progresso por Requisito Geral (Clique para Detalhar)</div>
                     <div class="req-pills-grid">
-                        <div class="req-pill pending">REQ 1<br>0%</div>
-                        <div class="req-pill pending">REQ 2<br>0%</div>
-                        <div class="req-pill in-progress">REQ 3<br>50%</div>
-                        <div class="req-pill pending">REQ 4<br>0%</div>
-                        <div class="req-pill pending">REQ 5<br>0%</div>
-                        <div class="req-pill in-progress">REQ 6<br>33%</div>
-                        <div class="req-pill completed">REQ 7<br>100%</div>
-                        <div class="req-pill pending">REQ 8<br>0%</div>
-                        <div class="req-pill in-progress">REQ 9<br>50%</div>
-                        <div class="req-pill completed">REQ 10<br>100%</div>
-                        <div class="req-pill pending">REQ 11<br>0%</div>
-                        <div class="req-pill pending">REQ 12<br>0%</div>
+                        <div class="req-pill pending" style="cursor:pointer;" onclick="openReqDetailModal('REQ 1')">REQ 1<br>0%</div>
+                        <div class="req-pill pending" style="cursor:pointer;" onclick="openReqDetailModal('REQ 2')">REQ 2<br>0%</div>
+                        <div class="req-pill in-progress" style="cursor:pointer;" onclick="openReqDetailModal('REQ 3')">REQ 3<br>50%</div>
+                        <div class="req-pill pending" style="cursor:pointer;" onclick="openReqDetailModal('REQ 4')">REQ 4<br>0%</div>
+                        <div class="req-pill pending" style="cursor:pointer;" onclick="openReqDetailModal('REQ 5')">REQ 5<br>0%</div>
+                        <div class="req-pill in-progress" style="cursor:pointer;" onclick="openReqDetailModal('REQ 6')">REQ 6<br>33%</div>
+                        <div class="req-pill completed" style="cursor:pointer;" onclick="openReqDetailModal('REQ 7')">REQ 7<br>100%</div>
+                        <div class="req-pill pending" style="cursor:pointer;" onclick="openReqDetailModal('REQ 8')">REQ 8<br>0%</div>
+                        <div class="req-pill in-progress" style="cursor:pointer;" onclick="openReqDetailModal('REQ 9')">REQ 9<br>50%</div>
+                        <div class="req-pill completed" style="cursor:pointer;" onclick="openReqDetailModal('REQ 10')">REQ 10<br>100%</div>
+                        <div class="req-pill pending" style="cursor:pointer;" onclick="openReqDetailModal('REQ 11')">REQ 11<br>0%</div>
+                        <div class="req-pill pending" style="cursor:pointer;" onclick="openReqDetailModal('REQ 12')">REQ 12<br>0%</div>
                     </div>
                 </div>
             </div>
@@ -432,6 +432,49 @@
         </div>
     </div>
 
+    <!-- Requirement Detail Modal (Executivo Drill-down) -->
+    <div style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; z-index:1000; padding:20px;" id="reqDetailModal">
+        <div style="background:#27272a; border:1px solid rgba(255,179,102,0.3); border-radius:16px; width:100%; max-width:620px; padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.6);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <div>
+                    <span id="detailReqCode" class="code-tag">REQ</span>
+                    <h3 id="detailReqTitle" style="margin-top:6px; font-size:1.15em; color:white;">Título do Requisito</h3>
+                </div>
+                <button onclick="closeModal()" style="background:none; border:none; color:#888; font-size:1.5em; cursor:pointer;">&times;</button>
+            </div>
+            
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; font-size:0.88em; background:rgba(24,24,27,0.7); padding:14px; border-radius:10px; border:1px solid rgba(255,255,255,0.08);">
+                <div>
+                    <span style="color:var(--text-gray); display:block; font-size:0.8em; font-weight:600;">PONTO FOCAL RESPONSÁVEL:</span>
+                    <strong id="detailFocal" style="color:var(--brand-primary); font-size:1.05em;">Ana Ribeiro</strong>
+                    <div id="detailArea" style="color:var(--text-gray); font-size:0.85em;">Dev & Engenharia</div>
+                </div>
+                <div>
+                    <span style="color:var(--text-gray); display:block; font-size:0.8em; font-weight:600;">STATUS DA AUDITORIA:</span>
+                    <span id="detailStatusBadge" style="padding:4px 10px; border-radius:12px; font-size:0.75em; font-weight:700; text-transform:uppercase;">Pendente</span>
+                    <div id="detailSla" style="color:#f87171; font-weight:700; font-size:0.82em; margin-top:4px;">Prazo: Expira em 15.03</div>
+                </div>
+            </div>
+
+            <!-- Checklists: Ações Finalizadas vs Pendentes -->
+            <div style="margin-bottom:16px;">
+                <label style="font-weight:700; font-size:0.85em; color:var(--text-gray); display:block; margin-bottom:6px;">📋 Checklist de Ações do Requisito</label>
+                <div id="detailActionsList" style="background:#18181b; border:1px solid #444; border-radius:10px; padding:12px; font-size:0.88em; display:grid; gap:8px;">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+
+            <!-- Evidências & Parecer QSA -->
+            <div id="detailEvidenceSection" style="margin-bottom:16px;">
+                <!-- Rendered by JS -->
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                <button onclick="closeModal()" style="background:var(--brand-primary); color:#111; border:none; padding:8px 18px; border-radius:8px; font-weight:700; cursor:pointer;">Fechar Detalhes</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function validarSessao() {
             const salvo = localStorage.getItem('thyreos_sessao_usuario');
@@ -447,16 +490,145 @@
             window.location.href = './login.html';
         }
 
+        function closeModal() {
+            document.getElementById('reqDetailModal').style.display = 'none';
+        }
+
+        function openReqDetailModal(code) {
+            const defaultDataset = [
+                { code: "REQ 1", title: "Configuração de Firewalls e Roteadores", area: "Infraestrutura & Cloud", focal: "Marcos Lima", due: "15.03.2026", status: "aceito", evidence: "Relatorio_Firewall_Q1_2026.pdf", qsaComment: "Evidência revisada e conforme." },
+                { code: "REQ 2", title: "Remoção de Senhas Padronizadas e Servidores", area: "Infraestrutura & Cloud", focal: "Marcos Lima", due: "20.02.2026", status: "em_revisao", evidence: "Hardening_Base_v2.docx", qsaComment: "Aguardando amostragem de servidores." },
+                { code: "REQ 3", title: "Criptografia de Dados de Cartão (PAN) em Repouso", area: "Segurança da Informação", focal: "Ana Ribeiro", due: "22.01.2026", status: "ajustes", overdueDays: 55, evidence: "Criptografia_DB_V1.pdf", gap: "Chaves HSM expiradas", qsaComment: "GAP Identificado: Rotação de chaves expirada nos últimos 12 meses." },
+                { code: "REQ 4", title: "Protocolos Fortes de Criptografia TLS 1.3 em Trânsito", area: "Dev & Engenharia", focal: "Ana Ribeiro", due: "10.04.2026", status: "aceito", evidence: "Relatorio_SSL_Labs_A_Plus.pdf", qsaComment: "Suporte exclusivo TLS 1.3 homologado." },
+                { code: "REQ 5", title: "Mecanismo Antivírus / EDR Atualizado e Ativo", area: "Infraestrutura & Cloud", focal: "Marcos Lima", due: "15.03.2026", status: "pendente" },
+                { code: "REQ 6", title: "Gestão de Scripts de Terceiros na Web (Header CSP)", area: "Dev & Engenharia", focal: "Ana Ribeiro", due: "05.02.2026", status: "pendente", overdueDays: 29 },
+                { code: "REQ 7", title: "Controle de Acesso Baseado no Menor Privilégio", area: "Segurança da Informação", focal: "Ana Ribeiro", due: "18.03.2026", status: "aceito", evidence: "Matriz_Acessos_Q1.xlsx" },
+                { code: "REQ 8", title: "Autenticação Multi-Fator (MFA) Obrigatória para Acesso ao CDE", area: "Segurança da Informação", focal: "Ana Ribeiro", due: "01.03.2026", status: "em_revisao", evidence: "Logs_MFA_Okta.csv" },
+                { code: "REQ 9", title: "Inspeção Contínua de Dispositivos de Captura de Cartão", area: "Físico & Facilities", focal: "Roberto Alves", due: "28.02.2026", status: "pendente", overdueDays: 16 },
+                { code: "REQ 10", title: "Centralização e Retenção de Logs Auditáveis (SIEM)", area: "Infraestrutura & Cloud", focal: "Marcos Lima", due: "30.03.2026", status: "aceito", evidence: "Logs_Retencao_Splunk.pdf" },
+                { code: "REQ 11", title: "Testes Periódicos de Segurança e Pentest", area: "Segurança da Informação", focal: "Ana Ribeiro", due: "15.04.2026", status: "pendente" },
+                { code: "REQ 12", title: "Políticas e Procedimentos de Segurança da Informação", area: "Recursos Humanos / SegInfo", focal: "Patricia Souza", due: "30.03.2026", status: "aceito", evidence: "Politica_SegInfo_2026.pdf" }
+            ];
+
+            let req = defaultDataset.find(r => r.code === code);
+            
+            // Check if user has dynamic storage
+            const salvo = localStorage.getItem('portal_pci_requisitos');
+            if(salvo) {
+                try {
+                    const dynamicReqs = JSON.parse(salvo);
+                    const dynFound = dynamicReqs.find(r => r.code.startsWith(code));
+                    if(dynFound) {
+                        req = {
+                            code: code,
+                            title: dynFound.title || req.title,
+                            area: dynFound.area || req.area,
+                            focal: dynFound.focal || req.focal,
+                            due: dynFound.due || req.due,
+                            status: dynFound.status.toLowerCase(),
+                            overdueDays: dynFound.overdueDays || 0,
+                            evidence: dynFound.evidence || req.evidence,
+                            hash: dynFound.hash,
+                            qsaComment: dynFound.qsaComment || req.qsaComment,
+                            gap: dynFound.gap
+                        };
+                    }
+                } catch(e){}
+            }
+
+            if(!req) {
+                req = { code: code, title: "Controle de Segurança PCI", area: "Segurança da Informação", focal: "Ana Ribeiro", due: "30.03.2026", status: "pendente" };
+            }
+
+            document.getElementById('detailReqCode').innerText = req.code;
+            document.getElementById('detailReqTitle').innerText = req.title;
+            document.getElementById('detailFocal').innerText = req.focal;
+            document.getElementById('detailArea').innerText = req.area;
+
+            const badge = document.getElementById('detailStatusBadge');
+            if(req.status === 'aceito' || req.status === 'aceito') {
+                badge.style.background = 'rgba(16,185,129,0.2)'; badge.style.color = '#34d399'; badge.innerText = 'ACEITO (CONFORME)';
+            } else if(req.status === 'em_revisao' || req.status === 'enviado') {
+                badge.style.background = 'rgba(96,165,250,0.2)'; badge.style.color = '#60a5fa'; badge.innerText = 'EM REVISÃO QSA';
+            } else if(req.status === 'ajustes' || req.status === 'ajuste_solicitado') {
+                badge.style.background = 'rgba(239,68,68,0.2)'; badge.style.color = '#f87171'; badge.innerText = 'AJUSTE / GAP';
+            } else {
+                badge.style.background = 'rgba(245,158,11,0.2)'; badge.style.color = '#fcd34d'; badge.innerText = 'PENDENTE';
+            }
+
+            const sla = document.getElementById('detailSla');
+            if(req.overdueDays > 0) {
+                sla.innerText = `🚨 PRAZO VENCIDO HÁ ${req.overdueDays} DIAS (${req.due})`;
+                sla.style.color = '#f87171';
+            } else {
+                sla.innerText = `📅 Prazo de Coleta: ${req.due}`;
+                sla.style.color = '#34d399';
+            }
+
+            // Render Actions List
+            const actionsContainer = document.getElementById('detailActionsList');
+            let actionsHtml = "";
+            if (req.status === 'aceito' || req.status === 'aceito') {
+                actionsHtml = `
+                    <div style="color:#34d399;">✅ Mapeamento do escopo do requisito concluído</div>
+                    <div style="color:#34d399;">✅ Evidência técnica coletada e assinada (${req.evidence||'Documento.pdf'})</div>
+                    <div style="color:#34d399;">✅ Assinatura SHA-256 validada pelo auditor QSA</div>
+                    <div style="color:#34d399;">✅ Parecer formal QSA de Conformidade emitido</div>
+                `;
+            } else if (req.status === 'em_revisao' || req.status === 'enviado') {
+                actionsHtml = `
+                    <div style="color:#34d399;">✅ Mapeamento de responsáveis concluído (${req.focal})</div>
+                    <div style="color:#34d399;">✅ Evidência submetida (${req.evidence})</div>
+                    <div style="color:#60a5fa;">⏳ Em análise formal pelo Auditor QSA Lead</div>
+                `;
+            } else if (req.status === 'ajustes' || req.status === 'ajuste_solicitado') {
+                actionsHtml = `
+                    <div style="color:#34d399;">✅ Mapeamento de escopo concluído</div>
+                    <div style="color:#f87171;">❌ Ajuste Solicitado pelo QSA: ${req.gap || 'Tratamento de GAP pendente'}</div>
+                    <div style="color:#fcd34d;">⚠️ Reenviar evidência com correções exigidas</div>
+                `;
+            } else {
+                actionsHtml = `
+                    <div style="color:#34d399;">✅ Ponto focal designado (${req.focal})</div>
+                    <div style="color:#f87171;">❌ Coleta de evidência técnica pendente</div>
+                    <div style="color:#f87171;">❌ Validação de integridade SHA-256 pendente</div>
+                `;
+            }
+            actionsContainer.innerHTML = actionsHtml;
+
+            // Render Evidence & QSA Notes Section
+            const evContainer = document.getElementById('detailEvidenceSection');
+            let evHtml = "";
+            if (req.evidence) {
+                evHtml += `
+                    <div style="background:rgba(24,24,27,0.6); border-radius:10px; padding:12px; margin-bottom:10px; font-size:0.88em; border:1px dashed rgba(255,255,255,0.1);">
+                        <strong>📎 Evidência Anexada:</strong> ${req.evidence}
+                        ${req.hash ? `<div style="font-family:monospace; font-size:0.75em; color:#34d399; margin-top:4px;">SHA-256: ${req.hash}</div>` : ''}
+                    </div>
+                `;
+            }
+            if (req.qsaComment) {
+                evHtml += `
+                    <div style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); border-radius:10px; padding:12px; font-size:0.88em; color:#fca5a5;">
+                        <strong>💬 Parecer do QSA Lead:</strong> ${req.qsaComment}
+                    </div>
+                `;
+            }
+            evContainer.innerHTML = evHtml;
+
+            document.getElementById('reqDetailModal').style.display = 'flex';
+        }
+
         function carregarKPIsExecutivos() {
             const salvo = localStorage.getItem('portal_pci_requisitos');
             if (salvo) {
                 try {
                     const reqs = JSON.parse(salvo);
                     const total = reqs.length;
-                    const aceitos = reqs.filter(r => r.status === 'ACEITO').length;
+                    const aceitos = reqs.filter(r => r.status === 'ACEITO' || r.status === 'aceito').length;
                     const pct = total > 0 ? Math.round((aceitos / total) * 100) : 0;
-                    const gaps = reqs.filter(r => r.status === 'AJUSTE_SOLICITADO' || r.pendencia_gap).length;
-                    const inprogress = reqs.filter(r => r.status === 'EM_REVISAO' || r.status === 'ENVIADO').length;
+                    const gaps = reqs.filter(r => r.status === 'AJUSTE_SOLICITADO' || r.status === 'ajustes' || r.pendencia_gap).length;
+                    const inprogress = reqs.filter(r => r.status === 'EM_REVISAO' || r.status === 'em_revisao' || r.status === 'ENVIADO').length;
 
                     document.getElementById('kpi-pct').textContent = `${pct}%`;
                     document.getElementById('kpi-total').textContent = total;

@@ -675,6 +675,50 @@
         </div>
     </div>
 
+    <!-- Requirement Detail Modal (Executivo Drill-down) -->
+    <div class="modal-overlay" id="reqDetailModal">
+        <div class="modal-card" style="max-width: 620px;">
+            <div class="modal-header">
+                <div>
+                    <span id="detailReqCode" class="req-code">REQ</span>
+                    <h3 id="detailReqTitle" style="margin-top:6px; font-size:1.15em; color:white;">Título do Requisito</h3>
+                </div>
+                <button class="btn-close-modal" onclick="closeModal('reqDetailModal')">&times;</button>
+            </div>
+            
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; font-size:0.88em; background:rgba(24,24,27,0.7); padding:14px; border-radius:10px; border:1px solid rgba(255,255,255,0.08);">
+                <div>
+                    <span style="color:var(--text-gray); display:block; font-size:0.8em; font-weight:600;">PONTO FOCAL RESPONSÁVEL:</span>
+                    <strong id="detailFocal" style="color:var(--brand-primary); font-size:1.05em;">Ana Ribeiro</strong>
+                    <div id="detailArea" style="color:var(--text-gray); font-size:0.85em;">Dev & Engenharia</div>
+                </div>
+                <div>
+                    <span style="color:var(--text-gray); display:block; font-size:0.8em; font-weight:600;">STATUS DA AUDITORIA:</span>
+                    <span id="detailStatusBadge" class="status-badge status-pendente">Pendente</span>
+                    <div id="detailSla" style="color:#f87171; font-weight:700; font-size:0.82em; margin-top:4px;">Prazo: Expira em 15.03</div>
+                </div>
+            </div>
+
+            <!-- Checklists: Ações Finalizadas vs Pendentes -->
+            <div class="form-group">
+                <label>📋 Checklist de Ações do Requisito</label>
+                <div id="detailActionsList" style="background:#18181b; border:1px solid #444; border-radius:10px; padding:12px; font-size:0.88em; display:grid; gap:8px;">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+
+            <!-- Evidências & Parecer QSA -->
+            <div id="detailEvidenceSection" style="margin-bottom:16px;">
+                <!-- Rendered by JS -->
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+                <button class="btn-action-sm" onclick="switchProfile('operacional'); closeModal('reqDetailModal');">👩‍💻 Ir para Visão Operacional</button>
+                <button class="btn-upload" onclick="closeModal('reqDetailModal')">Fechar Detalhes</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast" id="toastMsg">Alterações salvas com sucesso!</div>
 
@@ -1111,18 +1155,49 @@
                     </div>
                 </div>
 
+                <!-- Progresso por Requisito Geral (Clicáveis) -->
+                <div class="card-panel" style="margin-bottom: 24px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <h3>📌 Progresso por Requisito Geral (Clique para detalhar)</h3>
+                        <span style="font-size:0.8em; color:var(--text-gray);">12 Requisitos Principais PCI v4.0.1</span>
+                    </div>
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap:10px;">
+                        ${[1,2,3,4,5,6,7,8,9,10,11,12].map(num => {
+                            const reqCode = `REQ ${num}`;
+                            const found = requirements.find(r => r.code.startsWith(`REQ ${num}.`) || r.code === `REQ ${num}`);
+                            let bgClass = "status-pendente";
+                            let statusText = "Pendente";
+                            let focalName = found ? found.focal : "Não Atribuído";
+                            
+                            if(found) {
+                                if(found.status === 'aceito') { bgClass = "status-aceito"; statusText = "Conforme"; }
+                                else if(found.status === 'em_revisao') { bgClass = "status-em_revisao"; statusText = "Em Revisão"; }
+                                else if(found.status === 'ajustes') { bgClass = "status-ajustes"; statusText = "GAP/Ajuste"; }
+                            }
+
+                            return `
+                                <div onclick="openReqDetailModal('${reqCode}')" style="background:rgba(24,24,27,0.8); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:10px 8px; text-align:center; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='#ffb366'; this.style.transform='scale(1.04)';" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'; this.style.transform='scale(1)';">
+                                    <div style="font-weight:800; font-size:0.9em; color:var(--brand-primary);">${reqCode}</div>
+                                    <div class="status-badge ${bgClass}" style="font-size:0.7em; padding:2px 6px; margin-top:4px; display:inline-block;">${statusText}</div>
+                                    <div style="font-size:0.7em; color:var(--text-gray); margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${focalName}</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+
                 <!-- Alert SLAs List -->
                 <div class="card-panel">
                     <h3>🚨 Alertas Críticos de SLA de Coleta</h3>
                     <div style="margin-top:12px; display:grid; gap:10px;">
-                        <div style="background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); padding:12px 16px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+                        <div style="background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); padding:12px 16px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="openReqDetailModal('REQ 3')">
                             <div>
                                 <strong style="color:#f87171;">REQ 3.4.1 - Criptografia de Dados de Cartão (PAN)</strong>
                                 <div style="font-size:0.85em; color:var(--text-gray);">Responsável: Ana Ribeiro | Vencido há 55 dias</div>
                             </div>
                             <span class="status-badge status-ajustes">Ajustes QSA Solicitados</span>
                         </div>
-                        <div style="background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3); padding:12px 16px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+                        <div style="background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3); padding:12px 16px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="openReqDetailModal('REQ 6')">
                             <div>
                                 <strong style="color:#fcd34d;">REQ 6.4.3 - Gestão de Scripts de Terceiros (CSP)</strong>
                                 <div style="font-size:0.85em; color:var(--text-gray);">Responsável: Ana Ribeiro | Vencido há 29 dias</div>
@@ -1370,6 +1445,91 @@
                 hash |= 0;
             }
             return Math.abs(hash).toString(16).padStart(16, '0') + "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855".substring(16);
+        }
+
+        function openReqDetailModal(code) {
+            const req = requirements.find(r => r.code === code || r.code.startsWith(code + '.')) || {
+                code: code,
+                title: "Controle de Segurança PCI v4.0.1",
+                area: "Infraestrutura & SegInfo",
+                focal: "Ana Ribeiro",
+                due: "28.03.2026",
+                status: "pendente",
+                overdueDays: 0,
+                evidence: null,
+                qsaComment: null
+            };
+
+            document.getElementById('detailReqCode').innerText = req.code;
+            document.getElementById('detailReqTitle').innerText = req.title;
+            document.getElementById('detailFocal').innerText = req.focal;
+            document.getElementById('detailArea').innerText = req.area;
+
+            const badge = document.getElementById('detailStatusBadge');
+            badge.className = 'status-badge status-' + req.status;
+            badge.innerText = formatStatus(req.status);
+
+            const sla = document.getElementById('detailSla');
+            if(req.overdueDays > 0) {
+                sla.innerText = `🚨 PRAZO VENCIDO HÁ ${req.overdueDays} DIAS (${req.due})`;
+                sla.style.color = '#f87171';
+            } else {
+                sla.innerText = `📅 Prazo de Coleta: ${req.due}`;
+                sla.style.color = '#34d399';
+            }
+
+            // Render Actions Checklist
+            const actionsContainer = document.getElementById('detailActionsList');
+            let actionsHtml = "";
+            if (req.status === 'aceito') {
+                actionsHtml = `
+                    <div style="color:#34d399;">✅ Mapeamento do escopo do requisito concluído</div>
+                    <div style="color:#34d399;">✅ Evidência técnica coletada e assinada (${req.evidence||'Documento.pdf'})</div>
+                    <div style="color:#34d399;">✅ Assinatura SHA-256 validada pelo auditor QSA</div>
+                    <div style="color:#34d399;">✅ Parecer formal QSA de Conformidade emitido</div>
+                `;
+            } else if (req.status === 'em_revisao') {
+                actionsHtml = `
+                    <div style="color:#34d399;">✅ Mapeamento de responsáveis concluído (${req.focal})</div>
+                    <div style="color:#34d399;">✅ Evidência submetida (${req.evidence})</div>
+                    <div style="color:#60a5fa;">⏳ Em análise formal pelo Auditor QSA Lead</div>
+                `;
+            } else if (req.status === 'ajustes') {
+                actionsHtml = `
+                    <div style="color:#34d399;">✅ Mapeamento de escopo concluído</div>
+                    <div style="color:#f87171;">❌ Ajuste Solicitado pelo QSA: ${req.gap || 'Tratamento de GAP pendente'}</div>
+                    <div style="color:#fcd34d;">⚠️ Reenviar evidência com correções exigidas</div>
+                `;
+            } else {
+                actionsHtml = `
+                    <div style="color:#34d399;">✅ Ponto focal designado (${req.focal})</div>
+                    <div style="color:#f87171;">❌ Coleta de evidência técnica pendente</div>
+                    <div style="color:#f87171;">❌ Validação de integridade SHA-256 pendente</div>
+                `;
+            }
+            actionsContainer.innerHTML = actionsHtml;
+
+            // Render Evidence & QSA Notes Section
+            const evContainer = document.getElementById('detailEvidenceSection');
+            let evHtml = "";
+            if (req.evidence) {
+                evHtml += `
+                    <div class="evidence-box">
+                        <strong>📎 Evidência Anexada:</strong> ${req.evidence}
+                        ${req.hash ? `<span class="evidence-hash">SHA-256: ${req.hash}</span>` : ''}
+                    </div>
+                `;
+            }
+            if (req.qsaComment) {
+                evHtml += `
+                    <div class="qsa-comment-box">
+                        <strong>💬 Parecer do QSA Lead:</strong> ${req.qsaComment}
+                    </div>
+                `;
+            }
+            evContainer.innerHTML = evHtml;
+
+            document.getElementById('reqDetailModal').classList.add('active');
         }
 
         function closeModal(id) {
