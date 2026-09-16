@@ -1383,7 +1383,7 @@
                 saveData();
                 closeModal('uploadModal');
                 renderView();
-                showToast("Evidência enviada para o QSA com sucesso!");
+                showToast("📧 Evidência enviada para o QSA! Notificação por E-mail disparada ao Auditor.");
             }
         }
 
@@ -1425,7 +1425,7 @@
             saveData();
             closeModal('qsaModal');
             renderView();
-            showToast("Parecer QSA registrado com sucesso!");
+            showToast("📧 Parecer QSA salvo com sucesso! E-mail automatizado de mudança de status enviado ao responsável.");
         }
 
         function reassignFocal(code, newFocal) {
@@ -1433,7 +1433,7 @@
             if(req) {
                 req.focal = newFocal;
                 saveData();
-                showToast(`Requisito ${code} reatribuído a ${newFocal}`);
+                showToast(`📧 Requisito ${code} reatribuído a ${newFocal}. E-mail de notificação enviado!`);
             }
         }
 

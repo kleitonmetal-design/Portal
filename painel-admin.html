@@ -220,48 +220,33 @@
                     </tbody>
                 </table>
             </div>
-        <!-- Painel de Configuração de Webhooks e E-mail -->
+        <!-- Painel de Configuração de Notificações Automatizadas por E-mail -->
         <div class="card-table">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
-                <h3 style="color: #f59e0b; font-size: 1.1em;">🔔 Central de Notificações Automatizadas (Slack, Teams & E-mail)</h3>
-                <span style="font-size: 0.8em; color: var(--text-gray);">Integrações por Webhook & SendGrid/n8n</span>
+                <h3 style="color: #f59e0b; font-size: 1.1em;">📧 Central de Notificações Automatizadas por E-mail</h3>
+                <span style="font-size: 0.8em; color: var(--text-gray);">Integrado ao Cadastro de Usuários (`cadastro-equipe.html`)</span>
             </div>
 
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:20px;">
-                <div>
-                    <label style="font-size:0.85em; font-weight:700; color:var(--text-gray); display:block; margin-bottom:6px;">💬 Slack Incoming Webhook URL</label>
-                    <input type="text" id="slackWebhookUrl" value="https://hooks.slack.com/services/T000/B000/XXXX" style="width:100%; padding:10px; border-radius:8px; border:1px solid #555; background:#18181b; color:#fff; font-size:0.88em;">
-                    <div style="font-size:0.75em; color:var(--text-gray); margin-top:4px;">Notifica o canal #pci-compliance sobre atrasos e pareceres do QSA.</div>
-                </div>
-
-                <div>
-                    <label style="font-size:0.85em; font-weight:700; color:var(--text-gray); display:block; margin-bottom:6px;">👥 Microsoft Teams Webhook URL</label>
-                    <input type="text" id="teamsWebhookUrl" value="https://outlook.office.com/webhook/xxxx@xxxx/IncomingWebhook/xxxx" style="width:100%; padding:10px; border-radius:8px; border:1px solid #555; background:#18181b; color:#fff; font-size:0.88em;">
-                    <div style="font-size:0.75em; color:var(--text-gray); margin-top:4px;">Notifica os canais da equipe no Microsoft Teams.</div>
-                </div>
-            </div>
-
-            <div style="background:#18181b; border:1px solid #3f3f46; border-radius:10px; padding:16px; margin-bottom:18px;">
-                <strong style="color:var(--brand-primary); font-size:0.9em; display:block; margin-bottom:8px;">📧 Gatilhos de E-mail de SLA & Mudança de Status Habilitados:</strong>
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px; font-size:0.85em; color:var(--text-light);">
-                    <label><input type="checkbox" checked> Lembrete de SLA (5 dias antes)</label>
-                    <label><input type="checkbox" checked> Alerta de Requisito Expirado</label>
-                    <label><input type="checkbox" checked> Notificação de GAP Solicitado</label>
-                    <label><input type="checkbox" checked> Confirmação de Evidência Aceita</label>
+            <div style="background:#18181b; border:1px solid #3f3f46; border-radius:10px; padding:18px; margin-bottom:18px;">
+                <strong style="color:var(--brand-primary); font-size:0.95em; display:block; margin-bottom:10px;">📧 Gatilhos Automatizados de E-mail (SLA, Status & Atribuições):</strong>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px; font-size:0.88em; color:var(--text-light);">
+                    <label><input type="checkbox" checked> ⏰ <strong>Alertas de SLA Vencido:</strong> Notifica o responsável quando o prazo de evidência expira.</label>
+                    <label><input type="checkbox" checked> ⏳ <strong>Lembrete Preventivo de SLA:</strong> Envia e-mail 5 dias antes do prazo vencer.</label>
+                    <label><input type="checkbox" checked> 🔄 <strong>Mudança de Status:</strong> Notifica o ponto focal quando o QSA aceita ou solicita GAP.</label>
+                    <label><input type="checkbox" checked> 🎯 <strong>Novas Atribuições:</strong> Notifica o usuário ao ser vinculado a um novo requisito.</label>
                 </div>
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-                <div style="display:flex; gap:10px;">
-                    <button class="btn-action" style="background:rgba(96,165,250,0.2); color:#60a5fa; border:1px solid rgba(96,165,250,0.4);" onclick="testarSlackWebhook()">🧪 Testar Webhook Slack</button>
-                    <button class="btn-action" style="background:rgba(168,85,247,0.2); color:#c084fc; border:1px solid rgba(168,85,247,0.4);" onclick="testarTeamsWebhook()">🧪 Testar Webhook Teams</button>
+                <div style="font-size:0.85em; color:var(--text-gray);">
+                    ℹ️ Os e-mails são enviados para as caixas de entrada dos pontos focais com preferências ativas em <a href="./cadastro-equipe.html" style="color:var(--brand-primary); font-weight:700; text-decoration:none;">Onboarding da Equipe</a>.
                 </div>
-                <button class="btn-action" style="background:#ef4444; color:#fff;" onclick="dispararAlertasSLA()">⚡ Disparar Alertas de SLA Vencidos Agora</button>
+                <button class="btn-action" style="background:#ef4444; color:#fff;" onclick="dispararAlertasSLA()">⚡ Disparar Alertas de SLA por E-mail Agora</button>
             </div>
         </div>
 
         <div style="display:flex; justify-content:flex-end; margin-top:16px;">
-            <button class="btn-action" onclick="showToast('💾 SLA e Permissões das áreas salvas!')">💾 Salvar SLAs & Permissões</button>
+            <button class="btn-action" onclick="showToast('💾 Parâmetros de SLA e Notificações por E-mail salvos!')">💾 Salvar SLAs & Notificações</button>
         </div>
     </div>
     </div>
@@ -335,24 +320,7 @@
             showToast(`⚡ ${alterados} requisitos atribuídos automaticamente por área!`);
         }
 
-        function testarSlackWebhook() {
-            const url = document.getElementById('slackWebhookUrl').value;
-            const payload = {
-                text: "🧪 *[TESTE] Thyreos Compliance Manager*: Webhook do Slack conectado com sucesso para o canal #pci-compliance!"
-            };
-            showToast("💬 Teste de Webhook Slack disparado!");
-            console.log("Slack Webhook Payload:", payload);
-        }
 
-        function testarTeamsWebhook() {
-            const url = document.getElementById('teamsWebhookUrl').value;
-            const payload = {
-                title: "🧪 [TESTE] Thyreos Compliance Manager",
-                text: "Webhook do Microsoft Teams conectado com sucesso para o canal da equipe!"
-            };
-            showToast("👥 Teste de Webhook MS Teams disparado!");
-            console.log("Teams Webhook Payload:", payload);
-        }
 
         function dispararAlertasSLA() {
             const salvo = localStorage.getItem('portal_pci_requisitos');
@@ -363,7 +331,7 @@
                     totalExpirados = reqs.filter(r => r.overdueDays > 0 || r.status === 'AJUSTE_SOLICITADO' || r.status === 'ajustes').length || 2;
                 } catch(e){}
             }
-            showToast(`⚡ Disparados ${totalExpirados} alertas de SLA por E-mail, Slack e Teams!`);
+            showToast(`📧 Disparados ${totalExpirados} alertas de SLA por E-mail para as caixas de entrada dos responsáveis!`);
         }
 
         validarSessao();

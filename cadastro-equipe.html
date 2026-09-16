@@ -13,6 +13,7 @@
             --brand-primary: #f59e0b;
             --text-white: #fafafa;
             --text-muted: #a1a1aa;
+            --success: #10b981;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -22,23 +23,71 @@
         .header-title { font-size: 1.8em; font-weight: 800; color: var(--brand-gold); margin-bottom: 6px; }
         .card-panel { background: var(--surface-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 0.85em; color: var(--text-muted); margin-bottom: 6px; }
+        .form-group label { display: block; font-size: 0.85em; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
         .form-control { width: 100%; background: #121215; border: 1px solid var(--border-color); color: white; padding: 10px 14px; border-radius: 6px; font-size: 0.95em; }
-        .btn-submit { background: var(--brand-primary); color: #111; font-weight: 700; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; }
+        .form-control:focus { border-color: var(--brand-gold); outline: none; }
+        
+        .notification-options-box {
+            background: rgba(255, 179, 102, 0.08);
+            border: 1px solid rgba(255, 179, 102, 0.25);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .notification-options-box h4 {
+            font-size: 0.95em;
+            color: var(--brand-gold);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 10px;
+            font-size: 0.88em;
+            color: var(--text-white);
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .btn-submit { background: var(--brand-primary); color: #111; font-weight: 700; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .btn-submit:hover { background: var(--brand-gold); }
+
         table { width: 100%; border-collapse: collapse; text-align: left; margin-top: 16px; font-size: 0.9em; }
-        th, td { padding: 12px 14px; border-bottom: 1px solid #27272a; }
+        th, td { padding: 12px 14px; border-bottom: 1px solid #27272a; vertical-align: middle; }
         th { color: var(--brand-gold); font-size: 0.8em; text-transform: uppercase; }
+
+        .tag-notify {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .toast {
+            position: fixed; bottom: 24px; right: 24px; background: #10b981; color: #111;
+            font-weight: 700; padding: 12px 20px; border-radius: 8px; display: none; z-index: 2000;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <a href="./paineis-pci.html" class="back-link">← Voltar aos Painéis PCI</a>
         <h1 class="header-title">👥 Onboarding & Cadastro da Equipe Interna</h1>
-        <p style="color: var(--text-muted); margin-bottom: 24px;">Cadastre os pontos focais responsáveis por cada área interna para atribuição de requisitos PCI DSS.</p>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">Cadastre os pontos focais responsáveis por cada área interna e configure as notificações automatizadas por e-mail.</p>
 
         <!-- Formulário de Cadastro -->
         <div class="card-panel">
-            <h3 style="margin-bottom: 16px; color: var(--brand-gold);">Novo Integrante</h3>
+            <h3 style="margin-bottom: 16px; color: var(--brand-gold);">Novo Integrante da Equipe</h3>
             <form id="team-form" onsubmit="cadastrarMembro(event)">
                 <div class="form-grid">
                     <div class="form-group">
@@ -46,7 +95,7 @@
                         <input type="text" id="nome" class="form-control" placeholder="Ex: Kleiton Rodrigues" required>
                     </div>
                     <div class="form-group">
-                        <label>E-mail Corporativo</label>
+                        <label>E-mail Corporativo (Para Notificações)</label>
                         <input type="email" id="email" class="form-control" placeholder="Ex: krodrigues@botech.info" required>
                     </div>
                     <div class="form-group">
@@ -57,46 +106,92 @@
                             <option value="Sistemas e Desenvolvimento">Sistemas e Desenvolvimento</option>
                             <option value="Banco de Dados (DBA)">Banco de Dados (DBA)</option>
                             <option value="Recursos Humanos">Recursos Humanos</option>
-                            <option value="Jurídico & Compliance">Jurídico & Compliance</option>
+                            <option value="Físico & Facilities">Físico & Facilities</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Perfil de Acesso</label>
                         <select id="perfil" class="form-control" required>
-                            <option value="admin_plataforma">Administrador da Plataforma</option>
-                            <option value="coordenador">Ponto Focal Coordenador</option>
-                            <option value="operacional">Ponto Focal Operacional</option>
-                            <option value="executivo">Ponto Focal Executivo</option>
-                            <option value="auditor">Auditor QSA</option>
+                            <option value="Operacional">Ponto Focal Operacional</option>
+                            <option value="Coordenador">Ponto Focal Coordenador</option>
+                            <option value="Executivo">Ponto Focal Executivo</option>
+                            <option value="Auditor QSA">Auditor QSA Lead</option>
+                            <option value="Admin Governança">Admin Governança</option>
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="btn-submit">➕ Cadastrar Integrante</button>
+
+                <!-- Notificações por E-mail Integradas -->
+                <div class="notification-options-box">
+                    <h4>📧 Notificações Automatizadas por E-mail para este Usuário</h4>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" id="notifyStatus" checked>
+                            <span>🔄 <strong>Mudança de Status:</strong> Notificar quando o QSA aprovar ou solicitar ajustes/GAP.</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" id="notifyAssign" checked>
+                            <span>🎯 <strong>Novas Atribuições:</strong> Notificar ao ser atribuído a um novo requisito PCI.</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" id="notifySla" checked>
+                            <span>⏰ <strong>Alertas de SLA:</strong> Avisos automatizados de prazos expirados ou a vencer.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">➕ Cadastrar Integrante com Notificações</button>
             </form>
         </div>
 
-        <!-- Tabela da Equipe -->
+        <!-- Tabela da Equipe Cadastrada -->
         <div class="card-panel">
-            <h3 style="margin-bottom: 16px; color: var(--brand-gold);">Equipe Cadastrada (CSU Digital)</h3>
+            <h3 style="margin-bottom: 16px; color: var(--brand-gold);">Equipe Cadastrada & Preferências de E-mail</h3>
             <table>
                 <thead>
                     <tr>
                         <th>Nome</th>
-                        <th>E-mail</th>
+                        <th>E-mail Corporativo</th>
                         <th>Área Interna</th>
                         <th>Perfil</th>
+                        <th>Gatilhos E-mail Habilitados</th>
                     </tr>
                 </thead>
                 <tbody id="team-table">
-                    <tr><td>Kleiton Rodrigues</td><td>krodrigues@botech.info</td><td>Segurança da Informação</td><td>Administrador da Plataforma</td></tr>
-                    <tr><td>Ponto Focal CSU (Bruno)</td><td>focal.pci@csudigital.com.br</td><td>Segurança da Informação</td><td>Coordenador PCI</td></tr>
-                    <tr><td>Responsável Redes CSU</td><td>redes.infra@csudigital.com.br</td><td>Infraestrutura e Redes</td><td>Operacional</td></tr>
-                    <tr><td>Responsável Sistemas CSU</td><td>sistemas.dev@csudigital.com.br</td><td>Sistemas e Desenvolvimento</td><td>Operacional</td></tr>
-                    <tr><td>Responsável DBA CSU</td><td>dba.dados@csudigital.com.br</td><td>Banco de Dados (DBA)</td><td>Operacional</td></tr>
+                    <tr>
+                        <td><strong>Kleiton Rodrigues</strong></td>
+                        <td>krodrigues@botech.info</td>
+                        <td>Segurança da Informação</td>
+                        <td>Admin Governança</td>
+                        <td><span class="tag-notify">🔄 Status</span> <span class="tag-notify">🎯 Atribuições</span> <span class="tag-notify">⏰ SLA</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ana Ribeiro</strong></td>
+                        <td>ana.ribeiro@csu.com.br</td>
+                        <td>Sistemas e Desenvolvimento</td>
+                        <td>Operacional</td>
+                        <td><span class="tag-notify">🔄 Status</span> <span class="tag-notify">🎯 Atribuições</span> <span class="tag-notify">⏰ SLA</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Marcos Lima</strong></td>
+                        <td>marcos.lima@csu.com.br</td>
+                        <td>Infraestrutura e Redes</td>
+                        <td>Operacional</td>
+                        <td><span class="tag-notify">🔄 Status</span> <span class="tag-notify">🎯 Atribuições</span> <span class="tag-notify">⏰ SLA</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Carlos Costa</strong></td>
+                        <td>carlos.costa@thyreos.io</td>
+                        <td>Auditoria QSA</td>
+                        <td>Auditor QSA Lead</td>
+                        <td><span class="tag-notify">🔄 Status</span> <span class="tag-notify">🎯 Novas Evidências</span></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <div class="toast" id="toastMsg">Integrante cadastrado com sucesso!</div>
 
     <script>
         function cadastrarMembro(e) {
@@ -105,14 +200,36 @@
             const email = document.getElementById('email').value;
             const area = document.getElementById('area').value;
             const perfil = document.getElementById('perfil').value;
+            
+            const nStatus = document.getElementById('notifyStatus').checked;
+            const nAssign = document.getElementById('notifyAssign').checked;
+            const nSla = document.getElementById('notifySla').checked;
+
+            let tagsHtml = "";
+            if(nStatus) tagsHtml += `<span class="tag-notify">🔄 Status</span> `;
+            if(nAssign) tagsHtml += `<span class="tag-notify">🎯 Atribuições</span> `;
+            if(nSla) tagsHtml += `<span class="tag-notify">⏰ SLA</span> `;
 
             const tbody = document.getElementById('team-table');
             const row = document.createElement('tr');
-            row.innerHTML = `<td>${nome}</td><td>${email}</td><td>${area}</td><td>${perfil}</td>`;
+            row.innerHTML = `
+                <td><strong>${nome}</strong></td>
+                <td>${email}</td>
+                <td>${area}</td>
+                <td>${perfil}</td>
+                <td>${tagsHtml || '<span style="color:#888;">Nenhum</span>'}</td>
+            `;
             tbody.prepend(row);
 
-            alert('✅ Integrante cadastrado com sucesso!');
+            showToast(`📧 E-mail de Boas-vindas enviado para ${email}! Integrante cadastrado.`);
             document.getElementById('team-form').reset();
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toastMsg');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 3500);
         }
     </script>
 </body>

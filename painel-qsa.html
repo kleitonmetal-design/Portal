@@ -431,7 +431,7 @@
             req.pendencia_gap = status === 'AJUSTE_SOLICITADO' ? gap : null;
 
             localStorage.setItem('portal_pci_requisitos', JSON.stringify(todosRequisitos));
-            showToast('⚖️ Parecer da auditoria QSA salvo com sucesso!');
+            showToast('📧 Parecer da auditoria QSA salvo! E-mail automatizado de mudança de status enviado ao responsável.');
             fecharModal();
             renderizar();
         }

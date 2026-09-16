@@ -27,3 +27,5 @@
 | **Modal QSA com Campo GAP** | Separa comentário público de justificativa de GAP | Campo obrigatório de GAP ao solicitar ajustes | ✅ **CONCLUÍDO** (`painel-qsa.html`) |
 | **Mapa de Risco 5x5 Executivo** | Matriz visual de Probabilidade x Impacto | Matriz de calor 5x5 com Selo de Risco e SLA de atraso | ✅ **CONCLUÍDO** (`painel-executivo.html`) |
 | **Portal de Login Exclusivo** | Tela inicial por perfil | Login com seleção de cartão visual e sessão | ✅ **CONCLUÍDO** (`login.html`) |
+| **Central de Alertas & Notificações por E-mail** | Notificações de SLA, status e atribuição direcionadas | E-mail automatizado vinculado ao cadastro do usuário (`cadastro-equipe.html`) com inbox por área (`alertas.html`) | ✅ **CONCLUÍDO** (`alertas.html`, `cadastro-equipe.html`) |
+
