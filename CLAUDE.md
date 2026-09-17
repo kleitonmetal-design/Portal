@@ -85,11 +85,14 @@ ROC PCI DSS v4.0.1 da CSU Digital S/A, atualizado a cada 30s via `fetch()`.
 - Branch principal: `main`. É nela que o deploy acontece.
 
 ### Marcação de Commits por Origem
-Toda mensagem de commit começa com prefixo indicando a ferramenta que a gerou, para facilitar rastreamento nos logs de deploy:
-- `[claude]` — commits feitos por Claude Code
-- `[antigravity]` — commits feitos via Antigravity IDE  
-- *(sem prefixo)* — edições manuais / git CLI direto
-- Futuras ferramentas: `[ferramentanome]` (ex: `[n8n]`, `[zapier]`)
+Toda mensagem de commit começa com prefixo indicando a ferramenta que a gerou, para facilitar rastreamento nos logs de deploy. Além do prefixo, autor e e-mail do commit também são sobrescritos por origem, para diferenciar mesmo quando alguém lê só as colunas `author`/`author_email` (ex: exportações do GitHub, planilhas):
+
+| Origem | Prefixo na mensagem | Autor do commit | E-mail |
+|--------|---------------------|------------------|--------|
+| Claude Code | `[claude]` | `Claude` | `noreply@anthropic.com` |
+| Antigravity IDE | `[antigravity]` | `Antigravity IDE` | `antigravity-ide@guardiantechit.com.br` |
+| Manual / git CLI direto | *(sem prefixo)* | `kleitonmetal-design` (identidade local da máquina) | — |
+| Futuras ferramentas | `[ferramentanome]` (ex: `[n8n]`, `[zapier]`) | a definir por ferramenta | a definir |
 
 Exemplos:
 - Commit direto: `[claude] fix: recalculate requirement percentage on ROC panel`
@@ -97,6 +100,42 @@ Exemplos:
 - Antigravity: `[antigravity] refactor: improve card styling on dashboard`
 
 **Aplicável a:** commits diretos em main + títulos de PR + merge commits
+
+**Como funciona (implementação técnica):**
+- Os hooks ficam versionados em `.githooks/` (não em `.git/hooks/`, que não é
+  rastreado pelo Git e some a cada clone novo — inclusive a cada sessão nova
+  do Claude Code, que roda em container efêmero).
+- `.githooks/prepare-commit-msg` detecta a origem (variáveis de ambiente,
+  nome do processo pai, `git config user.name`) e adiciona o prefixo
+  `[origem]` na mensagem, se ainda não tiver.
+- `.githooks/post-commit` lê o prefixo da mensagem do commit recém-criado e,
+  se o autor não bater com o mapeamento acima, reescreve autor/e-mail via
+  `git commit --amend --no-edit --no-verify --reset-author` (um hook não
+  consegue mudar o autor do commit que ele mesmo está processando — só
+  depois, via amend). `--reset-author` é obrigatório: sem ele o amend ignora
+  `GIT_AUTHOR_*` e mantém o autor original, o que faz a condição de parada
+  nunca ficar verdadeira e entra em loop infinito de amends — já aconteceu
+  durante o desenvolvimento deste sistema e travou a sessão até os processos
+  serem mortos manualmente. O hook também tem uma trava de reentrância
+  (`GITHOOKS_POST_COMMIT_LOCK`) como segunda camada de proteção contra loop.
+- **Ativação obrigatória, uma vez por máquina** (não acontece sozinho ao
+  clonar): `git config core.hooksPath .githooks`. Sem isso os hooks existem
+  no repo mas ficam inertes — foi exatamente isso que aconteceu antes: o
+  hook de prefixo foi commitado (PR #13) mas nunca ativado em lugar nenhum,
+  e mesmo assim aparecia funcionando nos commits do Antigravity — o que
+  sugere que a própria ferramenta pode ter ativado localmente por conta
+  própria, então confirme com `git config core.hooksPath` antes de assumir
+  que está inativo.
+- Claude Code não precisa desse passo: a identidade de commit (`Claude
+  <noreply@anthropic.com>`) já vem configurada automaticamente pelo próprio
+  ambiente de sessão, sem depender de hook local. O `post-commit` cobre o
+  caso `[claude]` como rede de segurança, não como mecanismo principal.
+- Antigravity IDE: rodar `git config core.hooksPath .githooks` uma vez na
+  máquina onde o Antigravity roda. Se o Antigravity tiver uma opção nativa
+  de "commit author override" nas configurações, prefira usá-la — é mais
+  confiável que a heurística de detecção do hook (que depende de variável
+  de ambiente ou nome de processo pai, e pode falhar silenciosamente se o
+  Antigravity não expuser nenhum sinal detectável).
 
 - Não fazer force-push sem confirmar com o usuário antes.
 
