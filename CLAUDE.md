@@ -83,6 +83,21 @@ ROC PCI DSS v4.0.1 da CSU Digital S/A, atualizado a cada 30s via `fetch()`.
 
 ## Git
 - Branch principal: `main`. É nela que o deploy acontece.
+
+### Marcação de Commits por Origem
+Toda mensagem de commit começa com prefixo indicando a ferramenta que a gerou, para facilitar rastreamento nos logs de deploy:
+- `[claude]` — commits feitos por Claude Code
+- `[antigravity]` — commits feitos via Antigravity IDE  
+- *(sem prefixo)* — edições manuais / git CLI direto
+- Futuras ferramentas: `[ferramentanome]` (ex: `[n8n]`, `[zapier]`)
+
+Exemplos:
+- Commit direto: `[claude] fix: recalculate requirement percentage on ROC panel`
+- PR merge: `Merge pull request #15: [claude] feat: add new dashboard link`
+- Antigravity: `[antigravity] refactor: improve card styling on dashboard`
+
+**Aplicável a:** commits diretos em main + títulos de PR + merge commits
+
 - Não fazer force-push sem confirmar com o usuário antes.
 
 ## Manual do projeto (Supabase)
