@@ -2,7 +2,8 @@
 
 **Projeto:** Portal GuardianTech / Thyreos Trust Platform  
 **Cliente:** CSU Digital PCI DSS v4.0.1  
-**Data da Última Atualização:** 16/09/2026  
+**Data da Última Atualização:** 17/09/2026  
+**Automação Git Hooks:** Hook `prepare-commit-msg` ativo para detecção do Antigravity IDE.  
 **Banco Oficial Thyreos:** SQLite & Supabase  
 
 ---
