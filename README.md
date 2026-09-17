@@ -2,7 +2,7 @@
 
 Portal unificado de serviços de cibersegurança e plataforma de gestão de conformidade **PCI DSS v4.0.1** da **GuardianTech / Thyreos Trust Platform**.
 
-**Domínio Oficial de Produção:** `https://portal.guardiantechit.com.br/`
+> **Última Atualização de Deploy (Antigravity IDE):** 17/09/2026 - Validação de Log e Prefixos Git Automáticos (`[antigravity]`)
 
 ---
 
