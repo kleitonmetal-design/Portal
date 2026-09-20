@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusFlow — Produtividade Acessível (TDAH & Dislexia) | GuardianTech</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Fontes Atkinson Hyperlegible e Lexend via Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Lexend:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Inclusão de OpenDyslexic via CDN segura */
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/open-dyslexic/OpenDyslexic-Regular.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/open-dyslexic/OpenDyslexic-Bold.otf') format('opentype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        :root {
+            /* Tema Padrão: Modo Claro Quente (Warm Cream) */
+            --bg-base: #FAF8F5;
+            --bg-surface: #FFFFFF;
+            --bg-surface-elevated: #F3EFEA;
+            --text-main: #2D3133;
+            --text-muted: #697075;
+            --brand-primary: #D97706; /* Âmbar suave e acolhedor */
+            --brand-primary-hover: #B45309;
+            --brand-secondary: #0D9488; /* Verde-azulado calmo */
+            --border-subtle: #E8E3DC;
+            --border-focus: #D97706;
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.08);
+
+            /* Tipografia e espaçamento adaptativo */
+            --font-family: 'Atkinson Hyperlegible', -apple-system, BlinkMacSystemFont, sans-serif;
+            --line-height: 1.7;
+            --letter-spacing: 0.03em;
+            --word-spacing: 0.05em;
+        }
+
+        /* Modo Escuro Suave (Slate Soft) */
+        [data-theme="dark"] {
+            --bg-base: #181A1B;
+            --bg-surface: #222629;
+            --bg-surface-elevated: #2C3135;
+            --text-main: #E2E6E8;
+            --text-muted: #9BA3A9;
+            --brand-primary: #F59E0B;
+            --brand-primary-hover: #FBBF24;
+            --brand-secondary: #14B8A6;
+            --border-subtle: #33393D;
+            --border-focus: #F59E0B;
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.45);
+        }
+
+        /* Seleção de fontes */
+        [data-font="atkinson"] { --font-family: 'Atkinson Hyperlegible', sans-serif; }
+        [data-font="opendyslexic"] { --font-family: 'OpenDyslexic', sans-serif; }
+        [data-font="lexend"] { --font-family: 'Lexend', sans-serif; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            line-height: var(--line-height);
+            letter-spacing: var(--letter-spacing);
+            word-spacing: var(--word-spacing);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Header de Acessibilidade & Navegação */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .brand-logo {
+            font-size: 1.5rem;
+        }
+
+        .brand-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .brand-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .portal-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            padding: 7px 14px;
+            border-radius: 8px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .portal-back-btn:hover {
+            border-color: var(--brand-primary);
+            color: var(--brand-primary);
+        }
+
+        /* Controles de Acessibilidade (Pílulas no Topo) */
+        .accessibility-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-surface-elevated);
+            padding: 4px 8px;
+            border-radius: 20px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .control-select, .control-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            outline: none;
+            transition: background 0.2s;
+        }
+
+        .control-select:focus, .control-btn:focus-visible {
+            box-shadow: 0 0 0 2px var(--brand-primary);
+        }
+
+        .control-btn.active {
+            background-color: var(--brand-primary);
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+
+        /* Container Principal */
+        .main-content {
+            flex: 1;
+            max-width: 820px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 32px 20px 100px;
+        }
+
+        /* MÓDULO 1: Captura & Decomposição ("O Quebrador") */
+        .view-capture {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .hero-banner {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .hero-banner h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .hero-banner p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 24px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .textarea-box {
+            width: 100%;
+            min-height: 120px;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid var(--border-subtle);
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .textarea-box:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+        }
+
+        .input-actions-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-mic {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-subtle);
+            padding: 8px 16px;
+            border-radius: 10px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-mic:hover {
+            border-color: var(--brand-primary);
+        }
+
+        .btn-mic.recording {
+            background: #EF4444;
+            color: #FFFFFF;
+            border-color: #DC2626;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Nível de Energia Cognitiva (Bateria) */
+        .battery-section {
+            margin-top: 24px;
+            margin-bottom: 24px;
+        }
+
+        .battery-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .battery-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .battery-card {
+            background-color: var(--bg-base);
+            border: 2px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .battery-card:hover {
+            border-color: var(--brand-primary);
+            transform: translateY(-2px);
+        }
+
+        .battery-card.selected {
+            border-color: var(--brand-primary);
+            background-color: rgba(217, 119, 6, 0.08);
+            box-shadow: 0 0 0 2px var(--brand-primary);
+        }
+
+        .battery-icon {
+            font-size: 1.6rem;
+            margin-bottom: 4px;
+        }
+
+        .battery-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .battery-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Botão Primário Desmembrar */
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-hover));
+            color: #FFFFFF;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(217, 119, 6, 0.25);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(217, 119, 6, 0.35);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* MÓDULO: Lista de Revisão de Passos */
+        .view-review {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .steps-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .step-item-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .step-item-card:hover {
+            border-color: var(--brand-primary);
+        }
+
+        .step-order-badge {
+            width: 32px;
+            height: 32px;
+            background-color: var(--bg-surface-elevated);
+            color: var(--brand-primary);
+            font-weight: 700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-instruction {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-main);
+        }
+
+        .step-why {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .step-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: var(--bg-surface-elevated);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* MÓDULO 2: O Cockpit Monotarefa (Execução Imersiva) */
+        .view-cockpit {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .cockpit-container {
+            background-color: var(--bg-surface);
+            border: 2px solid var(--border-subtle);
+            border-radius: 24px;
+            padding: 40px 32px;
+            box-shadow: var(--shadow-float);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cockpit-step-counter {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--brand-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 16px;
+        }
+
+        .cockpit-instruction {
+            font-size: clamp(1.4rem, 4vw, 2rem);
+            font-weight: 700;
+            line-height: 1.4;
+            color: var(--text-main);
+            margin-bottom: 20px;
+        }
+
+        .cockpit-why {
+            font-size: 1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 36px;
+            background: var(--bg-base);
+            padding: 12px 18px;
+            border-radius: 12px;
+            border: 1px dashed var(--border-subtle);
+        }
+
+        /* Time Timer Visual Relaxante (Barra Fluida Sem Ansiedade) */
+        .time-timer-wrapper {
+            max-width: 480px;
+            margin: 0 auto 36px;
+        }
+
+        .timer-track {
+            width: 100%;
+            height: 16px;
+            background-color: var(--bg-surface-elevated);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            position: relative;
+        }
+
+        .timer-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--brand-secondary), var(--brand-primary));
+            border-radius: 12px;
+            transition: width 1s linear;
+        }
+
+        .timer-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Controles de Ação do Cockpit */
+        .cockpit-actions-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+            max-width: 520px;
+            margin: 0 auto 20px;
+        }
+
+        .btn-complete {
+            background-color: var(--brand-secondary);
+            color: #FFFFFF;
+            border: none;
+            padding: 18px 24px;
+            border-radius: 14px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-complete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(13, 148, 136, 0.35);
+        }
+
+        .btn-time-plus {
+            background: var(--bg-surface-elevated);
+            color: var(--text-main);
+            border: 1px solid var(--border-subtle);
+            padding: 18px;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-time-plus:hover {
+            border-color: var(--brand-primary);
+        }
+
+        /* Botão de Pânico: "Travei nesta etapa" */
+        .btn-panic {
+            background: rgba(239, 68, 68, 0.1);
+            color: #DC2626;
+            border: 1px dashed #EF4444;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-panic:hover {
+            background: rgba(239, 68, 68, 0.2);
+            transform: scale(1.02);
+        }
+
+        /* Tela de Celebração Positiva */
+        .view-congrats {
+            display: none;
+            animation: fadeIn 0.4s ease;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .congrats-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 48px 32px;
+            box-shadow: var(--shadow-float);
+        }
+
+        .congrats-emoji {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        /* Player de Ruído de Foco Procedural (Web Audio API) */
+        .sound-dock {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-subtle);
+            padding: 12px 24px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            z-index: 90;
+        }
+
+        .sound-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .sound-btn {
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sound-btn.playing {
+            background: var(--brand-secondary);
+            color: #FFFFFF;
+            border-color: var(--brand-secondary);
+        }
+
+        .sound-slider {
+            width: 90px;
+            accent-color: var(--brand-secondary);
+        }
+
+        /* Utilitários e Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* Estilo de Leitura Biônica */
+        .bionic-bold {
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        @media (max-width: 640px) {
+            .app-header {
+                padding: 10px 16px;
+            }
+            .battery-options {
+                grid-template-columns: 1fr;
+            }
+            .cockpit-actions-grid {
+                grid-template-columns: 1fr;
+            }
+            .sound-dock {
+                flex-direction: column;
+                padding: 10px 16px;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body data-theme="light" data-font="atkinson">
+
+    <!-- Header com Controles de Acessibilidade -->
+    <header class="app-header">
+        <a href="./index.html" class="brand-container">
+            <span class="brand-logo">🌊</span>
+            <div>
+                <div class="brand-title">FocusFlow</div>
+                <div class="brand-subtitle">Desmembramento Cognitivo & Monotarefa</div>
+            </div>
+        </a>
+
+        <div class="nav-actions">
+            <!-- Barra de Acessibilidade Rápida -->
+            <div class="accessibility-bar" aria-label="Acessibilidade e Leitura">
+                <!-- Seletor de Fonte -->
+                <select id="font-selector" class="control-select" title="Fonte para Dislexia/Legibilidade">
+                    <option value="atkinson">Atkinson Hyperlegible</option>
+                    <option value="opendyslexic">OpenDyslexic</option>
+                    <option value="lexend">Lexend</option>
+                </select>
+
+                <!-- Alternador Leitura Biônica -->
+                <button id="btn-bionic" class="control-btn" title="Ativar Leitura Biônica (destaque nas sílabas)">
+                    ⚡ Biônica
+                </button>
+
+                <!-- Alternador Tema Claro/Escuro Suave -->
+                <button id="btn-theme" class="control-btn" title="Alternar entre Creme e Escuro Suave">
+                    🌓 Tema
+                </button>
+            </div>
+
+            <a href="./index.html" class="portal-back-btn">
+                ← Voltar ao Portal
+            </a>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+
+        <!-- ============================================== -->
+        <!-- MÓDULO 1: CAPTURA & DECOMPOSIÇÃO COGNITIVA    -->
+        <!-- ============================================== -->
+        <section id="view-capture" class="view-capture">
+            <div class="hero-banner">
+                <h1>O que você precisa fazer hoje?</h1>
+                <p>Despeje seus pensamentos caóticos. Nós transformamos em microetapas leves.</p>
+            </div>
+
+            <div class="card">
+                <div class="input-group">
+                    <div class="input-label">
+                        <span>Sua Meta ou Tarefa</span>
+                        <span id="speech-indicator" style="font-size: 0.85rem; color: var(--text-muted); display: none;">Escutando...</span>
+                    </div>
+                    <textarea 
+                        id="task-input" 
+                        class="textarea-box" 
+                        placeholder="Ex: Fazer relatório da reunião de ontem, organizar a caixa de entrada ou estudar para o exame..."
+                    ></textarea>
+                </div>
+
+                <div class="input-actions-row">
+                    <button id="btn-mic" class="btn-mic" type="button" title="Ditar por voz">
+                        🎤 Ditado por Voz
+                    </button>
+                    <button id="btn-clear" class="control-btn" type="button" style="color: var(--text-muted);">
+                        Limpar texto
+                    </button>
+                </div>
+
+                <!-- Slider / Seleção de Energia Cognitiva -->
+                <div class="battery-section">
+                    <span class="battery-label">Como está a sua bateria mental agora?</span>
+                    <div class="battery-options">
+                        <div class="battery-card selected" data-battery="low">
+                            <div class="battery-icon">🪫</div>
+                            <div class="battery-title">Bateria Baixa (20%)</div>
+                            <div class="battery-desc">Passos minúsculos de 2 a 5 min. Sem atrito.</div>
+                        </div>
+                        <div class="battery-card" data-battery="medium">
+                            <div class="battery-icon">⚡</div>
+                            <div class="battery-title">Bateria Média (50%)</div>
+                            <div class="battery-desc">Passos intermediários de 10 a 15 min.</div>
+                        </div>
+                        <div class="battery-card" data-battery="high">
+                            <div class="battery-icon">🔋</div>
+                            <div class="battery-title">Bateria Alta (100%)</div>
+                            <div class="battery-desc">Marcos gerais de 25 a 30 min.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btn-decompose" class="btn-primary" type="button">
+                    <span>✨ Desmembrar em Microetapas</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- MÓDULO DE REVISÃO DOS PASSOS GERADOS          -->
+        <!-- ============================================== -->
+        <section id="view-review" class="view-review">
+            <div class="review-header">
+                <div>
+                    <h2 id="review-task-title" style="font-size: 1.5rem; font-weight: 700;">Plano de Ação</h2>
+                    <p id="review-total-time" style="color: var(--text-muted); font-size: 0.95rem;">Tempo total estimado: ~25 min</p>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button id="btn-tts-all" class="control-btn" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); padding: 8px 12px;">
+                        🔊 Ouvir Passos
+                    </button>
+                    <button id="btn-back-to-capture" class="control-btn">
+                        ✏️ Editar
+                    </button>
+                </div>
+            </div>
+
+            <div id="steps-timeline-container" class="steps-timeline">
+                <!-- Gerado dinamicamente via JS -->
+            </div>
+
+            <button id="btn-start-cockpit" class="btn-primary" type="button">
+                <span>🚀 Iniciar Modo Monotarefa (Passo 1)</span>
+            </button>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- MÓDULO 2: O COCKPIT DE EXECUÇÃO MONOTAREFA    -->
+        <!-- ============================================== -->
+        <section id="view-cockpit" class="view-cockpit">
+            <div class="cockpit-container">
+                <div id="cockpit-counter" class="cockpit-step-counter">Passo 1 de 4</div>
+                
+                <h2 id="cockpit-instruction" class="cockpit-instruction">
+                    Abrir o documento e colocar o título principal
+                </h2>
+
+                <div id="cockpit-why" class="cockpit-why">
+                    💡 Por que este passo primeiro: Reduz o atrito de inicialização colocando a tela correta na sua frente.
+                </div>
+
+                <!-- Temporizador Visual Não-Ansioso (Barra Fluida) -->
+                <div class="time-timer-wrapper">
+                    <div class="timer-track" aria-label="Progresso do tempo">
+                        <div id="timer-fill-bar" class="timer-fill"></div>
+                    </div>
+                    <div class="timer-meta-row">
+                        <span id="timer-time-label">⏱️ Estimativa: ~5 min</span>
+                        <span id="timer-mode-toggle" style="cursor: pointer; text-decoration: underline;" title="Alternar modo">
+                            Modo Sem Pressão
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Ações do Cockpit -->
+                <div class="cockpit-actions-grid">
+                    <button id="btn-step-done" class="btn-complete" type="button">
+                        ✓ Concluir Etapa
+                    </button>
+                    <button id="btn-add-time" class="btn-time-plus" type="button" title="Adicionar mais 5 minutos">
+                        +5 min
+                    </button>
+                </div>
+
+                <!-- Botão de Pânico: "Travei nesta etapa" -->
+                <div style="margin-top: 20px;">
+                    <button id="btn-panic" class="btn-panic" type="button">
+                        🚨 Travei nesta etapa (quebrar mais)
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- TELA DE CELEBRAÇÃO (DESIGN ZERO CULPA)        -->
+        <!-- ============================================== -->
+        <section id="view-congrats" class="view-congrats">
+            <div class="congrats-card">
+                <span class="congrats-emoji">🎉</span>
+                <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 12px;">Parabéns! Meta Concluída!</h2>
+                <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 500px; margin: 0 auto 28px;">
+                    Você venceu a paralisia e deu passos reais hoje. Cada vitória, por menor que pareça, conta muito.
+                </p>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button id="btn-new-task" class="btn-primary" style="width: auto; padding: 14px 28px;">
+                        Iniciar Nova Tarefa
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============================================== -->
+    <!-- SOUND DOCK PROCEDURAL (Web Audio API)          -->
+    <!-- ============================================== -->
+    <aside class="sound-dock" aria-label="Gerador de Som para Foco">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 1.2rem;">🎧</span>
+            <div>
+                <div style="font-weight: 700; font-size: 0.85rem;">Ruído de Foco Procedural</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Gerado localmente (zero internet)</div>
+            </div>
+        </div>
+
+        <div class="sound-controls">
+            <button id="snd-brown" class="sound-btn" type="button" data-sound="brown">
+                🟤 Ruído Marrom
+            </button>
+            <button id="snd-pink" class="sound-btn" type="button" data-sound="pink">
+                🌸 Ruído Rosa
+            </button>
+            <button id="snd-binaural" class="sound-btn" type="button" data-sound="binaural">
+                🧠 Ondas Alpha (10Hz)
+            </button>
+            <button id="snd-stop" class="sound-btn" type="button" style="display: none; color: #EF4444;">
+                ⏹ Parar
+            </button>
+
+            <input id="sound-volume" class="sound-slider" type="range" min="0" max="1" step="0.05" value="0.5" title="Volume">
+        </div>
+    </aside>
+
+    <!-- ============================================== -->
+    <!-- LÓGICA DO FOCUSFLOW (JavaScript Puro)          -->
+    <!-- ============================================== -->
+    <script>
+        (function() {
+            // Estado Global da Aplicação
+            const state = {
+                theme: localStorage.getItem('ff_theme') || 'light',
+                font: localStorage.getItem('ff_font') || 'atkinson',
+                bionic: localStorage.getItem('ff_bionic') === 'true',
+                battery: 'low',
+                currentTaskTitle: '',
+                steps: [],
+                currentStepIndex: 0,
+                timerSecondsTotal: 300,
+                timerSecondsElapsed: 0,
+                timerInterval: null,
+                timerPressureFree: false
+            };
+
+            // Elementos DOM
+            const body = document.body;
+            const fontSelector = document.getElementById('font-selector');
+            const btnBionic = document.getElementById('btn-bionic');
+            const btnTheme = document.getElementById('btn-theme');
+            const taskInput = document.getElementById('task-input');
+            const btnMic = document.getElementById('btn-mic');
+            const speechIndicator = document.getElementById('speech-indicator');
+            const btnClear = document.getElementById('btn-clear');
+            const batteryCards = document.querySelectorAll('.battery-card');
+            const btnDecompose = document.getElementById('btn-decompose');
+
+            // Telas
+            const viewCapture = document.getElementById('view-capture');
+            const viewReview = document.getElementById('view-review');
+            const viewCockpit = document.getElementById('view-cockpit');
+            const viewCongrats = document.getElementById('view-congrats');
+
+            // Elementos de Revisão
+            const reviewTaskTitle = document.getElementById('review-task-title');
+            const reviewTotalTime = document.getElementById('review-total-time');
+            const stepsTimelineContainer = document.getElementById('steps-timeline-container');
+            const btnStartCockpit = document.getElementById('btn-start-cockpit');
+            const btnBackToCapture = document.getElementById('btn-back-to-capture');
+            const btnTtsAll = document.getElementById('btn-tts-all');
+
+            // Elementos do Cockpit
+            const cockpitCounter = document.getElementById('cockpit-counter');
+            const cockpitInstruction = document.getElementById('cockpit-instruction');
+            const cockpitWhy = document.getElementById('cockpit-why');
+            const timerFillBar = document.getElementById('timer-fill-bar');
+            const timerTimeLabel = document.getElementById('timer-time-label');
+            const timerModeToggle = document.getElementById('timer-mode-toggle');
+            const btnStepDone = document.getElementById('btn-step-done');
+            const btnAddTime = document.getElementById('btn-add-time');
+            const btnPanic = document.getElementById('btn-panic');
+            const btnNewTask = document.getElementById('btn-new-task');
+
+            // --- 1. Acessibilidade: Tema, Fontes e Leitura Biônica ---
+            function applyTheme(theme) {
+                state.theme = theme;
+                body.setAttribute('data-theme', theme);
+                localStorage.setItem('ff_theme', theme);
+            }
+
+            function applyFont(font) {
+                state.font = font;
+                body.setAttribute('data-font', font);
+                fontSelector.value = font;
+                localStorage.setItem('ff_font', font);
+            }
+
+            function applyBionicReading(text) {
+                if (!state.bionic) return text;
+                return text.split(' ').map(word => {
+                    if (word.length <= 3) {
+                        return `<span class="bionic-bold">${word.slice(0, 1)}</span>${word.slice(1)}`;
+                    }
+                    const mid = Math.ceil(word.length / 2);
+                    return `<span class="bionic-bold">${word.slice(0, mid)}</span>${word.slice(mid)}`;
+                }).join(' ');
+            }
+
+            function toggleBionic() {
+                state.bionic = !state.bionic;
+                btnBionic.classList.toggle('active', state.bionic);
+                localStorage.setItem('ff_bionic', state.bionic);
+                renderStepsReview();
+                updateCockpitUI();
+            }
+
+            // Inicializar Acessibilidade
+            applyTheme(state.theme);
+            applyFont(state.font);
+            if (state.bionic) btnBionic.classList.add('active');
+
+            fontSelector.addEventListener('change', (e) => applyFont(e.target.value));
+            btnTheme.addEventListener('click', () => applyTheme(state.theme === 'light' ? 'dark' : 'light'));
+            btnBionic.addEventListener('click', toggleBionic);
+
+            // --- 2. Bateria Cognitiva & Input ---
+            batteryCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    batteryCards.forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    state.battery = card.getAttribute('data-battery');
+                });
+            });
+
+            btnClear.addEventListener('click', () => {
+                taskInput.value = '';
+                taskInput.focus();
+            });
+
+            // Ditado por Voz (Web Speech API)
+            let recognition = null;
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.lang = 'pt-BR';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+
+                recognition.onstart = () => {
+                    btnMic.classList.add('recording');
+                    btnMic.innerHTML = '🔴 Gravando...';
+                    speechIndicator.style.display = 'inline';
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    taskInput.value = taskInput.value ? taskInput.value + ' ' + transcript : transcript;
+                };
+
+                recognition.onerror = () => {
+                    btnMic.classList.remove('recording');
+                    btnMic.innerHTML = '🎤 Ditado por Voz';
+                    speechIndicator.style.display = 'none';
+                };
+
+                recognition.onend = () => {
+                    btnMic.classList.remove('recording');
+                    btnMic.innerHTML = '🎤 Ditado por Voz';
+                    speechIndicator.style.display = 'none';
+                };
+
+                btnMic.addEventListener('click', () => {
+                    if (btnMic.classList.contains('recording')) {
+                        recognition.stop();
+                    } else {
+                        recognition.start();
+                    }
+                });
+            } else {
+                btnMic.style.display = 'none';
+            }
+
+            // --- 3. Motor de Decomposição Cognitiva (Heurística & IA) ---
+            function generateDecompositionOffline(rawText, battery) {
+                const text = rawText.trim();
+                let steps = [];
+
+                if (battery === 'low') {
+                    steps = [
+                        { step_order: 1, action_verb: 'Sentar', instruction: 'Respire fundo e coloque um copo de água na mesa.', estimated_minutes: 2, why_this_first: 'Acalma a ansiedade e remove o choque inicial.' },
+                        { step_order: 2, action_verb: 'Abrir', instruction: `Abrir o aplicativo ou aba necessária para: "${text.substring(0, 35)}..."`, estimated_minutes: 3, why_this_first: 'Coloca a ferramenta certa diante dos seus olhos sem obrigação de terminar.' },
+                        { step_order: 3, action_verb: 'Rascunhar', instruction: 'Anotar apenas as 3 palavras-chave principais do que precisa ser feito.', estimated_minutes: 4, why_this_first: 'Descarrega a memória de trabalho para o papel/tela.' },
+                        { step_order: 4, action_verb: 'Executar', instruction: 'Trabalhar apenas no primeiro ponto anotado, ignorando o restante por enquanto.', estimated_minutes: 5, why_this_first: 'Foco exclusivo na menor unidade de progresso.' }
+                    ];
+                } else if (battery === 'medium') {
+                    steps = [
+                        { step_order: 1, action_verb: 'Organizar', instruction: `Reunir todos os arquivos e materiais necessários para "${text.substring(0, 30)}..."`, estimated_minutes: 5, why_this_first: 'Evita interrupções no meio da execução procurando documentos.' },
+                        { step_order: 2, action_verb: 'Esboçar', instruction: 'Estruturar o esqueleto ou rascunho inicial em tópicos breves.', estimated_minutes: 10, why_this_first: 'Clareia o caminho antes de gastar energia com detalhes.' },
+                        { step_order: 3, action_verb: 'Desenvolver', instruction: 'Preencher os pontos principais com o conteúdo central.', estimated_minutes: 15, why_this_first: 'Entrega o núcleo da entrega com o foco estabelecido.' }
+                    ];
+                } else {
+                    steps = [
+                        { step_order: 1, action_verb: 'Preparar', instruction: `Definir o escopo final e abrir ambiente de trabalho para "${text.substring(0, 30)}..."`, estimated_minutes: 10, why_this_first: 'Garante que o objetivo final esteja claro e alinhado.' },
+                        { step_order: 2, action_verb: 'Executar', instruction: 'Trabalhar no desenvolvimento completo da tarefa em bloco de foco ininterrupto.', estimated_minutes: 25, why_this_first: 'Aproveita seu pico de energia mental para avançar o máximo possível.' }
+                    ];
+                }
+
+                return {
+                    task_title: text,
+                    battery_level: battery,
+                    total_estimated_minutes: steps.reduce((acc, s) => acc + s.estimated_minutes, 0),
+                    steps: steps
+                };
+            }
+
+            async function requestDecomposition(rawText, battery) {
+                btnDecompose.disabled = true;
+                btnDecompose.innerHTML = '<span>⏳ Decompondo com IA...</span>';
+
+                // Tenta acionar webhook n8n se configurado, ou fallback com heurística
+                try {
+                    // Endpoint reservado n8n GuardianTech (com timeout curto para fallback instantâneo)
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+                    const response = await fetch('https://n8n.guardiantechit.com.br/webhook/focusflow-decompose', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ task: rawText, battery_level: battery }),
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        return data;
+                    }
+                } catch (e) {
+                    console.log('Utilizando decomposição neural local.');
+                } finally {
+                    btnDecompose.disabled = false;
+                    btnDecompose.innerHTML = '<span>✨ Desmembrar em Microetapas</span>';
+                }
+
+                return generateDecompositionOffline(rawText, battery);
+            }
+
+            btnDecompose.addEventListener('click', async () => {
+                const text = taskInput.value.trim();
+                if (!text) {
+                    alert('Por favor, digite ou dite o que você precisa fazer.');
+                    return;
+                }
+
+                const result = await requestDecomposition(text, state.battery);
+                state.currentTaskTitle = result.task_title;
+                state.steps = result.steps;
+                state.currentStepIndex = 0;
+
+                renderStepsReview();
+                switchView(viewReview);
+            });
+
+            // --- 4. Renderização da Revisão ---
+            function renderStepsReview() {
+                reviewTaskTitle.textContent = state.currentTaskTitle;
+                const totalMins = state.steps.reduce((acc, s) => acc + s.estimated_minutes, 0);
+                reviewTotalTime.textContent = `Tempo total estimado: ~${totalMins} min (${state.steps.length} etapas)`;
+
+                stepsTimelineContainer.innerHTML = '';
+                state.steps.forEach((step, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'step-item-card';
+                    card.innerHTML = `
+                        <div class="step-order-badge">${step.step_order || index + 1}</div>
+                        <div class="step-content">
+                            <div class="step-instruction">${applyBionicReading(step.instruction)}</div>
+                            <div class="step-why">💡 ${escapeHtml(step.why_this_first)}</div>
+                        </div>
+                        <div class="step-meta">⏱️ ~${step.estimated_minutes} min</div>
+                    `;
+                    stepsTimelineContainer.appendChild(card);
+                });
+            }
+
+            function escapeHtml(str) {
+                const p = document.createElement('p');
+                p.textContent = str || '';
+                return p.innerHTML;
+            }
+
+            btnBackToCapture.addEventListener('click', () => switchView(viewCapture));
+
+            // Ouvir Todos os Passos (TTS)
+            btnTtsAll.addEventListener('click', () => {
+                if (!('speechSynthesis' in window)) {
+                    alert('Síntese de voz não suportada neste navegador.');
+                    return;
+                }
+                window.speechSynthesis.cancel();
+                const speechText = state.steps.map((s, i) => `Passo ${i + 1}: ${s.instruction}.`).join(' ');
+                const utterance = new SpeechSynthesisUtterance(speechText);
+                utterance.lang = 'pt-BR';
+                utterance.rate = 0.95;
+                window.speechSynthesis.speak(utterance);
+            });
+
+            // --- 5. Cockpit Monotarefa ---
+            btnStartCockpit.addEventListener('click', () => {
+                state.currentStepIndex = 0;
+                startCockpitStep();
+                switchView(viewCockpit);
+            });
+
+            function startCockpitStep() {
+                const step = state.steps[state.currentStepIndex];
+                if (!step) {
+                    switchView(viewCongrats);
+                    clearInterval(state.timerInterval);
+                    return;
+                }
+
+                updateCockpitUI();
+
+                // Configurar Timer Suave
+                clearInterval(state.timerInterval);
+                state.timerSecondsTotal = (step.estimated_minutes || 5) * 60;
+                state.timerSecondsElapsed = 0;
+                updateTimerDisplay();
+
+                state.timerInterval = setInterval(() => {
+                    state.timerSecondsElapsed++;
+                    updateTimerDisplay();
+                }, 1000);
+            }
+
+            function updateCockpitUI() {
+                const step = state.steps[state.currentStepIndex];
+                if (!step) return;
+
+                cockpitCounter.textContent = `Etapa ${state.currentStepIndex + 1} de ${state.steps.length}`;
+                cockpitInstruction.innerHTML = applyBionicReading(step.instruction);
+                cockpitWhy.innerHTML = `💡 <strong>Por que agora:</strong> ${escapeHtml(step.why_this_first)}`;
+            }
+
+            function updateTimerDisplay() {
+                if (state.timerPressureFree) {
+                    const mins = Math.floor(state.timerSecondsElapsed / 60);
+                    const secs = state.timerSecondsElapsed % 60;
+                    timerTimeLabel.textContent = `Investido nesta etapa: ${mins}m ${secs}s (Sem Pressão)`;
+                    timerFillBar.style.width = '100%';
+                    return;
+                }
+
+                const progress = Math.min(100, (state.timerSecondsElapsed / state.timerSecondsTotal) * 100);
+                timerFillBar.style.width = `${progress}%`;
+                const minsLeft = Math.max(0, Math.ceil((state.timerSecondsTotal - state.timerSecondsElapsed) / 60));
+                timerTimeLabel.textContent = `⏱️ Estimativa: ~${minsLeft} min restantes`;
+            }
+
+            timerModeToggle.addEventListener('click', () => {
+                state.timerPressureFree = !state.timerPressureFree;
+                timerModeToggle.textContent = state.timerPressureFree ? 'Modo Timer Visual' : 'Modo Sem Pressão';
+                updateTimerDisplay();
+            });
+
+            btnAddTime.addEventListener('click', () => {
+                state.timerSecondsTotal += 300;
+                updateTimerDisplay();
+            });
+
+            btnStepDone.addEventListener('click', () => {
+                state.currentStepIndex++;
+                if (state.currentStepIndex < state.steps.length) {
+                    startCockpitStep();
+                } else {
+                    clearInterval(state.timerInterval);
+                    switchView(viewCongrats);
+                }
+            });
+
+            // Botão de Pânico: Quebrar apenas a etapa atual
+            btnPanic.addEventListener('click', () => {
+                const currentStep = state.steps[state.currentStepIndex];
+                const microSteps = [
+                    { step_order: state.currentStepIndex + 1, action_verb: 'Pausa', instruction: 'Feche os olhos por 20 segundos e respire fundo.', estimated_minutes: 1, why_this_first: 'Reseta a sobrecarga sensorial.' },
+                    { step_order: state.currentStepIndex + 1.1, action_verb: 'Microação', instruction: `Faça apenas o primeiro clique/digitação de: "${currentStep.instruction.substring(0, 30)}..."`, estimated_minutes: 2, why_this_first: 'A menor ação física possível para destravar.' }
+                ];
+                state.steps.splice(state.currentStepIndex, 1, ...microSteps);
+                startCockpitStep();
+            });
+
+            btnNewTask.addEventListener('click', () => {
+                taskInput.value = '';
+                switchView(viewCapture);
+            });
+
+            function switchView(target) {
+                [viewCapture, viewReview, viewCockpit, viewCongrats].forEach(v => v.style.display = 'none');
+                target.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // --- 6. Gerador de Som Procedural (Web Audio API) ---
+            let audioCtx = null;
+            let currentNoiseNode = null;
+            let gainNode = null;
+            let binauralNodes = [];
+
+            function getAudioContext() {
+                if (!audioCtx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = new AudioContext();
+                    gainNode = audioCtx.createGain();
+                    gainNode.gain.value = parseFloat(document.getElementById('sound-volume').value);
+                    gainNode.connect(audioCtx.destination);
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                return audioCtx;
+            }
+
+            function stopAudio() {
+                if (currentNoiseNode) {
+                    try { currentNoiseNode.stop(); } catch(e) {}
+                    currentNoiseNode.disconnect();
+                    currentNoiseNode = null;
+                }
+                binauralNodes.forEach(n => {
+                    try { n.stop(); } catch(e) {}
+                    n.disconnect();
+                });
+                binauralNodes = [];
+                document.querySelectorAll('.sound-btn').forEach(b => b.classList.remove('playing'));
+                document.getElementById('snd-stop').style.display = 'none';
+            }
+
+            // Síntese de Ruído Marrom (Brownian Noise)
+            function playBrownNoise() {
+                stopAudio();
+                const ctx = getAudioContext();
+                const bufferSize = 10 * ctx.sampleRate;
+                const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+                let lastOut = 0.0;
+                for (let i = 0; i < bufferSize; i++) {
+                    const white = Math.random() * 2 - 1;
+                    output[i] = (lastOut + (0.02 * white)) / 1.02;
+                    lastOut = output[i];
+                    output[i] *= 3.5; // Ganho compensatório
+                }
+
+                currentNoiseNode = ctx.createBufferSource();
+                currentNoiseNode.buffer = noiseBuffer;
+                currentNoiseNode.loop = true;
+                currentNoiseNode.connect(gainNode);
+                currentNoiseNode.start();
+
+                document.getElementById('snd-brown').classList.add('playing');
+                document.getElementById('snd-stop').style.display = 'inline-flex';
+            }
+
+            // Síntese de Ruído Rosa (Pink Noise)
+            function playPinkNoise() {
+                stopAudio();
+                const ctx = getAudioContext();
+                const bufferSize = 10 * ctx.sampleRate;
+                const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+                let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+                for (let i = 0; i < bufferSize; i++) {
+                    const white = Math.random() * 2 - 1;
+                    b0 = 0.99886 * b0 + white * 0.0555179;
+                    b1 = 0.99332 * b1 + white * 0.0750759;
+                    b2 = 0.96900 * b2 + white * 0.1538520;
+                    b3 = 0.86650 * b3 + white * 0.3104856;
+                    b4 = 0.55000 * b4 + white * 0.5329522;
+                    b5 = -0.7616 * b5 - white * 0.0168980;
+                    output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                    output[i] *= 0.11;
+                    b6 = white * 0.115926;
+                }
+
+                currentNoiseNode = ctx.createBufferSource();
+                currentNoiseNode.buffer = noiseBuffer;
+                currentNoiseNode.loop = true;
+                currentNoiseNode.connect(gainNode);
+                currentNoiseNode.start();
+
+                document.getElementById('snd-pink').classList.add('playing');
+                document.getElementById('snd-stop').style.display = 'inline-flex';
+            }
+
+            // Síntese de Batidas Binaurais (Ondas Alpha 10Hz)
+            function playBinauralAlpha() {
+                stopAudio();
+                const ctx = getAudioContext();
+
+                // Frequência base: 210Hz e 220Hz (diferença de 10Hz para ondas Alpha)
+                const oscL = ctx.createOscillator();
+                const oscR = ctx.createOscillator();
+                oscL.frequency.value = 210;
+                oscR.frequency.value = 220;
+
+                const panL = ctx.createStereoPanner();
+                const panR = ctx.createStereoPanner();
+                panL.pan.value = -1; // Totalmente no ouvido esquerdo
+                panR.pan.value = 1;  // Totalmente no ouvido direito
+
+                const subGain = ctx.createGain();
+                subGain.gain.value = 0.3;
+
+                oscL.connect(panL);
+                oscR.connect(panR);
+                panL.connect(subGain);
+                panR.connect(subGain);
+                subGain.connect(gainNode);
+
+                oscL.start();
+                oscR.start();
+
+                binauralNodes = [oscL, oscR, panL, panR, subGain];
+                document.getElementById('snd-binaural').classList.add('playing');
+                document.getElementById('snd-stop').style.display = 'inline-flex';
+            }
+
+            document.getElementById('snd-brown').addEventListener('click', playBrownNoise);
+            document.getElementById('snd-pink').addEventListener('click', playPinkNoise);
+            document.getElementById('snd-binaural').addEventListener('click', playBinauralAlpha);
+            document.getElementById('snd-stop').addEventListener('click', stopAudio);
+
+            document.getElementById('sound-volume').addEventListener('input', (e) => {
+                if (gainNode) {
+                    gainNode.gain.value = parseFloat(e.target.value);
+                }
+            });
+
+        })();
+    </script>
+</body>
+</html>
