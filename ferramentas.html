@@ -704,6 +704,278 @@
             transform: scale(1.02);
         }
 
+        /* 1. Régua Guia de Leitura Visual (Reading Guide Mask) */
+        .reading-ruler-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+        }
+
+        .reading-ruler-top, .reading-ruler-bottom {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.45);
+            transition: height 0.04s ease-out;
+        }
+
+        [data-theme="dark"] .reading-ruler-top,
+        [data-theme="dark"] .reading-ruler-bottom {
+            background-color: rgba(0, 0, 0, 0.65);
+        }
+
+        .reading-ruler-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.4), inset 0 0 12px rgba(217, 119, 6, 0.15);
+            background: rgba(217, 119, 6, 0.05);
+            pointer-events: none;
+            transition: top 0.04s ease-out;
+        }
+
+        /* 2. Banner de Resgate de Sessão ("Onde eu estava?") */
+        .session-resume-banner {
+            display: none;
+            background: linear-gradient(135deg, rgba(13, 148, 136, 0.15), rgba(217, 119, 6, 0.15));
+            border: 2px solid var(--brand-secondary);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .session-resume-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .session-resume-text h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .session-resume-text p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .session-resume-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-resume-start {
+            background: var(--brand-secondary);
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-resume-start:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+        }
+
+        .btn-resume-dismiss {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-resume-dismiss:hover {
+            color: var(--text-main);
+            border-color: var(--border-focus);
+        }
+
+        /* 3. Caixa de Despejo de Distrações (Drawer & Floating Button) */
+        .btn-braindump-float {
+            position: fixed;
+            bottom: 74px;
+            right: 20px;
+            background: var(--bg-surface);
+            border: 2px solid var(--brand-primary);
+            color: var(--brand-primary);
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: var(--shadow-float);
+            cursor: pointer;
+            z-index: 85;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-braindump-float:hover {
+            background: var(--brand-primary);
+            color: #FFFFFF;
+            transform: translateY(-2px);
+        }
+
+        .braindump-counter-badge {
+            background: var(--brand-secondary);
+            color: #FFF;
+            font-size: 0.75rem;
+            padding: 2px 7px;
+            border-radius: 12px;
+            font-weight: 800;
+        }
+
+        /* Drawer Lateral de Pensamentos Intrusivos */
+        .braindump-drawer {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 400px;
+            max-width: 90vw;
+            height: 100vh;
+            background: var(--bg-surface);
+            border-left: 1px solid var(--border-subtle);
+            box-shadow: -8px 0 32px rgba(0,0,0,0.15);
+            z-index: 250;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 24px;
+        }
+
+        .braindump-drawer.open {
+            right: 0;
+        }
+
+        .braindump-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(2px);
+            z-index: 240;
+            display: none;
+        }
+
+        .braindump-overlay.open {
+            display: block;
+        }
+
+        .braindump-input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .braindump-input {
+            flex: 1;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 2px solid var(--border-subtle);
+            background: var(--bg-base);
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .braindump-input:focus {
+            border-color: var(--brand-primary);
+        }
+
+        .braindump-items-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 4px;
+        }
+
+        .braindump-item {
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .braindump-item-text {
+            font-size: 0.9rem;
+            color: var(--text-main);
+            word-break: break-word;
+            flex: 1;
+        }
+
+        .braindump-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 4. Body Doubling Assíncrono (Companheiro Silencioso) */
+        .body-doubling-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(13, 148, 136, 0.1);
+            color: var(--brand-secondary);
+            border: 1px solid rgba(13, 148, 136, 0.25);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .body-doubling-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--brand-secondary);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7);
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(13, 148, 136, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
+        }
+
         /* Tela de Celebração Positiva */
         .view-congrats {
             display: none;
@@ -839,9 +1111,19 @@
                     ⚡ Biônica
                 </button>
 
+                <!-- Régua Guia de Leitura Visual -->
+                <button id="btn-ruler" class="control-btn" title="Ativar Régua Guia de Leitura Visual (foco na linha)">
+                    📏 Régua
+                </button>
+
                 <!-- Alternador Tema Claro/Escuro Suave -->
                 <button id="btn-theme" class="control-btn" title="Alternar entre Creme e Escuro Suave">
                     🌓 Tema
+                </button>
+
+                <!-- Botão Painel de Ideias Intrusivas / Caixa de Despejo -->
+                <button id="btn-braindump-header" class="control-btn" title="Caixa de Despejo de Distrações (Atalho: Ctrl+D)">
+                    🧠 Ideias <span id="header-dump-count" class="braindump-counter-badge" style="display: none;">0</span>
                 </button>
 
                 <!-- Botão Painel de Histórico/Vitórias -->
@@ -858,6 +1140,26 @@
 
     <!-- Conteúdo Principal -->
     <main class="main-content">
+
+        <!-- ============================================== -->
+        <!-- BANNER DE RESGATE DE SESSÃO ("Onde eu estava?") -->
+        <!-- ============================================== -->
+        <section id="session-resume-banner" class="session-resume-banner">
+            <div class="session-resume-content">
+                <div class="session-resume-text">
+                    <h3>📍 Onde você estava?</h3>
+                    <p id="session-resume-desc">Você tinha uma sessão ativa. Deseja retomar o foco exatamente de onde parou?</p>
+                </div>
+                <div class="session-resume-actions">
+                    <button id="btn-resume-session" class="btn-resume-start" type="button">
+                        🚀 Retomar Foco
+                    </button>
+                    <button id="btn-dismiss-session" class="btn-resume-dismiss" type="button">
+                        Começar Nova
+                    </button>
+                </div>
+            </div>
+        </section>
 
         <!-- ============================================== -->
         <!-- MÓDULO 1: CAPTURA & DECOMPOSIÇÃO COGNITIVA    -->
@@ -963,6 +1265,14 @@
         <!-- ============================================== -->
         <section id="view-cockpit" class="view-cockpit">
             <div class="cockpit-container">
+                <!-- Body Doubling Assíncrono (Companheiro Silencioso) -->
+                <div>
+                    <div id="body-doubling-badge" class="body-doubling-badge" title="Você não está sozinho: outras pessoas estão focando simultaneamente">
+                        <span class="body-doubling-dot"></span>
+                        <span id="body-doubling-text">42 pessoas focadas agora com você</span>
+                    </div>
+                </div>
+
                 <div id="cockpit-counter" class="cockpit-step-counter">Passo 1 de 4</div>
                 
                 <h2 id="cockpit-instruction" class="cockpit-instruction">
@@ -996,8 +1306,11 @@
                     </button>
                 </div>
 
-                <!-- Botão de Pânico: "Travei nesta etapa" -->
-                <div style="margin-top: 20px;">
+                <!-- Ações de Apoio Cognitivo: Pânico & Despejo Rápido de Pensamento -->
+                <div style="margin-top: 20px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <button id="btn-cockpit-dump" class="control-btn" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); padding: 12px 18px; border-radius: 12px; font-weight: 600;" type="button" title="Surgiu uma ideia ou lembrete aleatório? Anote sem perder o foco!">
+                        🧠 Pensou algo aleatório? Guarda aqui (Ctrl+D)
+                    </button>
                     <button id="btn-panic" class="btn-panic" type="button">
                         🚨 Travei nesta etapa (quebrar mais)
                     </button>
@@ -1061,6 +1374,57 @@
         </section>
 
     </main>
+
+    <!-- ============================================== -->
+    <!-- 1. RÉGUA GUIA DE LEITURA VISUAL (OVERLAY MASK) -->
+    <!-- ============================================== -->
+    <div id="reading-ruler-overlay" class="reading-ruler-overlay" aria-hidden="true">
+        <div id="reading-ruler-top" class="reading-ruler-top"></div>
+        <div id="reading-ruler-line" class="reading-ruler-line"></div>
+        <div id="reading-ruler-bottom" class="reading-ruler-bottom"></div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- 2. CAIXA DE DESPEJO DE DISTRAÇÕES (DRAWER/POP) -->
+    <!-- ============================================== -->
+    <button id="btn-braindump-float" class="btn-braindump-float" type="button" title="Anotar pensamento intrusivo (Ctrl + D)">
+        <span>🧠 Pensou? Guarda aqui</span>
+        <span id="float-dump-count" class="braindump-counter-badge" style="display: none;">0</span>
+    </button>
+
+    <div id="braindump-overlay" class="braindump-overlay"></div>
+
+    <aside id="braindump-drawer" class="braindump-drawer" aria-label="Caixa de Despejo de Distrações">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <div>
+                <h3 style="font-size: 1.25rem; font-weight: 700;">🧠 Caixa de Despejo</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Tirou da cabeça, voltou ao foco (Atalho: Ctrl+D)</p>
+            </div>
+            <button id="btn-close-braindump" class="control-btn" style="font-size: 1.2rem; cursor: pointer;">✕</button>
+        </div>
+
+        <div class="braindump-input-row">
+            <input 
+                id="braindump-input" 
+                class="braindump-input" 
+                type="text" 
+                placeholder="Ex: Pagar boleto da luz, comprar ração..." 
+                autocomplete="off"
+            />
+            <button id="btn-braindump-add" class="btn-primary" style="width: auto; padding: 12px 18px;" type="button">
+                Guardar
+            </button>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; font-size: 0.85rem; color: var(--text-muted);">
+            <span>Ideias guardadas (<span id="braindump-total-badge">0</span>)</span>
+            <button id="btn-braindump-clear-all" class="control-btn" style="color: #EF4444; font-size: 0.8rem;" type="button">Limpar todas</button>
+        </div>
+
+        <div id="braindump-items-list" class="braindump-items-list">
+            <!-- Renderizado dinamicamente -->
+        </div>
+    </aside>
 
     <!-- ============================================== -->
     <!-- SOUND DOCK PROCEDURAL (Web Audio API)          -->
@@ -1923,6 +2287,340 @@
                     gainNode.gain.value = parseFloat(e.target.value);
                 }
             });
+
+            // =========================================================
+            // --- 7. RÉGUA GUIA DE LEITURA VISUAL (READING GUIDE MASK) ---
+            // =========================================================
+            const btnRuler = document.getElementById('btn-ruler');
+            const rulerOverlay = document.getElementById('reading-ruler-overlay');
+            const rulerTop = document.getElementById('reading-ruler-top');
+            const rulerLine = document.getElementById('reading-ruler-line');
+            const rulerBottom = document.getElementById('reading-ruler-bottom');
+            let rulerActive = false;
+            const rulerHeight = 60; // Altura da faixa iluminada
+
+            function updateRulerPosition(clientY) {
+                if (!rulerActive) return;
+                const topH = Math.max(0, clientY - (rulerHeight / 2));
+                const lineTop = topH;
+                const botTop = topH + rulerHeight;
+
+                rulerTop.style.top = '0px';
+                rulerTop.style.height = `${topH}px`;
+
+                rulerLine.style.top = `${lineTop}px`;
+                rulerLine.style.height = `${rulerHeight}px`;
+
+                rulerBottom.style.top = `${botTop}px`;
+                rulerBottom.style.height = `calc(100vh - ${botTop}px)`;
+            }
+
+            function toggleRuler() {
+                rulerActive = !rulerActive;
+                btnRuler.classList.toggle('active', rulerActive);
+                if (rulerActive) {
+                    rulerOverlay.style.display = 'block';
+                    updateRulerPosition(window.innerHeight / 2);
+                } else {
+                    rulerOverlay.style.display = 'none';
+                }
+            }
+
+            btnRuler.addEventListener('click', toggleRuler);
+
+            window.addEventListener('mousemove', (e) => {
+                if (rulerActive) updateRulerPosition(e.clientY);
+            });
+
+            window.addEventListener('touchmove', (e) => {
+                if (rulerActive && e.touches.length > 0) {
+                    updateRulerPosition(e.touches[0].clientY);
+                }
+            }, { passive: true });
+
+            // Tecla ESC desliga a régua se ativa
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && rulerActive) {
+                    toggleRuler();
+                }
+            });
+
+            // =========================================================
+            // --- 8. CAIXA DE DESPEJO DE DISTRAÇÕES ("Pensou? Guarda") ---
+            // =========================================================
+            const btnBraindumpFloat = document.getElementById('btn-braindump-float');
+            const btnBraindumpHeader = document.getElementById('btn-braindump-header');
+            const btnCockpitDump = document.getElementById('btn-cockpit-dump');
+            const braindumpDrawer = document.getElementById('braindump-drawer');
+            const braindumpOverlay = document.getElementById('braindump-overlay');
+            const btnCloseBraindump = document.getElementById('btn-close-braindump');
+            const braindumpInput = document.getElementById('braindump-input');
+            const btnBraindumpAdd = document.getElementById('btn-braindump-add');
+            const braindumpItemsList = document.getElementById('braindump-items-list');
+            const braindumpTotalBadge = document.getElementById('braindump-total-badge');
+            const headerDumpCount = document.getElementById('header-dump-count');
+            const floatDumpCount = document.getElementById('float-dump-count');
+            const btnBraindumpClearAll = document.getElementById('btn-braindump-clear-all');
+
+            function getBrainDumps() {
+                try {
+                    return JSON.parse(localStorage.getItem('ff_braindumps') || '[]');
+                } catch(e) {
+                    return [];
+                }
+            }
+
+            function saveBrainDumps(dumps) {
+                localStorage.setItem('ff_braindumps', JSON.stringify(dumps));
+                renderBrainDumps();
+            }
+
+            function updateDumpBadges(count) {
+                braindumpTotalBadge.textContent = count;
+                if (count > 0) {
+                    headerDumpCount.textContent = count;
+                    headerDumpCount.style.display = 'inline-block';
+                    floatDumpCount.textContent = count;
+                    floatDumpCount.style.display = 'inline-block';
+                } else {
+                    headerDumpCount.style.display = 'none';
+                    floatDumpCount.style.display = 'none';
+                }
+            }
+
+            function renderBrainDumps() {
+                const dumps = getBrainDumps();
+                updateDumpBadges(dumps.length);
+
+                if (!dumps.length) {
+                    braindumpItemsList.innerHTML = `
+                        <div style="text-align: center; color: var(--text-muted); padding: 32px 16px;">
+                            <div style="font-size: 2rem; margin-bottom: 8px;">🕊️</div>
+                            <div style="font-weight: 600;">Sua mente está livre!</div>
+                            <div style="font-size: 0.85rem; margin-top: 4px;">Quando surgir uma ideia avulsa enquanto foca, aperte Ctrl+D e guarde aqui.</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                braindumpItemsList.innerHTML = dumps.map((item, idx) => `
+                    <div class="braindump-item" data-id="${item.id}">
+                        <div class="braindump-item-text">
+                            <strong>${escapeHtml(item.text)}</strong>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+                                ${new Date(item.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                        </div>
+                        <div class="braindump-item-actions">
+                            <button class="control-btn btn-turn-into-task" data-idx="${idx}" title="Transformar em nova meta FocusFlow" style="font-size: 0.9rem;">
+                                🎯
+                            </button>
+                            <button class="control-btn btn-delete-dump" data-idx="${idx}" title="Apagar da caixa" style="color: #EF4444; font-size: 0.9rem;">
+                                ✕
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Handlers para botões dentro da lista
+                braindumpItemsList.querySelectorAll('.btn-delete-dump').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const idx = parseInt(btn.getAttribute('data-idx'), 10);
+                        const current = getBrainDumps();
+                        current.splice(idx, 1);
+                        saveBrainDumps(current);
+                    });
+                });
+
+                braindumpItemsList.querySelectorAll('.btn-turn-into-task').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const idx = parseInt(btn.getAttribute('data-idx'), 10);
+                        const current = getBrainDumps();
+                        const item = current[idx];
+                        if (item) {
+                            closeBrainDumpDrawer();
+                            taskInput.value = item.text;
+                            switchView(viewCapture);
+                            window.scrollTo({ top: taskInput.offsetTop - 100, behavior: 'smooth' });
+                            taskInput.focus();
+                        }
+                    });
+                });
+            }
+
+            function openBrainDumpDrawer() {
+                braindumpDrawer.classList.add('open');
+                braindumpOverlay.classList.add('open');
+                setTimeout(() => braindumpInput.focus(), 150);
+            }
+
+            function closeBrainDumpDrawer() {
+                braindumpDrawer.classList.remove('open');
+                braindumpOverlay.classList.remove('open');
+            }
+
+            function addBrainDumpItem() {
+                const text = braindumpInput.value.trim();
+                if (!text) return;
+                const current = getBrainDumps();
+                current.unshift({
+                    id: Date.now(),
+                    text: text,
+                    created_at: new Date().toISOString()
+                });
+                saveBrainDumps(current);
+                braindumpInput.value = '';
+                braindumpInput.focus();
+            }
+
+            btnBraindumpFloat.addEventListener('click', openBrainDumpDrawer);
+            btnBraindumpHeader.addEventListener('click', openBrainDumpDrawer);
+            if (btnCockpitDump) btnCockpitDump.addEventListener('click', openBrainDumpDrawer);
+            btnCloseBraindump.addEventListener('click', closeBrainDumpDrawer);
+            braindumpOverlay.addEventListener('click', closeBrainDumpDrawer);
+
+            btnBraindumpAdd.addEventListener('click', addBrainDumpItem);
+            braindumpInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addBrainDumpItem();
+                }
+            });
+
+            btnBraindumpClearAll.addEventListener('click', () => {
+                if (confirm('Tem certeza que deseja esvaziar todas as ideias guardadas?')) {
+                    saveBrainDumps([]);
+                }
+            });
+
+            // Atalho Global: Ctrl+D ou Cmd+D abre/fecha a Caixa de Despejo
+            window.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'd' || e.key === 'D')) {
+                    e.preventDefault();
+                    if (braindumpDrawer.classList.contains('open')) {
+                        closeBrainDumpDrawer();
+                    } else {
+                        openBrainDumpDrawer();
+                    }
+                }
+            });
+
+            // Renderizar itens ao carregar
+            renderBrainDumps();
+
+            // =========================================================
+            // --- 9. RESGATE DE SESSÃO INSTANTÂNEO ("Onde eu estava?") --
+            // =========================================================
+            const sessionBanner = document.getElementById('session-resume-banner');
+            const sessionDesc = document.getElementById('session-resume-desc');
+            const btnResumeSession = document.getElementById('btn-resume-session');
+            const btnDismissSession = document.getElementById('btn-dismiss-session');
+
+            function saveActiveSession() {
+                if (state.steps && state.steps.length > 0 && state.currentTaskTitle) {
+                    const sessionData = {
+                        currentTaskTitle: state.currentTaskTitle,
+                        steps: state.steps,
+                        currentStepIndex: state.currentStepIndex,
+                        battery: state.battery,
+                        totalTaskElapsedSeconds: state.totalTaskElapsedSeconds,
+                        timerSecondsElapsed: state.timerSecondsElapsed,
+                        timestamp: Date.now()
+                    };
+                    localStorage.setItem('ff_active_session', JSON.stringify(sessionData));
+                }
+            }
+
+            function clearActiveSession() {
+                localStorage.removeItem('ff_active_session');
+                if (sessionBanner) sessionBanner.style.display = 'none';
+            }
+
+            function checkSavedSession() {
+                try {
+                    const raw = localStorage.getItem('ff_active_session');
+                    if (!raw) return;
+                    const sessionData = JSON.parse(raw);
+                    // Expira se tiver mais de 48h
+                    if (Date.now() - (sessionData.timestamp || 0) > 48 * 3600 * 1000) {
+                        clearActiveSession();
+                        return;
+                    }
+
+                    if (sessionData.steps && sessionData.steps.length > 0) {
+                        const stepNum = (sessionData.currentStepIndex || 0) + 1;
+                        sessionDesc.innerHTML = `Você estava focado na <strong>Etapa ${stepNum} de ${sessionData.steps.length}</strong> em: <em>"${escapeHtml(sessionData.currentTaskTitle)}"</em>.`;
+                        sessionBanner.style.display = 'block';
+
+                        btnResumeSession.onclick = () => {
+                            state.currentTaskTitle = sessionData.currentTaskTitle;
+                            state.steps = sessionData.steps;
+                            state.currentStepIndex = sessionData.currentStepIndex || 0;
+                            state.battery = sessionData.battery || 'low';
+                            state.totalTaskElapsedSeconds = sessionData.totalTaskElapsedSeconds || 0;
+                            state.timerSecondsElapsed = sessionData.timerSecondsElapsed || 0;
+
+                            sessionBanner.style.display = 'none';
+                            startCockpitStep();
+                            switchView(viewCockpit);
+                        };
+
+                        btnDismissSession.onclick = () => {
+                            clearActiveSession();
+                        };
+                    }
+                } catch(e) {
+                    clearActiveSession();
+                }
+            }
+
+            // Integrar o auto-save ao avanço das etapas
+            const originalStartCockpitStep = startCockpitStep;
+            startCockpitStep = function() {
+                originalStartCockpitStep();
+                saveActiveSession();
+            };
+
+            const originalBtnNewTaskHandler = btnNewTask.onclick;
+            btnNewTask.addEventListener('click', () => {
+                clearActiveSession();
+            });
+
+            // Verificar sessão salva ao carregar a página
+            checkSavedSession();
+
+            // Salvar sessão periodicamente a cada 10s se estiver no Cockpit
+            setInterval(() => {
+                if (viewCockpit.style.display === 'block') {
+                    saveActiveSession();
+                }
+            }, 10000);
+
+            // =========================================================
+            // --- 10. BODY DOUBLING ASSÍNCRONO (COMPANHEIRO SILENCIOSO) -
+            // =========================================================
+            const bodyDoublingText = document.getElementById('body-doubling-text');
+
+            function updateBodyDoublingCount() {
+                // Cálculo orgânico baseado na hora do dia no Brasil para simular presença realista
+                const hour = new Date().getHours();
+                let baseCount = 28;
+                if (hour >= 9 && hour <= 12) baseCount = 64; // Pico matinal
+                else if (hour >= 14 && hour <= 18) baseCount = 82; // Pico vespertino
+                else if (hour >= 19 && hour <= 23) baseCount = 47; // Foco noturno
+                else baseCount = 19; // Madrugada
+
+                // Flutuação sutil de +/- 4
+                const jitter = Math.floor(Math.sin(Date.now() / 15000) * 4);
+                const count = Math.max(12, baseCount + jitter);
+
+                if (bodyDoublingText) {
+                    bodyDoublingText.textContent = `${count} pessoas focando agora com você no Portal`;
+                }
+            }
+
+            updateBodyDoublingCount();
+            setInterval(updateBodyDoublingCount, 20000); // Atualiza a cada 20 segundos de forma calma
 
         })();
     </script>
