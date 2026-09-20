@@ -417,16 +417,99 @@
             background-color: var(--bg-surface);
             border: 1px solid var(--border-subtle);
             border-radius: 12px;
-            padding: 18px 20px;
+            padding: 16px 20px;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 16px;
             box-shadow: var(--shadow-soft);
-            transition: transform 0.2s, border-color 0.2s;
+            transition: transform 0.2s, border-color 0.2s, background-color 0.2s;
+            cursor: grab;
+            position: relative;
+        }
+
+        .step-item-card:active {
+            cursor: grabbing;
+        }
+
+        .step-item-card.dragging {
+            opacity: 0.4;
+            transform: scale(0.98);
+            border: 2px dashed var(--brand-primary);
+        }
+
+        .step-item-card.drag-over {
+            border-top: 3px solid var(--brand-primary);
+            background-color: var(--bg-surface-elevated);
+        }
+
+        .drag-handle {
+            color: var(--text-muted);
+            cursor: grab;
+            font-size: 1.2rem;
+            user-select: none;
+            padding-right: 4px;
         }
 
         .step-item-card:hover {
             border-color: var(--brand-primary);
+        }
+
+        /* Estilo da Linha do Tempo Horária Contínua */
+        .timeline-view-mode {
+            position: relative;
+            padding-left: 24px;
+            border-left: 3px solid var(--border-subtle);
+            margin-left: 12px;
+        }
+
+        .timeline-time-badge {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--brand-primary);
+            background: var(--bg-surface-elevated);
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            display: inline-block;
+        }
+
+        .buffer-timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            background: rgba(13, 148, 136, 0.08);
+            border: 1px dashed var(--brand-secondary);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            margin: -4px 0 6px 12px;
+        }
+
+        .view-mode-selector {
+            display: inline-flex;
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 3px;
+            gap: 4px;
+        }
+
+        .view-mode-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 7px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-mode-btn.active {
+            background: var(--brand-primary);
+            color: #FFFFFF;
         }
 
         .step-order-badge {
@@ -844,15 +927,18 @@
                     <h2 id="review-task-title" style="font-size: 1.5rem; font-weight: 700;">Plano de Ação</h2>
                     <p id="review-total-time" style="color: var(--text-muted); font-size: 0.95rem;">Tempo total estimado: ~25 min</p>
                 </div>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <div class="view-mode-selector" title="Alternar modo de visualização dos passos">
+                        <button id="btn-mode-list" class="view-mode-btn active" type="button">📋 Lista</button>
+                        <button id="btn-mode-timeline" class="view-mode-btn" type="button">🕒 Linha do Tempo</button>
+                    </div>
                     <button id="btn-toggle-buffer" class="control-btn" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); padding: 8px 12px;" title="Adicionar 10 min de respiro entre tarefas para evitar cegueira temporal">
                         ⏳ Buffer 10m: <span id="buffer-status-text">Ligado</span>
                     </button>
                     <button id="btn-export-cal" class="control-btn" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); padding: 8px 12px;" title="Exportar para Google Calendar / Arquivo .ics">
-                        📅 Exportar Calendário
+                        📅 Exportar
                     </button>
                     <button id="btn-copy-notion" class="control-btn" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); padding: 8px 12px;" title="Copiar formato estruturado para Notion ou Todoist">
-                        📋 Copiar P/ Notion
+                        📋 Notion
                     </button>
                     <button id="btn-tts-all" class="control-btn" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); padding: 8px 12px;">
                         🔊 Ouvir
@@ -1018,6 +1104,7 @@
                 bionic: localStorage.getItem('ff_bionic') === 'true',
                 battery: 'low',
                 useBuffer: localStorage.getItem('ff_buffer') !== 'false',
+                viewMode: 'list', // 'list' ou 'timeline'
                 currentTaskTitle: '',
                 steps: [],
                 currentStepIndex: 0,
@@ -1078,6 +1165,8 @@
             const bufferStatusText = document.getElementById('buffer-status-text');
             const btnExportCal = document.getElementById('btn-export-cal');
             const btnCopyNotion = document.getElementById('btn-copy-notion');
+            const btnModeList = document.getElementById('btn-mode-list');
+            const btnModeTimeline = document.getElementById('btn-mode-timeline');
 
             // Elementos de Histórico & Vitórias
             const btnHistory = document.getElementById('btn-history');
@@ -1355,7 +1444,24 @@
                 });
             });
 
-            // --- 4. Renderização da Revisão ---
+            // Alternar Modo de Visualização (Lista vs Linha do Tempo)
+            btnModeList.addEventListener('click', () => {
+                state.viewMode = 'list';
+                btnModeList.classList.add('active');
+                btnModeTimeline.classList.remove('active');
+                renderStepsReview();
+            });
+
+            btnModeTimeline.addEventListener('click', () => {
+                state.viewMode = 'timeline';
+                btnModeTimeline.classList.add('active');
+                btnModeList.classList.remove('active');
+                renderStepsReview();
+            });
+
+            // --- 4. Renderização da Revisão (Lista com Drag & Drop vs Linha do Tempo Horária) ---
+            let draggedIndex = null;
+
             function renderStepsReview() {
                 reviewTaskTitle.textContent = state.currentTaskTitle;
                 const baseMins = state.steps.reduce((acc, s) => acc + s.estimated_minutes, 0);
@@ -1367,25 +1473,119 @@
                     : `Tempo total estimado: ~${totalMins} min (${state.steps.length} etapas)`;
 
                 stepsTimelineContainer.innerHTML = '';
-                state.steps.forEach((step, index) => {
-                    const card = document.createElement('div');
-                    card.className = 'step-item-card';
-                    card.innerHTML = `
-                        <div class="step-order-badge">${step.step_order || index + 1}</div>
-                        <div class="step-content">
-                            <div class="step-instruction">${applyBionicReading(step.instruction)}</div>
-                            <div class="step-why">💡 ${escapeHtml(step.why_this_first)}</div>
-                        </div>
-                        <div class="step-meta">⏱️ ~${step.estimated_minutes} min</div>
-                    `;
-                    stepsTimelineContainer.appendChild(card);
 
-                    // Inserir card visual de Buffer de Transição
-                    if (state.useBuffer && index < state.steps.length - 1) {
-                        const bufferCard = document.createElement('div');
-                        bufferCard.style.cssText = 'padding: 8px 16px; background: rgba(13, 148, 136, 0.08); border-left: 3px solid var(--brand-secondary); font-size: 0.85rem; color: var(--text-muted); border-radius: 6px; margin: -6px 0 6px 20px;';
-                        bufferCard.innerHTML = `⏳ <strong>Buffer de Transição (10 min):</strong> Levante, beba água e respire antes do próximo passo.`;
-                        stepsTimelineContainer.appendChild(bufferCard);
+                if (state.viewMode === 'timeline') {
+                    // MODO LINHA DO TEMPO HORÁRIA CONTÍNUA (Estilo Tiimo/Structured)
+                    stepsTimelineContainer.className = 'steps-timeline timeline-view-mode';
+                    let currentTime = new Date();
+
+                    state.steps.forEach((step, index) => {
+                        const duration = step.estimated_minutes || 5;
+                        const startTimeStr = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        const endTime = new Date(currentTime.getTime() + duration * 60000);
+                        const endTimeStr = endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                        const card = document.createElement('div');
+                        card.className = 'step-item-card';
+                        card.setAttribute('draggable', 'true');
+                        card.dataset.index = index;
+                        card.innerHTML = `
+                            <div class="drag-handle" title="Arrastar para reordenar">⋮⋮</div>
+                            <div class="step-order-badge">${index + 1}</div>
+                            <div class="step-content">
+                                <div class="timeline-time-badge">🕒 ${startTimeStr} – ${endTimeStr} (~${duration} min)</div>
+                                <div class="step-instruction">${applyBionicReading(step.instruction)}</div>
+                                <div class="step-why">💡 ${escapeHtml(step.why_this_first)}</div>
+                            </div>
+                        `;
+                        attachDragEvents(card, index);
+                        stepsTimelineContainer.appendChild(card);
+
+                        // Próximo horário
+                        currentTime = endTime;
+
+                        // Buffer de transição contínuo
+                        if (state.useBuffer && index < state.steps.length - 1) {
+                            const bufferEnd = new Date(currentTime.getTime() + 10 * 60000);
+                            const bufferStartStr = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            const bufferEndStr = bufferEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                            const bufferItem = document.createElement('div');
+                            bufferItem.className = 'buffer-timeline-item';
+                            bufferItem.innerHTML = `
+                                <span>⏳</span>
+                                <div>
+                                    <strong>Buffer de Transição: ${bufferStartStr} – ${bufferEndStr} (10 min)</strong>
+                                    <div style="color: var(--text-muted); font-size: 0.8rem;">Momento de respiro para descompressão e hidratação.</div>
+                                </div>
+                            `;
+                            stepsTimelineContainer.appendChild(bufferItem);
+                            currentTime = bufferEnd;
+                        }
+                    });
+
+                } else {
+                    // MODO LISTA KANBAN VERTICAL COM DRAG & DROP
+                    stepsTimelineContainer.className = 'steps-timeline';
+                    state.steps.forEach((step, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'step-item-card';
+                        card.setAttribute('draggable', 'true');
+                        card.dataset.index = index;
+                        card.innerHTML = `
+                            <div class="drag-handle" title="Arrastar para reordenar">⋮⋮</div>
+                            <div class="step-order-badge">${index + 1}</div>
+                            <div class="step-content">
+                                <div class="step-instruction">${applyBionicReading(step.instruction)}</div>
+                                <div class="step-why">💡 ${escapeHtml(step.why_this_first)}</div>
+                            </div>
+                            <div class="step-meta">⏱️ ~${step.estimated_minutes} min</div>
+                        `;
+                        attachDragEvents(card, index);
+                        stepsTimelineContainer.appendChild(card);
+
+                        // Inserir card visual de Buffer de Transição
+                        if (state.useBuffer && index < state.steps.length - 1) {
+                            const bufferCard = document.createElement('div');
+                            bufferCard.style.cssText = 'padding: 8px 16px; background: rgba(13, 148, 136, 0.08); border-left: 3px solid var(--brand-secondary); font-size: 0.85rem; color: var(--text-muted); border-radius: 6px; margin: -6px 0 6px 20px;';
+                            bufferCard.innerHTML = `⏳ <strong>Buffer de Transição (10 min):</strong> Levante, beba água e respire antes do próximo passo.`;
+                            stepsTimelineContainer.appendChild(bufferCard);
+                        }
+                    });
+                }
+            }
+
+            function attachDragEvents(element, index) {
+                element.addEventListener('dragstart', (e) => {
+                    draggedIndex = index;
+                    element.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+
+                element.addEventListener('dragend', () => {
+                    element.classList.remove('dragging');
+                    document.querySelectorAll('.step-item-card').forEach(c => c.classList.remove('drag-over'));
+                });
+
+                element.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    element.classList.add('drag-over');
+                });
+
+                element.addEventListener('dragleave', () => {
+                    element.classList.remove('drag-over');
+                });
+
+                element.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    element.classList.remove('drag-over');
+                    const targetIndex = index;
+                    if (draggedIndex !== null && draggedIndex !== targetIndex) {
+                        const [movedStep] = state.steps.splice(draggedIndex, 1);
+                        state.steps.splice(targetIndex, 0, movedStep);
+                        // Atualiza a numeração de ordem
+                        state.steps.forEach((s, idx) => s.step_order = idx + 1);
+                        renderStepsReview();
                     }
                 });
             }
