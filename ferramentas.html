@@ -1066,6 +1066,172 @@
             color: var(--text-main);
         }
 
+        /* 5. Simplificador de Textos ("Simplifique para mim") & Dicionário Visual */
+        .view-simplifier {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .simplifier-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 24px;
+        }
+
+        .simplifier-output-box {
+            background: var(--bg-base);
+            border: 2px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 140px;
+            line-height: 1.8;
+            font-size: 1.05rem;
+            color: var(--text-main);
+            position: relative;
+        }
+
+        .simplifier-bullet {
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            background: var(--bg-surface);
+            border-left: 4px solid var(--brand-secondary);
+            border-radius: 6px;
+        }
+
+        .dict-popover {
+            position: fixed;
+            z-index: 10000;
+            background: var(--bg-surface);
+            border: 2px solid var(--brand-primary);
+            border-radius: 12px;
+            padding: 12px 16px;
+            box-shadow: var(--shadow-float);
+            max-width: 280px;
+            display: none;
+            animation: fadeIn 0.15s ease;
+        }
+
+        .dict-popover-word {
+            font-weight: 700;
+            color: var(--brand-primary);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .dict-popover-meaning {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        /* 6. Gaveta de Rotinas Pré-configuradas (Piloto Automático) */
+        .routines-drawer {
+            position: fixed;
+            top: 0;
+            left: -420px;
+            width: 400px;
+            max-width: 90vw;
+            height: 100vh;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border-subtle);
+            box-shadow: 8px 0 32px rgba(0,0,0,0.15);
+            z-index: 250;
+            display: flex;
+            flex-direction: column;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 24px;
+        }
+
+        .routines-drawer.open {
+            left: 0;
+        }
+
+        .routines-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(2px);
+            z-index: 240;
+            display: none;
+        }
+
+        .routines-overlay.open {
+            display: block;
+        }
+
+        .routine-card-item {
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 12px;
+        }
+
+        .routine-card-item:hover {
+            border-color: var(--brand-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .routine-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .routine-badge-time {
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: rgba(13, 148, 136, 0.15);
+            color: var(--brand-secondary);
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+
+        /* Abas Principais de Ferramentas */
+        .tool-nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: var(--bg-surface-elevated);
+            padding: 6px;
+            border-radius: 14px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .tool-tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tool-tab-btn.active {
+            background: var(--bg-surface);
+            color: var(--brand-primary);
+            box-shadow: var(--shadow-soft);
+            font-weight: 700;
+        }
+
         @media (max-width: 640px) {
             .app-header {
                 padding: 10px 16px;
@@ -1157,6 +1323,81 @@
                     <button id="btn-dismiss-session" class="btn-resume-dismiss" type="button">
                         Começar Nova
                     </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SELETOR DE ABAS PRINCIPAIS DE FERRAMENTAS -->
+        <nav class="tool-nav-tabs" aria-label="Navegação de Ferramentas">
+            <button id="tab-focus" class="tool-tab-btn active" type="button">
+                <span>🎯 FocusFlow (Microetapas)</span>
+            </button>
+            <button id="tab-simplifier" class="tool-tab-btn" type="button">
+                <span>🪄 Simplifique para Mim</span>
+            </button>
+            <button id="tab-routines" class="tool-tab-btn" type="button">
+                <span>📋 Rotinas Rápidas</span>
+            </button>
+        </nav>
+
+        <!-- ============================================== -->
+        <!-- MÓDULO 4: SIMPLIFICADOR DE TEXTOS COMPLEXOS    -->
+        <!-- ============================================== -->
+        <section id="view-simplifier" class="view-simplifier">
+            <div class="hero-banner">
+                <h1>Simplifique para Mim</h1>
+                <p>Cole e-mails longos, enunciados, relatórios ou regulamentos. Transformamos em tópicos claros com ações em negrito.</p>
+            </div>
+
+            <div class="simplifier-card">
+                <div class="input-group">
+                    <div class="input-label">
+                        <span>Texto Complexo ou Longo</span>
+                        <span id="simplifier-word-count" style="font-size: 0.85rem; color: var(--text-muted);">0 palavras</span>
+                    </div>
+                    <textarea 
+                        id="simplifier-input" 
+                        class="textarea-box" 
+                        placeholder="Cole aqui o texto denso, comunicado, termos ou tarefas confusas para desmistificar..."
+                        style="min-height: 140px;"
+                    ></textarea>
+                </div>
+
+                <div class="input-actions-row" style="margin-bottom: 20px;">
+                    <div style="display: flex; gap: 8px;">
+                        <button id="btn-paste-simplifier" class="control-btn" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); padding: 8px 14px;" type="button">
+                            📋 Colar da Área de Transferência
+                        </button>
+                        <button id="btn-clear-simplifier" class="control-btn" style="color: var(--text-muted);" type="button">
+                            Limpar
+                        </button>
+                    </div>
+                    <button id="btn-run-simplify" class="btn-primary" style="width: auto; padding: 12px 24px;" type="button">
+                        <span>🪄 Simplificar Texto</span>
+                    </button>
+                </div>
+
+                <!-- Resultado da Simplificação -->
+                <div id="simplifier-result-container" style="display: none;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                        <span style="font-weight: 700; font-size: 1.1rem; color: var(--text-main);">Versão Descomplicada:</span>
+                        <div style="display: flex; gap: 8px;">
+                            <button id="btn-copy-simplified" class="control-btn" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); padding: 6px 12px; font-size: 0.85rem;" type="button">
+                                📋 Copiar
+                            </button>
+                            <button id="btn-send-to-focusflow" class="control-btn" style="background: rgba(217, 119, 6, 0.15); border: 1px solid var(--brand-primary); color: var(--brand-primary); font-weight: 700; padding: 6px 12px; font-size: 0.85rem;" type="button">
+                                🚀 Executar no FocusFlow
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="simplifier-output" class="simplifier-output-box">
+                        <!-- Conteúdo simplificado gerado -->
+                    </div>
+
+                    <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+                        <span>💡 <em>Dica: Dê duplo-clique em qualquer palavra difícil para ver a definição visual instantânea.</em></span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1425,6 +1666,79 @@
             <!-- Renderizado dinamicamente -->
         </div>
     </aside>
+
+    <!-- ============================================== -->
+    <!-- 3. GAVETA DE ROTINAS PRÉ-CONFIGURADAS (DRAWER) -->
+    <!-- ============================================== -->
+    <div id="routines-overlay" class="routines-overlay"></div>
+    <aside id="routines-drawer" class="routines-drawer" aria-label="Rotinas Pré-configuradas">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <div>
+                <h3 style="font-size: 1.25rem; font-weight: 700;">📋 Rotinas Rápidas</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Piloto automático para momentos de inércia ou transição</p>
+            </div>
+            <button id="btn-close-routines" class="control-btn" style="font-size: 1.2rem; cursor: pointer;">✕</button>
+        </div>
+
+        <div style="flex: 1; overflow-y: auto;">
+            <!-- Rotina 1 -->
+            <div class="routine-card-item" data-routine="morning">
+                <div class="routine-title-row">
+                    <span style="font-weight: 700; font-size: 1rem;">☀️ Aterrissagem Matinal</span>
+                    <span class="routine-badge-time">~15 min</span>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
+                    Beber água, abrir agenda do dia, elencar apenas 1 prioridade real e arrumar o espaço de trabalho.
+                </p>
+            </div>
+
+            <!-- Rotina 2 -->
+            <div class="routine-card-item" data-routine="meeting">
+                <div class="routine-title-row">
+                    <span style="font-weight: 700; font-size: 1rem;">🤝 Pré-Reunião / Call</span>
+                    <span class="routine-badge-time">~8 min</span>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
+                    Testar microfone/câmera, abrir o link da reunião, ler a pauta com antecedência e ter bloco de notas pronto.
+                </p>
+            </div>
+
+            <!-- Rotina 3 -->
+            <div class="routine-card-item" data-routine="unstick">
+                <div class="routine-title-row">
+                    <span style="font-weight: 700; font-size: 1rem;">🚨 Protocolo Destravar</span>
+                    <span class="routine-badge-time">~5 min</span>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
+                    Parar a tela, levantar, alongar os ombros, lavar o rosto com água fria e respirar fundo 4 vezes.
+                </p>
+            </div>
+
+            <!-- Rotina 4 -->
+            <div class="routine-card-item" data-routine="endofday">
+                <div class="routine-title-row">
+                    <span style="font-weight: 700; font-size: 1rem;">🌙 Fechamento do Expediente</span>
+                    <span class="routine-badge-time">~10 min</span>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
+                    Fechar abas desnecessárias, revisar vitórias concluídas e salvar pendências para amanhã sem culpa.
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ============================================== -->
+    <!-- 4. DICIONÁRIO VISUAL INSTANTÂNEO (POPOVER)     -->
+    <!-- ============================================== -->
+    <div id="dict-popover" class="dict-popover" aria-live="polite">
+        <div class="dict-popover-word">
+            <span id="dict-word-text">Palavra</span>
+            <span id="dict-icon">📖</span>
+        </div>
+        <div id="dict-meaning-text" class="dict-popover-meaning">
+            Significado simples e descomplicado.
+        </div>
+    </div>
 
     <!-- ============================================== -->
     <!-- SOUND DOCK PROCEDURAL (Web Audio API)          -->
@@ -2148,9 +2462,13 @@
             });
 
             function switchView(target) {
-                [viewCapture, viewReview, viewCockpit, viewCongrats].forEach(v => v.style.display = 'none');
-                target.style.display = 'block';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                [viewCapture, viewReview, viewCockpit, viewCongrats, document.getElementById('view-simplifier')].forEach(v => {
+                    if (v) v.style.display = 'none';
+                });
+                if (target) {
+                    target.style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
             }
 
             // --- 6. Gerador de Som Procedural (Web Audio API) ---
@@ -2621,6 +2939,265 @@
 
             updateBodyDoublingCount();
             setInterval(updateBodyDoublingCount, 20000); // Atualiza a cada 20 segundos de forma calma
+
+            // =========================================================
+            // --- 11. ABAS PRINCIPAIS DE NAVEGAÇÃO DE FERRAMENTAS ---
+            // =========================================================
+            const tabFocus = document.getElementById('tab-focus');
+            const tabSimplifier = document.getElementById('tab-simplifier');
+            const tabRoutines = document.getElementById('tab-routines');
+            const viewSimplifier = document.getElementById('view-simplifier');
+
+            function setActiveTab(activeBtn) {
+                [tabFocus, tabSimplifier, tabRoutines].forEach(btn => btn.classList.remove('active'));
+                activeBtn.classList.add('active');
+            }
+
+            tabFocus.addEventListener('click', () => {
+                setActiveTab(tabFocus);
+                switchView(viewCapture);
+            });
+
+            tabSimplifier.addEventListener('click', () => {
+                setActiveTab(tabSimplifier);
+                switchView(viewSimplifier);
+            });
+
+            // =========================================================
+            // --- 12. GAVETA DE ROTINAS PRÉ-CONFIGURADAS -------------
+            // =========================================================
+            const routinesDrawer = document.getElementById('routines-drawer');
+            const routinesOverlay = document.getElementById('routines-overlay');
+            const btnCloseRoutines = document.getElementById('btn-close-routines');
+
+            function openRoutinesDrawer() {
+                routinesDrawer.classList.add('open');
+                routinesOverlay.classList.add('open');
+            }
+
+            function closeRoutinesDrawer() {
+                routinesDrawer.classList.remove('open');
+                routinesOverlay.classList.remove('open');
+            }
+
+            tabRoutines.addEventListener('click', openRoutinesDrawer);
+            btnCloseRoutines.addEventListener('click', closeRoutinesDrawer);
+            routinesOverlay.addEventListener('click', closeRoutinesDrawer);
+
+            const presetRoutines = {
+                morning: {
+                    title: 'Aterrissagem Matinal (Foco Suave)',
+                    battery: 'low',
+                    steps: [
+                        { step_order: 1, action_verb: 'Hidratar', instruction: 'Beber um copo grande de água gelada.', estimated_minutes: 2, why_this_first: 'Desperta a oxigenação cerebral sem estresse.' },
+                        { step_order: 2, action_verb: 'Limpar', instruction: 'Retirar pratos ou objetos acumulados da mesa.', estimated_minutes: 3, why_this_first: 'Reduz a poluição visual que sobrecarrega a atenção.' },
+                        { step_order: 3, action_verb: 'Checar', instruction: 'Abrir o calendário e olhar apenas os compromissos com horário marcado.', estimated_minutes: 4, why_this_first: 'Elimina a cegueira temporal do dia.' },
+                        { step_order: 4, action_verb: 'Escolher', instruction: 'Escolher 1 única prioridade que fará o dia valer a pena se concluída.', estimated_minutes: 4, why_this_first: 'Elimina a paralisia de ter 20 metas na cabeça.' }
+                    ]
+                },
+                meeting: {
+                    title: 'Protocolo Pré-Reunião / Call',
+                    battery: 'low',
+                    steps: [
+                        { step_order: 1, action_verb: 'Testar', instruction: 'Verificar conexão, fone e câmera com calma.', estimated_minutes: 2, why_this_first: 'Evita a ansiedade de última hora.' },
+                        { step_order: 2, action_verb: 'Abrir', instruction: 'Abrir o link da sala e um bloco de notas em branco ao lado.', estimated_minutes: 2, why_this_first: 'Garante que você está pronto antes do início.' },
+                        { step_order: 3, action_verb: 'Pauta', instruction: 'Reler a pauta ou o objetivo de 1 linha desta reunião.', estimated_minutes: 3, why_this_first: 'Orienta seu cérebro para o tópico em discussão.' }
+                    ]
+                },
+                unstick: {
+                    title: 'Protocolo Anti-Travamento (Reset Sensorial)',
+                    battery: 'low',
+                    steps: [
+                        { step_order: 1, action_verb: 'Levantar', instruction: 'Afaste-se da tela agora mesmo e fique de pé.', estimated_minutes: 1, why_this_first: 'Quebra o loop de paralisia muscular e mental.' },
+                        { step_order: 2, action_verb: 'Água Fria', instruction: 'Vá até o banheiro e lave as mãos ou o rosto com água fria.', estimated_minutes: 2, why_this_first: 'Ativa o reflexo de mergulho mamífero e acalma o sistema nervoso.' },
+                        { step_order: 3, action_verb: 'Micro-Respiração', instruction: 'Puxe o ar em 4 segundos e solte lentamente em 6 segundos por 4 vezes.', estimated_minutes: 2, why_this_first: 'Regula o batimento cardíaco.' }
+                    ]
+                },
+                endofday: {
+                    title: 'Fechamento do Expediente Sem Culpa',
+                    battery: 'medium',
+                    steps: [
+                        { step_order: 1, action_verb: 'Despejar', instruction: 'Anote na Caixa de Despejo qualquer pendência solta que lembre agora.', estimated_minutes: 3, why_this_first: 'Tira da cabeça para você poder descansar em paz.' },
+                        { step_order: 2, action_verb: 'Fechar', instruction: 'Feche todas as abas do navegador sem medo.', estimated_minutes: 2, why_this_first: 'Cria uma fronteira clara entre trabalho e descanso.' },
+                        { step_order: 3, action_verb: 'Celebrar', instruction: 'Reconheça 1 vitória ou esforço que fez hoje, por menor que tenha sido.', estimated_minutes: 2, why_this_first: 'Gera dopamina positiva e combate a autocobrança desmedida.' }
+                    ]
+                }
+            };
+
+            document.querySelectorAll('.routine-card-item').forEach(card => {
+                card.addEventListener('click', () => {
+                    const routineKey = card.getAttribute('data-routine');
+                    const routine = presetRoutines[routineKey];
+                    if (routine) {
+                        closeRoutinesDrawer();
+                        setActiveTab(tabFocus);
+                        state.currentTaskTitle = routine.title;
+                        state.battery = routine.battery;
+                        state.steps = JSON.parse(JSON.stringify(routine.steps));
+                        state.currentStepIndex = 0;
+                        renderStepsReview();
+                        switchView(viewReview);
+                    }
+                });
+            });
+
+            // =========================================================
+            // --- 13. SIMPLIFICADOR DE TEXTOS & DICIONÁRIO VISUAL ----
+            // =========================================================
+            const simplifierInput = document.getElementById('simplifier-input');
+            const simplifierWordCount = document.getElementById('simplifier-word-count');
+            const btnRunSimplify = document.getElementById('btn-run-simplify');
+            const btnClearSimplifier = document.getElementById('btn-clear-simplifier');
+            const btnPasteSimplifier = document.getElementById('btn-paste-simplifier');
+            const simplifierResultContainer = document.getElementById('simplifier-result-container');
+            const simplifierOutput = document.getElementById('simplifier-output');
+            const btnCopySimplified = document.getElementById('btn-copy-simplified');
+            const btnSendToFocusflow = document.getElementById('btn-send-to-focusflow');
+
+            // Atualiza contagem de palavras
+            simplifierInput.addEventListener('input', () => {
+                const words = simplifierInput.value.trim().split(/\s+/).filter(Boolean);
+                simplifierWordCount.textContent = `${words.length} palavra${words.length !== 1 ? 's' : ''}`;
+            });
+
+            btnClearSimplifier.addEventListener('click', () => {
+                simplifierInput.value = '';
+                simplifierWordCount.textContent = '0 palavras';
+                simplifierResultContainer.style.display = 'none';
+                simplifierInput.focus();
+            });
+
+            btnPasteSimplifier.addEventListener('click', async () => {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    if (text) {
+                        simplifierInput.value = text;
+                        simplifierInput.dispatchEvent(new Event('input'));
+                    }
+                } catch(e) {
+                    alert('Por favor, pressione Ctrl+V / Cmd+V para colar o texto no campo.');
+                }
+            });
+
+            // Dicionário rápido de termos comuns burocráticos/complexos
+            const visualDictionary = {
+                'procrastinar': { icon: '⏳', meaning: 'Adiar tarefas difíceis ou chatas devido a sobrecarga mental ou medo de errar.' },
+                'prazo': { icon: '📅', meaning: 'Data e hora limite em que uma entrega deve estar pronta.' },
+                'demanda': { icon: '📋', meaning: 'Um pedido de trabalho, tarefa ou exigência vinda de outra pessoa.' },
+                'requisito': { icon: '✅', meaning: 'Algo obrigatório que precisa ser atendido para o trabalho ser aceito.' },
+                'urgente': { icon: '🚨', meaning: 'Que precisa ser feito logo para evitar problemas imediatos.' },
+                'prioridade': { icon: '⭐', meaning: 'O item mais importante, que deve ser feito antes de qualquer outro.' },
+                'feedback': { icon: '💬', meaning: 'Comentários e opiniões sobre o que foi feito para saber como melhorar.' },
+                'alinhamento': { icon: '🎯', meaning: 'Conversa rápida para garantir que todos entendam a mesma coisa.' },
+                'cronograma': { icon: '🕒', meaning: 'Lista de datas e horários em que cada etapa vai acontecer.' },
+                'escopo': { icon: '📦', meaning: 'O limite do que deve ser feito (e o que NÃO faz parte da tarefa).' },
+                'pendencia': { icon: '📌', meaning: 'Assunto ou tarefa que ainda não foi concluído.' },
+                'metodologia': { icon: '🛠️', meaning: 'O modo ou passos organizados de fazer alguma coisa.' },
+                'conformidade': { icon: '⚖️', meaning: 'Estar dentro das regras, leis ou normas exigidas.' }
+            };
+
+            function cleanComplexTextLocal(text) {
+                // Heurística de descomplicação: quebra em frases, destaca verbos de ação e resume
+                const sentences = text
+                    .split(/[.!?\n]+/)
+                    .map(s => s.trim())
+                    .filter(s => s.length > 5);
+
+                if (!sentences.length) return '<p>Nenhum conteúdo suficiente para simplificar.</p>';
+
+                const bullets = sentences.slice(0, 6).map((sentence, idx) => {
+                    // Destacar verbos e ações no início
+                    const words = sentence.split(' ');
+                    const firstTwo = words.slice(0, 2).join(' ');
+                    const rest = words.slice(2).join(' ');
+                    return `
+                        <div class="simplifier-bullet">
+                            <span style="font-weight: 700; color: var(--brand-secondary);">Passo ${idx + 1}:</span>
+                            <strong>${escapeHtml(firstTwo)}</strong> ${escapeHtml(rest)}.
+                        </div>
+                    `;
+                });
+
+                return `
+                    <div style="margin-bottom: 12px; font-size: 0.95rem;">
+                        <strong>Resumo em linguagem direta:</strong>
+                    </div>
+                    ${bullets.join('')}
+                `;
+            }
+
+            btnRunSimplify.addEventListener('click', async () => {
+                const text = simplifierInput.value.trim();
+                if (!text) {
+                    alert('Por favor, cole algum texto denso para simplificar.');
+                    return;
+                }
+
+                btnRunSimplify.disabled = true;
+                btnRunSimplify.innerHTML = '<span>⏳ Simplificando...</span>';
+
+                try {
+                    // Fallback imediato e claro
+                    const simplifiedHtml = cleanComplexTextLocal(text);
+                    simplifierOutput.innerHTML = simplifiedHtml;
+                    simplifierResultContainer.style.display = 'block';
+                    simplifierResultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } finally {
+                    btnRunSimplify.disabled = false;
+                    btnRunSimplify.innerHTML = '<span>🪄 Simplificar Texto</span>';
+                }
+            });
+
+            btnCopySimplified.addEventListener('click', () => {
+                const plain = simplifierOutput.innerText;
+                navigator.clipboard.writeText(plain).then(() => {
+                    const prev = btnCopySimplified.textContent;
+                    btnCopySimplified.textContent = '✓ Copiado!';
+                    setTimeout(() => btnCopySimplified.textContent = prev, 1500);
+                });
+            });
+
+            btnSendToFocusflow.addEventListener('click', () => {
+                const plain = simplifierOutput.innerText;
+                setActiveTab(tabFocus);
+                taskInput.value = plain.substring(0, 300);
+                switchView(viewCapture);
+                window.scrollTo({ top: taskInput.offsetTop - 100, behavior: 'smooth' });
+                taskInput.focus();
+            });
+
+            // Popover do Dicionário Visual Instantâneo
+            const dictPopover = document.getElementById('dict-popover');
+            const dictWordText = document.getElementById('dict-word-text');
+            const dictIcon = document.getElementById('dict-icon');
+            const dictMeaningText = document.getElementById('dict-meaning-text');
+
+            document.addEventListener('dblclick', (e) => {
+                const selection = window.getSelection().toString().trim().toLowerCase().replace(/[^a-záàâãéèêíïóôõöúç]/gi, '');
+                if (selection && selection.length > 2) {
+                    const entry = visualDictionary[selection];
+                    if (entry) {
+                        dictWordText.textContent = selection.charAt(0).toUpperCase() + selection.slice(1);
+                        dictIcon.textContent = entry.icon || '💡';
+                        dictMeaningText.textContent = entry.meaning;
+
+                        const x = Math.min(window.innerWidth - 300, Math.max(10, e.clientX - 100));
+                        const y = Math.min(window.innerHeight - 120, e.clientY + 15);
+
+                        dictPopover.style.left = `${x}px`;
+                        dictPopover.style.top = `${y}px`;
+                        dictPopover.style.display = 'block';
+                        return;
+                    }
+                }
+                dictPopover.style.display = 'none';
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!dictPopover.contains(e.target)) {
+                    dictPopover.style.display = 'none';
+                }
+            });
 
         })();
     </script>
