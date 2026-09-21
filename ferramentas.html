@@ -1622,6 +1622,7 @@
                     <h2 id="review-task-title" style="font-size: 1.5rem; font-weight: 700;">Plano de Ação</h2>
                     <p id="review-total-time" style="color: var(--text-muted); font-size: 0.95rem;">Tempo total estimado: ~25 min</p>
                 </div>
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                     <div class="view-mode-selector" title="Alternar modo de visualização dos passos">
                         <button id="btn-mode-list" class="view-mode-btn active" type="button">📋 Lista</button>
                         <button id="btn-mode-timeline" class="view-mode-btn" type="button">🕒 Linha do Tempo</button>
@@ -2147,53 +2148,159 @@
                 btnMic.style.display = 'none';
             }
 
-            // --- 3. Motor de Decomposição Cognitiva Especializado (4 Modos) ---
+            // --- 3. Motor de Decomposição Cognitiva Semântica Inteligente ---
+            function parseTaskSubcomponents(rawText) {
+                const text = rawText.trim();
+                // Divide por vírgulas, pontos e vírgulas, ' e ', ' / ', ' + ', quebras de linha
+                const parts = text.split(/[,;\n]|\s+e\s+|\s*\/\s*|\s*\+\s*/i)
+                    .map(p => p.trim())
+                    .filter(p => p.length > 2);
+                return parts.length > 1 ? parts : [text];
+            }
+
             function generateDecompositionOffline(rawText, battery, mode) {
                 const text = rawText.trim();
                 const m = mode || state.decompMode || 'micro_step';
+                const subParts = parseTaskSubcomponents(text);
                 let steps = [];
 
                 if (m === 'micro_step') {
-                    // MODO 1: PRIMEIRO PASSO RIDICULAMENTE PEQUENO (Micro-Atrito Zero)
-                    steps = [
-                        { step_order: 1, action_verb: 'Micro-Ação', instruction: `Respire fundo, pegue um copo d'água e abra apenas a tela/arquivo para: "${text.substring(0, 35)}..."`, estimated_minutes: 2, why_this_first: 'Elimina o choque inicial. Fazer apenas o primeiro gesto físico não requer força de vontade.' },
-                        { step_order: 2, action_verb: 'Definir Título', instruction: 'Escrever apenas o título ou objetivo em 1 linha e nada mais.', estimated_minutes: 3, why_this_first: 'Desbloqueia o medo da folha/tela em branco.' },
-                        { step_order: 3, action_verb: 'Rascunhar 3 Pontos', instruction: 'Listar 3 palavras-chave rápidas do que precisa ser resolvido.', estimated_minutes: 4, why_this_first: 'Descarrega a memória de trabalho para o suporte externo.' },
-                        { step_order: 4, action_verb: 'Executar Ponto 1', instruction: 'Resolver unicamente o primeiro ponto anotado, ignorando todo o restante.', estimated_minutes: 5, why_this_first: 'Cria o embalo psicológico (momentum).' }
-                    ];
+                    // MODO 1: 1º PASSO RIDICULAMENTE PEQUENO (Micro-Atrito Zero)
+                    // Foco em eliminar a barreira física inicial de inicialização
+                    const firstTarget = subParts[0] || text;
+                    steps.push({
+                        step_order: 1,
+                        action_verb: 'Micro-Abertura',
+                        instruction: `Respire fundo, beba um gole d'água e abra apenas os arquivos ou telas de: "${firstTarget}".`,
+                        estimated_minutes: 2,
+                        why_this_first: 'Elimina o choque de inércia. Abrir o ambiente não exige esforço mental.'
+                    });
+
+                    if (subParts.length > 1) {
+                        subParts.forEach((part, idx) => {
+                            steps.push({
+                                step_order: steps.length + 1,
+                                action_verb: `Etapa ${idx + 1}`,
+                                instruction: `Fazer a triagem e execução focada de: "${part}".`,
+                                estimated_minutes: battery === 'high' ? 12 : (battery === 'medium' ? 8 : 4),
+                                why_this_first: `Resolve isoladamente a parte ${idx + 1} sem sobrecarregar a memória de trabalho com o restante.`
+                            });
+                        });
+                    } else {
+                        steps.push({
+                            step_order: 2,
+                            action_verb: 'Rascunho Rápido',
+                            instruction: `Listar em 3 tópicos simples os pontos principais que precisam ser resolvidos em: "${text}".`,
+                            estimated_minutes: 4,
+                            why_this_first: 'Descarrega os pensamentos dispersos para a tela antes de agir.'
+                        });
+                        steps.push({
+                            step_order: 3,
+                            action_verb: 'Ação Principal',
+                            instruction: `Executar o primeiro tópico listado com atenção plena, ignorando os demais.`,
+                            estimated_minutes: battery === 'high' ? 15 : (battery === 'medium' ? 10 : 5),
+                            why_this_first: 'Gera tração e impulso psicológico (momentum).'
+                        });
+                    }
+
+                    steps.push({
+                        step_order: steps.length + 1,
+                        action_verb: 'Conferência',
+                        instruction: `Salvar os avanços de "${text.substring(0, 35)}...", checar pendências e fechar as abas desnecessárias.`,
+                        estimated_minutes: 3,
+                        why_this_first: 'Garante fechamento limpo e sensação de dever cumprido.'
+                    });
+
                 } else if (m === 'phases') {
-                    // MODO 2: RASCUNHO ➔ LAPIDAÇÃO (Por Fases de Entrega)
-                    steps = [
-                        { step_order: 1, action_verb: 'Esqueleto Bruto', instruction: `Estruturar o esqueleto de tópicos e reunir arquivos para "${text.substring(0, 30)}..." sem julgar qualidade.`, estimated_minutes: 6, why_this_first: 'Desconecta o perfeccionismo paralisante permitindo um rascunho imperfeito.' },
-                        { step_order: 2, action_verb: 'Recheio Principal', instruction: 'Escrever ou desenvolver o núcleo central da entrega cobrindo os tópicos principais.', estimated_minutes: 15, why_this_first: 'Garante o valor real da tarefa sem se preocupar com estética agora.' },
-                        { step_order: 3, action_verb: 'Lapidação & Revisão', instruction: 'Formatar, revisar detalhes, checar erros e dar o acabamento final.', estimated_minutes: 8, why_this_first: 'A energia é gasta no polimento depois que o grosso já está feito.' }
-                    ];
+                    // MODO 2: RASCUNHO ➔ CORPO ➔ LAPIDAÇÃO (Por Fases de Entrega)
+                    steps.push({
+                        step_order: 1,
+                        action_verb: 'Fase 1: Esqueleto',
+                        instruction: `Reunir todos os insumos e montar a estrutura bruta para: "${subParts[0] || text}" sem julgar a perfeição.`,
+                        estimated_minutes: battery === 'high' ? 10 : 5,
+                        why_this_first: 'Desconecta o perfeccionismo paralisante permitindo um rascunho imperfeito.'
+                    });
+
+                    if (subParts.length > 1) {
+                        for (let i = 1; i < subParts.length; i++) {
+                            steps.push({
+                                step_order: steps.length + 1,
+                                action_verb: `Fase 2.${i}: Núcleo`,
+                                instruction: `Desenvolver e preencher o núcleo de: "${subParts[i]}".`,
+                                estimated_minutes: battery === 'high' ? 15 : 8,
+                                why_this_first: `Resolve o recheio de "${subParts[i]}" de forma objetiva e direta.`
+                            });
+                        }
+                    } else {
+                        steps.push({
+                            step_order: 2,
+                            action_verb: 'Fase 2: Desenvolvimento',
+                            instruction: `Preencher o conteúdo e resolver os pontos centrais de: "${text}".`,
+                            estimated_minutes: battery === 'high' ? 15 : 10,
+                            why_this_first: 'Garante a substância da entrega no momento de melhor clareza.'
+                        });
+                    }
+
+                    steps.push({
+                        step_order: steps.length + 1,
+                        action_verb: 'Fase Final: Lapidação',
+                        instruction: `Revisar detalhes, formatar, validar consistência e salvar/enviar com confirmação.`,
+                        estimated_minutes: battery === 'high' ? 8 : 4,
+                        why_this_first: 'O polimento final é rápido quando o corpo da tarefa já está pronto.'
+                    });
+
                 } else if (m === 'checklist') {
-                    // MODO 3: DEFINIÇÃO DE PRONTO (Checklist de Verificação Prática)
-                    steps = [
-                        { step_order: 1, action_verb: 'Critério de Entrada', instruction: `Reunir acessos, dados e destinatários necessários para "${text.substring(0, 30)}...".`, estimated_minutes: 4, why_this_first: 'Garante que todos os ingredientes estão à mão antes de começar.' },
-                        { step_order: 2, action_verb: 'Execução Obrigatória', instruction: 'Preencher os requisitos fundamentais exigidos para esta entrega.', estimated_minutes: 12, why_this_first: 'Atende ao propósito direto da demanda.' },
-                        { step_order: 3, action_verb: 'Checagem de Saída', instruction: 'Verificar se foi salvo, conferir anexos/links e enviar ou arquivar com confirmação.', estimated_minutes: 4, why_this_first: 'Evita a ansiedade de esquecer itens cruciais ao finalizar.' }
-                    ];
+                    // MODO 3: DEFINIÇÃO DE PRONTO (Critérios Claros de Conclusão)
+                    steps.push({
+                        step_order: 1,
+                        action_verb: 'Check 1: Entrada',
+                        instruction: `Localizar e abrir os acessos, pastas e evidências necessárias para: "${subParts[0] || text}".`,
+                        estimated_minutes: 4,
+                        why_this_first: 'Garante que nenhum item essencial está faltando antes de dar início.'
+                    });
+
+                    subParts.forEach((part, idx) => {
+                        steps.push({
+                            step_order: steps.length + 1,
+                            action_verb: `Check ${idx + 2}: Execução`,
+                            instruction: `Concluir e validar o critério: "${part}".`,
+                            estimated_minutes: battery === 'high' ? 12 : 7,
+                            why_this_first: `Critério objetivo e auditável de conclusão de "${part}".`
+                        });
+                    });
+
+                    steps.push({
+                        step_order: steps.length + 1,
+                        action_verb: 'Check Saída',
+                        instruction: `Registrar status final, arquivar comprovantes e disparar notificações/atualizações.`,
+                        estimated_minutes: 4,
+                        why_this_first: 'Elimina a ansiedade de esquecer passos burocráticos ao finalizar.'
+                    });
+
                 } else if (m === 'pomodoro') {
                     // MODO 4: FATIAMENTO POMODORO (Sprints Delimitados de 25 min)
-                    steps = [
-                        { step_order: 1, action_verb: 'Sprint 1', instruction: `Bloco de Foco 1 (25 min): Desbravar os primeiros itens e estruturar a base de "${text.substring(0, 30)}...".`, estimated_minutes: 25, why_this_first: 'Entra em estado de fluxo sem a pressão de precisar terminar tudo de uma vez.' },
-                        { step_order: 2, action_verb: 'Sprint 2', instruction: 'Bloco de Foco 2 (25 min): Aprofundar a execução e resolver os pontos mais complexos.', estimated_minutes: 25, why_this_first: 'Continua o fluxo após o descanso com clareza do que falta.' },
-                        { step_order: 3, action_verb: 'Sprint Final', instruction: 'Bloco de Foco 3 (20 min): Finalizar pendências, validar resultados e fechar a entrega.', estimated_minutes: 20, why_this_first: 'Dá o fechamento oficial à tarefa.' }
-                    ];
-                } else {
-                    // Fallback por bateria
-                    if (battery === 'low') {
-                        steps = [
-                            { step_order: 1, action_verb: 'Sentar', instruction: 'Respire fundo e coloque um copo de água na mesa.', estimated_minutes: 2, why_this_first: 'Acalma a ansiedade e remove o choque inicial.' },
-                            { step_order: 2, action_verb: 'Abrir', instruction: `Abrir o aplicativo ou aba necessária para: "${text.substring(0, 35)}..."`, estimated_minutes: 3, why_this_first: 'Coloca a ferramenta certa diante dos seus olhos.' },
-                            { step_order: 3, action_verb: 'Rascunhar', instruction: 'Anotar apenas as 3 palavras-chave principais do que precisa ser feito.', estimated_minutes: 4, why_this_first: 'Descarrega a memória de trabalho para a tela.' }
-                        ];
+                    if (subParts.length > 1) {
+                        subParts.forEach((part, idx) => {
+                            steps.push({
+                                step_order: idx + 1,
+                                action_verb: `Sprint ${idx + 1} (25m)`,
+                                instruction: `Bloco de foco exclusivo (25 min): avançar e estruturar: "${part}".`,
+                                estimated_minutes: 25,
+                                why_this_first: `Delimita o esforço mental a "${part}" com término previsível.`
+                            });
+                        });
+                        steps.push({
+                            step_order: steps.length + 1,
+                            action_verb: 'Sprint de Fechamento',
+                            instruction: `Sprint de fechamento (15 min): consolidar itens, revisar detalhes finais e arquivar.`,
+                            estimated_minutes: 15,
+                            why_this_first: 'Amarra todas as pontas soltas da demanda.'
+                        });
                     } else {
                         steps = [
-                            { step_order: 1, action_verb: 'Organizar', instruction: `Reunir materiais para "${text.substring(0, 30)}..."`, estimated_minutes: 5, why_this_first: 'Evita interrupções.' },
-                            { step_order: 2, action_verb: 'Desenvolver', instruction: 'Executar o núcleo da tarefa em bloco calmo.', estimated_minutes: 15, why_this_first: 'Entrega o resultado com o foco estabelecido.' }
+                            { step_order: 1, action_verb: 'Sprint 1 (25m)', instruction: `Sprint 1: Desbravar a base, abrir arquivos e estruturar: "${text.substring(0, 35)}...".`, estimated_minutes: 25, why_this_first: 'Entra no fluxo sem a cobrança de ter que finalizar tudo agora.' },
+                            { step_order: 2, action_verb: 'Sprint 2 (25m)', instruction: `Sprint 2: Aprofundar a execução prática e resolver as partes mais trabalhosas.`, estimated_minutes: 25, why_this_first: 'Aproveita o embalo adquirido para vencer o miolo denso da tarefa.' },
+                            { step_order: 3, action_verb: 'Sprint Final (15m)', instruction: `Sprint Final: Validação dos resultados, salvamento e fechamento oficial.`, estimated_minutes: 15, why_this_first: 'Garante que a meta foi completada sem pontas soltas.' }
                         ];
                     }
                 }
@@ -2207,36 +2314,41 @@
                 };
             }
 
-            async function requestDecomposition(rawText, battery) {
+            async function requestDecomposition(rawText, battery, mode) {
                 btnDecompose.disabled = true;
                 btnDecompose.innerHTML = '<span>⏳ Decompondo com IA...</span>';
+                const chosenMode = mode || state.decompMode || 'micro_step';
 
-                // Tenta acionar webhook n8n se configurado, ou fallback com heurística
+                // Tenta webhook remoto se responder com passos ricos e específicos
                 try {
-                    // Endpoint reservado n8n GuardianTech (com timeout curto para fallback instantâneo)
                     const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 2500);
+                    const timeoutId = setTimeout(() => controller.abort(), 2000);
 
                     const response = await fetch('https://n8n.guardiantechit.com.br/webhook/focusflow-decompose', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ task: rawText, battery_level: battery }),
+                        body: JSON.stringify({ task: rawText, battery_level: battery, decomp_mode: chosenMode }),
                         signal: controller.signal
                     });
                     clearTimeout(timeoutId);
 
                     if (response.ok) {
                         const data = await response.json();
-                        return data;
+                        // Valida se o webhook retornou passos ricos e não blocos genéricos de 2 itens
+                        const isGeneric = data.steps && data.steps.length <= 2 && data.steps.some(s => s.instruction && s.instruction.includes('bloco de foco ininterrupto'));
+                        if (data && Array.isArray(data.steps) && data.steps.length >= 3 && !isGeneric) {
+                            return data;
+                        }
                     }
                 } catch (e) {
-                    console.log('Utilizando decomposição neural local.');
+                    console.log('Utilizando decomposição neural local semântica.');
                 } finally {
                     btnDecompose.disabled = false;
                     btnDecompose.innerHTML = '<span>✨ Desmembrar em Microetapas</span>';
                 }
 
-                return generateDecompositionOffline(rawText, battery);
+                // Motor semântico local otimizado
+                return generateDecompositionOffline(rawText, battery, chosenMode);
             }
 
             btnDecompose.addEventListener('click', async () => {
