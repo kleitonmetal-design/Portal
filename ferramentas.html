@@ -1232,6 +1232,133 @@
             font-weight: 700;
         }
 
+        /* 7. Modos Especializados de Decomposição Cognitiva */
+        .decomp-modes-section {
+            margin-bottom: 20px;
+        }
+
+        .decomp-modes-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .decomp-modes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+        }
+
+        .decomp-mode-card {
+            background: var(--bg-surface-elevated);
+            border: 2px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .decomp-mode-card:hover {
+            border-color: var(--brand-primary);
+            transform: translateY(-1px);
+        }
+
+        .decomp-mode-card.selected {
+            border-color: var(--brand-primary);
+            background: rgba(217, 119, 6, 0.08);
+            box-shadow: 0 0 0 1px var(--brand-primary);
+        }
+
+        .decomp-mode-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .decomp-mode-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.35;
+        }
+
+        /* Botão Subdividir Microetapa na Revisão */
+        .btn-subdivide-step {
+            background: transparent;
+            border: 1px dashed var(--brand-primary);
+            color: var(--brand-primary);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .btn-subdivide-step:hover {
+            background: var(--brand-primary);
+            color: #FFFFFF;
+        }
+
+        /* 8. Estilos do Timer Pomodoro 25/5 */
+        .pomodoro-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(239, 68, 68, 0.12);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .pomodoro-break-overlay {
+            background: linear-gradient(135deg, rgba(13, 148, 136, 0.12), rgba(59, 130, 246, 0.12)) !important;
+            border-color: var(--brand-secondary) !important;
+        }
+
+        .timer-mode-selector {
+            display: inline-flex;
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 3px;
+            gap: 4px;
+            margin-bottom: 16px;
+        }
+
+        .timer-mode-pill {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .timer-mode-pill.active {
+            background: var(--brand-primary);
+            color: #FFFFFF;
+        }
+
         @media (max-width: 640px) {
             .app-header {
                 padding: 10px 16px;
@@ -1455,6 +1582,31 @@
                     </div>
                 </div>
 
+                <!-- Seletor de Modo Cognitivo de Decomposição -->
+                <div class="decomp-modes-section">
+                    <span class="decomp-modes-label">
+                        <span>🧠 Como você prefere quebrar esta tarefa?</span>
+                    </span>
+                    <div class="decomp-modes-grid">
+                        <div class="decomp-mode-card selected" data-mode="micro_step">
+                            <div class="decomp-mode-title">🎯 1º Passo Minúsculo</div>
+                            <div class="decomp-mode-desc">Atrito quase zero (30s a 2 min) para vencer a paralisia e começar imediatamente.</div>
+                        </div>
+                        <div class="decomp-mode-card" data-mode="phases">
+                            <div class="decomp-mode-title">📝 Rascunho ➔ Lapidação</div>
+                            <div class="decomp-mode-desc">Esqueleto bruto, corpo e acabamento. Perfeito para relatórios, redação e estudos.</div>
+                        </div>
+                        <div class="decomp-mode-card" data-mode="checklist">
+                            <div class="decomp-mode-title">✅ Definição de Pronto</div>
+                            <div class="decomp-mode-desc">Checklist objetivo e prático de critérios para tarefas burocráticas e rotineiras.</div>
+                        </div>
+                        <div class="decomp-mode-card" data-mode="pomodoro">
+                            <div class="decomp-mode-title">🍅 Fatiamento Pomodoro</div>
+                            <div class="decomp-mode-desc">Sprints de 25 min com metas de bloco bem delimitadas para tarefas longas.</div>
+                        </div>
+                    </div>
+                </div>
+
                 <button id="btn-decompose" class="btn-primary" type="button">
                     <span>✨ Desmembrar em Microetapas</span>
                 </button>
@@ -1524,6 +1676,18 @@
                     💡 Por que este passo primeiro: Reduz o atrito de inicialização colocando a tela correta na sua frente.
                 </div>
 
+                <!-- Seletor de Modo de Temporizador no Cockpit -->
+                <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 12px;">
+                    <div class="timer-mode-selector" role="tablist" aria-label="Modo de Cronômetro">
+                        <button id="pill-mode-step" class="timer-mode-pill active" type="button">⏱️ Passo (~5-15m)</button>
+                        <button id="pill-mode-pomodoro" class="timer-mode-pill" type="button">🍅 Pomodoro 25/5</button>
+                        <button id="pill-mode-freepressure" class="timer-mode-pill" type="button">🕊️ Sem Pressão</button>
+                    </div>
+                    <div id="pomodoro-cycle-indicator" class="pomodoro-badge" style="display: none;">
+                        <span>🍅 Foco 25m • Ciclo 1/4</span>
+                    </div>
+                </div>
+
                 <!-- Temporizador Visual Não-Ansioso (Barra Fluida) -->
                 <div class="time-timer-wrapper">
                     <div class="timer-track" aria-label="Progresso do tempo">
@@ -1531,9 +1695,7 @@
                     </div>
                     <div class="timer-meta-row">
                         <span id="timer-time-label">⏱️ Estimativa: ~5 min</span>
-                        <span id="timer-mode-toggle" style="cursor: pointer; text-decoration: underline;" title="Alternar modo">
-                            Modo Sem Pressão
-                        </span>
+                        <span id="pomodoro-status-text" style="color: var(--brand-secondary); font-weight: 700; display: none;"></span>
                     </div>
                 </div>
 
@@ -1781,6 +1943,10 @@
                 font: localStorage.getItem('ff_font') || 'atkinson',
                 bionic: localStorage.getItem('ff_bionic') === 'true',
                 battery: 'low',
+                decompMode: 'micro_step', // 'micro_step', 'phases', 'checklist', 'pomodoro'
+                timerCockpitMode: 'step', // 'step', 'pomodoro', 'freepressure'
+                pomodoroPhase: 'focus', // 'focus' (25m) ou 'break' (5m)
+                pomodoroCycle: 1, // 1 a 4
                 useBuffer: localStorage.getItem('ff_buffer') !== 'false',
                 viewMode: 'list', // 'list' ou 'timeline'
                 currentTaskTitle: '',
@@ -1824,6 +1990,7 @@
             const speechIndicator = document.getElementById('speech-indicator');
             const btnClear = document.getElementById('btn-clear');
             const batteryCards = document.querySelectorAll('.battery-card');
+            const decompModeCards = document.querySelectorAll('.decomp-mode-card');
             const btnDecompose = document.getElementById('btn-decompose');
 
             // Telas
@@ -1856,13 +2023,18 @@
             const congratsStats = document.getElementById('congrats-stats');
             const btnCongratsExport = document.getElementById('btn-congrats-export');
 
-            // Elementos do Cockpit
+            // Elementos do Cockpit & Pomodoro
+            const cockpitContainer = document.querySelector('.cockpit-container');
             const cockpitCounter = document.getElementById('cockpit-counter');
             const cockpitInstruction = document.getElementById('cockpit-instruction');
             const cockpitWhy = document.getElementById('cockpit-why');
             const timerFillBar = document.getElementById('timer-fill-bar');
             const timerTimeLabel = document.getElementById('timer-time-label');
-            const timerModeToggle = document.getElementById('timer-mode-toggle');
+            const pomodoroStatusText = document.getElementById('pomodoro-status-text');
+            const pomodoroCycleIndicator = document.getElementById('pomodoro-cycle-indicator');
+            const pillModeStep = document.getElementById('pill-mode-step');
+            const pillModePomodoro = document.getElementById('pill-mode-pomodoro');
+            const pillModeFreepressure = document.getElementById('pill-mode-freepressure');
             const btnStepDone = document.getElementById('btn-step-done');
             const btnAddTime = document.getElementById('btn-add-time');
             const btnPanic = document.getElementById('btn-panic');
@@ -1910,12 +2082,20 @@
             btnTheme.addEventListener('click', () => applyTheme(state.theme === 'light' ? 'dark' : 'light'));
             btnBionic.addEventListener('click', toggleBionic);
 
-            // --- 2. Bateria Cognitiva & Input ---
+            // --- 2. Bateria Cognitiva, Modos de Quebra & Input ---
             batteryCards.forEach(card => {
                 card.addEventListener('click', () => {
                     batteryCards.forEach(c => c.classList.remove('selected'));
                     card.classList.add('selected');
                     state.battery = card.getAttribute('data-battery');
+                });
+            });
+
+            decompModeCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    decompModeCards.forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    state.decompMode = card.getAttribute('data-mode');
                 });
             });
 
@@ -1967,34 +2147,61 @@
                 btnMic.style.display = 'none';
             }
 
-            // --- 3. Motor de Decomposição Cognitiva (Heurística & IA) ---
-            function generateDecompositionOffline(rawText, battery) {
+            // --- 3. Motor de Decomposição Cognitiva Especializado (4 Modos) ---
+            function generateDecompositionOffline(rawText, battery, mode) {
                 const text = rawText.trim();
+                const m = mode || state.decompMode || 'micro_step';
                 let steps = [];
 
-                if (battery === 'low') {
+                if (m === 'micro_step') {
+                    // MODO 1: PRIMEIRO PASSO RIDICULAMENTE PEQUENO (Micro-Atrito Zero)
                     steps = [
-                        { step_order: 1, action_verb: 'Sentar', instruction: 'Respire fundo e coloque um copo de água na mesa.', estimated_minutes: 2, why_this_first: 'Acalma a ansiedade e remove o choque inicial.' },
-                        { step_order: 2, action_verb: 'Abrir', instruction: `Abrir o aplicativo ou aba necessária para: "${text.substring(0, 35)}..."`, estimated_minutes: 3, why_this_first: 'Coloca a ferramenta certa diante dos seus olhos sem obrigação de terminar.' },
-                        { step_order: 3, action_verb: 'Rascunhar', instruction: 'Anotar apenas as 3 palavras-chave principais do que precisa ser feito.', estimated_minutes: 4, why_this_first: 'Descarrega a memória de trabalho para o papel/tela.' },
-                        { step_order: 4, action_verb: 'Executar', instruction: 'Trabalhar apenas no primeiro ponto anotado, ignorando o restante por enquanto.', estimated_minutes: 5, why_this_first: 'Foco exclusivo na menor unidade de progresso.' }
+                        { step_order: 1, action_verb: 'Micro-Ação', instruction: `Respire fundo, pegue um copo d'água e abra apenas a tela/arquivo para: "${text.substring(0, 35)}..."`, estimated_minutes: 2, why_this_first: 'Elimina o choque inicial. Fazer apenas o primeiro gesto físico não requer força de vontade.' },
+                        { step_order: 2, action_verb: 'Definir Título', instruction: 'Escrever apenas o título ou objetivo em 1 linha e nada mais.', estimated_minutes: 3, why_this_first: 'Desbloqueia o medo da folha/tela em branco.' },
+                        { step_order: 3, action_verb: 'Rascunhar 3 Pontos', instruction: 'Listar 3 palavras-chave rápidas do que precisa ser resolvido.', estimated_minutes: 4, why_this_first: 'Descarrega a memória de trabalho para o suporte externo.' },
+                        { step_order: 4, action_verb: 'Executar Ponto 1', instruction: 'Resolver unicamente o primeiro ponto anotado, ignorando todo o restante.', estimated_minutes: 5, why_this_first: 'Cria o embalo psicológico (momentum).' }
                     ];
-                } else if (battery === 'medium') {
+                } else if (m === 'phases') {
+                    // MODO 2: RASCUNHO ➔ LAPIDAÇÃO (Por Fases de Entrega)
                     steps = [
-                        { step_order: 1, action_verb: 'Organizar', instruction: `Reunir todos os arquivos e materiais necessários para "${text.substring(0, 30)}..."`, estimated_minutes: 5, why_this_first: 'Evita interrupções no meio da execução procurando documentos.' },
-                        { step_order: 2, action_verb: 'Esboçar', instruction: 'Estruturar o esqueleto ou rascunho inicial em tópicos breves.', estimated_minutes: 10, why_this_first: 'Clareia o caminho antes de gastar energia com detalhes.' },
-                        { step_order: 3, action_verb: 'Desenvolver', instruction: 'Preencher os pontos principais com o conteúdo central.', estimated_minutes: 15, why_this_first: 'Entrega o núcleo da entrega com o foco estabelecido.' }
+                        { step_order: 1, action_verb: 'Esqueleto Bruto', instruction: `Estruturar o esqueleto de tópicos e reunir arquivos para "${text.substring(0, 30)}..." sem julgar qualidade.`, estimated_minutes: 6, why_this_first: 'Desconecta o perfeccionismo paralisante permitindo um rascunho imperfeito.' },
+                        { step_order: 2, action_verb: 'Recheio Principal', instruction: 'Escrever ou desenvolver o núcleo central da entrega cobrindo os tópicos principais.', estimated_minutes: 15, why_this_first: 'Garante o valor real da tarefa sem se preocupar com estética agora.' },
+                        { step_order: 3, action_verb: 'Lapidação & Revisão', instruction: 'Formatar, revisar detalhes, checar erros e dar o acabamento final.', estimated_minutes: 8, why_this_first: 'A energia é gasta no polimento depois que o grosso já está feito.' }
+                    ];
+                } else if (m === 'checklist') {
+                    // MODO 3: DEFINIÇÃO DE PRONTO (Checklist de Verificação Prática)
+                    steps = [
+                        { step_order: 1, action_verb: 'Critério de Entrada', instruction: `Reunir acessos, dados e destinatários necessários para "${text.substring(0, 30)}...".`, estimated_minutes: 4, why_this_first: 'Garante que todos os ingredientes estão à mão antes de começar.' },
+                        { step_order: 2, action_verb: 'Execução Obrigatória', instruction: 'Preencher os requisitos fundamentais exigidos para esta entrega.', estimated_minutes: 12, why_this_first: 'Atende ao propósito direto da demanda.' },
+                        { step_order: 3, action_verb: 'Checagem de Saída', instruction: 'Verificar se foi salvo, conferir anexos/links e enviar ou arquivar com confirmação.', estimated_minutes: 4, why_this_first: 'Evita a ansiedade de esquecer itens cruciais ao finalizar.' }
+                    ];
+                } else if (m === 'pomodoro') {
+                    // MODO 4: FATIAMENTO POMODORO (Sprints Delimitados de 25 min)
+                    steps = [
+                        { step_order: 1, action_verb: 'Sprint 1', instruction: `Bloco de Foco 1 (25 min): Desbravar os primeiros itens e estruturar a base de "${text.substring(0, 30)}...".`, estimated_minutes: 25, why_this_first: 'Entra em estado de fluxo sem a pressão de precisar terminar tudo de uma vez.' },
+                        { step_order: 2, action_verb: 'Sprint 2', instruction: 'Bloco de Foco 2 (25 min): Aprofundar a execução e resolver os pontos mais complexos.', estimated_minutes: 25, why_this_first: 'Continua o fluxo após o descanso com clareza do que falta.' },
+                        { step_order: 3, action_verb: 'Sprint Final', instruction: 'Bloco de Foco 3 (20 min): Finalizar pendências, validar resultados e fechar a entrega.', estimated_minutes: 20, why_this_first: 'Dá o fechamento oficial à tarefa.' }
                     ];
                 } else {
-                    steps = [
-                        { step_order: 1, action_verb: 'Preparar', instruction: `Definir o escopo final e abrir ambiente de trabalho para "${text.substring(0, 30)}..."`, estimated_minutes: 10, why_this_first: 'Garante que o objetivo final esteja claro e alinhado.' },
-                        { step_order: 2, action_verb: 'Executar', instruction: 'Trabalhar no desenvolvimento completo da tarefa em bloco de foco ininterrupto.', estimated_minutes: 25, why_this_first: 'Aproveita seu pico de energia mental para avançar o máximo possível.' }
-                    ];
+                    // Fallback por bateria
+                    if (battery === 'low') {
+                        steps = [
+                            { step_order: 1, action_verb: 'Sentar', instruction: 'Respire fundo e coloque um copo de água na mesa.', estimated_minutes: 2, why_this_first: 'Acalma a ansiedade e remove o choque inicial.' },
+                            { step_order: 2, action_verb: 'Abrir', instruction: `Abrir o aplicativo ou aba necessária para: "${text.substring(0, 35)}..."`, estimated_minutes: 3, why_this_first: 'Coloca a ferramenta certa diante dos seus olhos.' },
+                            { step_order: 3, action_verb: 'Rascunhar', instruction: 'Anotar apenas as 3 palavras-chave principais do que precisa ser feito.', estimated_minutes: 4, why_this_first: 'Descarrega a memória de trabalho para a tela.' }
+                        ];
+                    } else {
+                        steps = [
+                            { step_order: 1, action_verb: 'Organizar', instruction: `Reunir materiais para "${text.substring(0, 30)}..."`, estimated_minutes: 5, why_this_first: 'Evita interrupções.' },
+                            { step_order: 2, action_verb: 'Desenvolver', instruction: 'Executar o núcleo da tarefa em bloco calmo.', estimated_minutes: 15, why_this_first: 'Entrega o resultado com o foco estabelecido.' }
+                        ];
+                    }
                 }
 
                 return {
                     task_title: text,
                     battery_level: battery,
+                    decomp_mode: m,
                     total_estimated_minutes: steps.reduce((acc, s) => acc + s.estimated_minutes, 0),
                     steps: steps
                 };
@@ -2174,6 +2381,9 @@
                                 <div class="timeline-time-badge">🕒 ${startTimeStr} – ${endTimeStr} (~${duration} min)</div>
                                 <div class="step-instruction">${applyBionicReading(step.instruction)}</div>
                                 <div class="step-why">💡 ${escapeHtml(step.why_this_first)}</div>
+                                <button type="button" class="btn-subdivide-step" data-step-index="${index}" title="Essa etapa parece grande demais? Divida em microações de 2 min!">
+                                    🔪 Quebrar mais
+                                </button>
                             </div>
                         `;
                         attachDragEvents(card, index);
@@ -2216,6 +2426,9 @@
                             <div class="step-content">
                                 <div class="step-instruction">${applyBionicReading(step.instruction)}</div>
                                 <div class="step-why">💡 ${escapeHtml(step.why_this_first)}</div>
+                                <button type="button" class="btn-subdivide-step" data-step-index="${index}" title="Essa etapa parece grande demais? Divida em microações de 2 min!">
+                                    🔪 Quebrar mais
+                                </button>
                             </div>
                             <div class="step-meta">⏱️ ~${step.estimated_minutes} min</div>
                         `;
@@ -2231,6 +2444,40 @@
                         }
                     });
                 }
+
+                // Event listener para o botão de subdivisão individual de etapas
+                stepsTimelineContainer.querySelectorAll('.btn-subdivide-step').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const idx = parseInt(btn.dataset.stepIndex, 10);
+                        subdivideStepAt(idx);
+                    });
+                });
+            }
+
+            function subdivideStepAt(index) {
+                const targetStep = state.steps[index];
+                if (!targetStep) return;
+
+                const halfTime = Math.max(2, Math.round(targetStep.estimated_minutes / 2));
+                const part1 = {
+                    step_order: index + 1,
+                    action_verb: 'Iniciar',
+                    instruction: `Preparar e começar: ${targetStep.instruction}`,
+                    estimated_minutes: halfTime,
+                    why_this_first: 'Reduz a barreira de ativação dividindo o esforço pela metade.'
+                };
+                const part2 = {
+                    step_order: index + 2,
+                    action_verb: 'Finalizar',
+                    instruction: `Concluir e validar: ${targetStep.instruction}`,
+                    estimated_minutes: halfTime,
+                    why_this_first: 'Fase de finalização sem sobrecarga cognitiva.'
+                };
+
+                state.steps.splice(index, 1, part1, part2);
+                state.steps.forEach((s, i) => s.step_order = i + 1);
+                renderStepsReview();
             }
 
             function attachDragEvents(element, index) {
@@ -2298,6 +2545,72 @@
                 switchView(viewCockpit);
             });
 
+            // Procedural Gentle Chime (Notificação Sonora Suave sem Sustos)
+            function playGentleChime() {
+                try {
+                    const ctx = getAudioContext();
+                    const now = ctx.currentTime;
+                    const osc = ctx.createOscillator();
+                    const noteGain = ctx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.3); // E5
+                    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.6); // G5
+
+                    noteGain.gain.setValueAtTime(0.01, now);
+                    noteGain.gain.linearRampToValueAtTime(0.3, now + 0.15);
+                    noteGain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+
+                    osc.connect(noteGain);
+                    noteGain.connect(gainNode || ctx.destination);
+
+                    osc.start(now);
+                    osc.stop(now + 1.2);
+                } catch(e) {
+                    console.log('Chime sound skipped:', e);
+                }
+            }
+
+            function setCockpitTimerMode(mode) {
+                state.timerCockpitMode = mode;
+                [pillModeStep, pillModePomodoro, pillModeFreepressure].forEach(p => {
+                    if (p) p.classList.remove('active');
+                });
+
+                if (mode === 'pomodoro') {
+                    if (pillModePomodoro) pillModePomodoro.classList.add('active');
+                    state.timerPressureFree = false;
+                    state.pomodoroPhase = 'focus';
+                    state.timerSecondsTotal = 25 * 60;
+                    state.timerSecondsElapsed = 0;
+                    if (pomodoroCycleIndicator) pomodoroCycleIndicator.style.display = 'inline-flex';
+                    if (pomodoroStatusText) pomodoroStatusText.style.display = 'inline';
+                } else if (mode === 'freepressure') {
+                    if (pillModeFreepressure) pillModeFreepressure.classList.add('active');
+                    state.timerPressureFree = true;
+                    if (pomodoroCycleIndicator) pomodoroCycleIndicator.style.display = 'none';
+                    if (pomodoroStatusText) pomodoroStatusText.style.display = 'none';
+                    if (cockpitContainer) cockpitContainer.classList.remove('pomodoro-break-overlay');
+                } else {
+                    // mode === 'step'
+                    if (pillModeStep) pillModeStep.classList.add('active');
+                    state.timerPressureFree = false;
+                    const step = state.steps[state.currentStepIndex];
+                    state.timerSecondsTotal = (step ? step.estimated_minutes || 5 : 5) * 60;
+                    state.timerSecondsElapsed = 0;
+                    if (pomodoroCycleIndicator) pomodoroCycleIndicator.style.display = 'none';
+                    if (pomodoroStatusText) pomodoroStatusText.style.display = 'none';
+                    if (cockpitContainer) cockpitContainer.classList.remove('pomodoro-break-overlay');
+                }
+                updateCockpitUI();
+                updateTimerDisplay();
+            }
+
+            if (pillModeStep) pillModeStep.addEventListener('click', () => setCockpitTimerMode('step'));
+            if (pillModePomodoro) pillModePomodoro.addEventListener('click', () => setCockpitTimerMode('pomodoro'));
+            if (pillModeFreepressure) pillModeFreepressure.addEventListener('click', () => setCockpitTimerMode('freepressure'));
+
             function startCockpitStep() {
                 const step = state.steps[state.currentStepIndex];
                 if (!step) {
@@ -2306,49 +2619,109 @@
                     return;
                 }
 
-                updateCockpitUI();
-
-                // Configurar Timer Suave
                 clearInterval(state.timerInterval);
-                state.timerSecondsTotal = (step.estimated_minutes || 5) * 60;
-                state.timerSecondsElapsed = 0;
+
+                if (state.timerCockpitMode === 'pomodoro') {
+                    state.pomodoroPhase = 'focus';
+                    state.timerSecondsTotal = 25 * 60;
+                    state.timerSecondsElapsed = 0;
+                } else {
+                    state.timerSecondsTotal = (step.estimated_minutes || 5) * 60;
+                    state.timerSecondsElapsed = 0;
+                }
+
+                updateCockpitUI();
                 updateTimerDisplay();
 
                 state.timerInterval = setInterval(() => {
                     state.timerSecondsElapsed++;
+
+                    // Checagem de transição no modo Pomodoro
+                    if (state.timerCockpitMode === 'pomodoro' && state.timerSecondsElapsed >= state.timerSecondsTotal) {
+                        handlePomodoroTransition();
+                    }
+
                     updateTimerDisplay();
                 }, 1000);
+            }
+
+            function handlePomodoroTransition() {
+                playGentleChime();
+                if (state.pomodoroPhase === 'focus') {
+                    // Transição para Pausa de 5 minutos
+                    state.pomodoroPhase = 'break';
+                    state.timerSecondsTotal = 5 * 60;
+                    state.timerSecondsElapsed = 0;
+                    if (cockpitContainer) cockpitContainer.classList.add('pomodoro-break-overlay');
+                } else {
+                    // Transição da Pausa de volta para Foco (próximo ciclo)
+                    state.pomodoroPhase = 'focus';
+                    state.timerSecondsTotal = 25 * 60;
+                    state.timerSecondsElapsed = 0;
+                    state.pomodoroCycle = (state.pomodoroCycle % 4) + 1;
+                    if (cockpitContainer) cockpitContainer.classList.remove('pomodoro-break-overlay');
+                }
+                updateCockpitUI();
             }
 
             function updateCockpitUI() {
                 const step = state.steps[state.currentStepIndex];
                 if (!step) return;
 
+                if (state.timerCockpitMode === 'pomodoro' && state.pomodoroPhase === 'break') {
+                    cockpitCounter.textContent = `☕ Pausa de Respiro • Pomodoro Ciclo ${state.pomodoroCycle}/4`;
+                    cockpitInstruction.innerHTML = '☕ <strong>Momento de Descanso (5 min):</strong> Levante-se, beba água, olhe pela janela e alongue os ombros.';
+                    cockpitWhy.innerHTML = '💡 <strong>Recarga Neuroquímica:</strong> Pequenas pausas regulares restabelecem a dopamina e evitam a fadiga mental.';
+                    if (pomodoroCycleIndicator) {
+                        pomodoroCycleIndicator.style.display = 'inline-flex';
+                        pomodoroCycleIndicator.innerHTML = `<span>☕ Descanso 5m • Ciclo ${state.pomodoroCycle}/4</span>`;
+                    }
+                    return;
+                }
+
+                if (cockpitContainer) cockpitContainer.classList.remove('pomodoro-break-overlay');
                 cockpitCounter.textContent = `Etapa ${state.currentStepIndex + 1} de ${state.steps.length}`;
                 cockpitInstruction.innerHTML = applyBionicReading(step.instruction);
                 cockpitWhy.innerHTML = `💡 <strong>Por que agora:</strong> ${escapeHtml(step.why_this_first)}`;
+
+                if (state.timerCockpitMode === 'pomodoro') {
+                    if (pomodoroCycleIndicator) {
+                        pomodoroCycleIndicator.style.display = 'inline-flex';
+                        pomodoroCycleIndicator.innerHTML = `<span>🍅 Foco 25m • Ciclo ${state.pomodoroCycle}/4</span>`;
+                    }
+                } else {
+                    if (pomodoroCycleIndicator) pomodoroCycleIndicator.style.display = 'none';
+                }
             }
 
             function updateTimerDisplay() {
-                if (state.timerPressureFree) {
+                if (state.timerCockpitMode === 'freepressure' || state.timerPressureFree) {
                     const mins = Math.floor(state.timerSecondsElapsed / 60);
-                    const secs = state.timerSecondsElapsed % 60;
+                    const secs = String(state.timerSecondsElapsed % 60).padStart(2, '0');
                     timerTimeLabel.textContent = `Investido nesta etapa: ${mins}m ${secs}s (Sem Pressão)`;
                     timerFillBar.style.width = '100%';
+                    if (pomodoroStatusText) pomodoroStatusText.style.display = 'none';
                     return;
                 }
 
                 const progress = Math.min(100, (state.timerSecondsElapsed / state.timerSecondsTotal) * 100);
                 timerFillBar.style.width = `${progress}%`;
-                const minsLeft = Math.max(0, Math.ceil((state.timerSecondsTotal - state.timerSecondsElapsed) / 60));
-                timerTimeLabel.textContent = `⏱️ Estimativa: ~${minsLeft} min restantes`;
-            }
+                
+                const secondsRemaining = Math.max(0, state.timerSecondsTotal - state.timerSecondsElapsed);
+                const remMins = Math.floor(secondsRemaining / 60);
+                const remSecs = String(secondsRemaining % 60).padStart(2, '0');
 
-            timerModeToggle.addEventListener('click', () => {
-                state.timerPressureFree = !state.timerPressureFree;
-                timerModeToggle.textContent = state.timerPressureFree ? 'Modo Timer Visual' : 'Modo Sem Pressão';
-                updateTimerDisplay();
-            });
+                if (state.timerCockpitMode === 'pomodoro') {
+                    if (state.pomodoroPhase === 'break') {
+                        timerTimeLabel.textContent = `☕ Pausa: ${remMins}:${remSecs} restantes`;
+                    } else {
+                        timerTimeLabel.textContent = `🍅 Sprint: ${remMins}:${remSecs} restantes`;
+                    }
+                } else {
+                    const minsLeft = Math.ceil(secondsRemaining / 60);
+                    timerTimeLabel.textContent = `⏱️ Estimativa: ~${minsLeft} min restantes (${remMins}:${remSecs})`;
+                }
+            }
 
             btnAddTime.addEventListener('click', () => {
                 state.timerSecondsTotal += 300;
