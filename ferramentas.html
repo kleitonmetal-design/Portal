@@ -1755,6 +1755,7 @@
                 <div>
                     <h2 id="review-task-title" style="font-size: 1.5rem; font-weight: 700;">Plano de Ação</h2>
                     <p id="review-total-time" style="color: var(--text-muted); font-size: 0.95rem;">Tempo total estimado: ~25 min</p>
+                    <span id="review-source-badge" style="display: none; font-size: 0.8rem; margin-top: 2px;"></span>
                 </div>
                 <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                     <div class="view-mode-selector" title="Alternar modo de visualização dos passos">
@@ -2099,12 +2100,59 @@
             // Supabase Config
             const SUPABASE_URL = 'https://zprzmhavbjiggqfzzzbt.supabase.co';
             const SUPABASE_KEY = 'sb_publishable_zucE5w9pyxnkXU0r3A8LYQ_ERuwax9r';
+            const EDGE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/focusflow-decompose`;
             let supabaseClient = null;
             if (window.supabase) {
                 try {
                     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 } catch(e) {
                     console.warn('Supabase local initialization error', e);
+                }
+            }
+
+            // --- Motor Híbrido: Gemini via Edge Function (com fallback local) ---
+            async function callGeminiViaEdgeFunction(rawText, battery, mode, effort) {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 5000);
+
+                try {
+                    const res = await fetch(EDGE_FUNCTION_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${SUPABASE_KEY}`
+                        },
+                        body: JSON.stringify({
+                            text: rawText,
+                            battery: battery || 'low',
+                            mode: mode || 'micro_step',
+                            effort: effort || { materials: 'ready', scope: 'direct_update' }
+                        }),
+                        signal: controller.signal
+                    });
+
+                    clearTimeout(timeout);
+
+                    if (!res.ok) {
+                        console.warn('Edge Function returned error:', res.status);
+                        return null;
+                    }
+
+                    const data = await res.json();
+                    if (!data.steps || !Array.isArray(data.steps) || data.steps.length === 0) {
+                        console.warn('Edge Function returned empty steps');
+                        return null;
+                    }
+
+                    return { ...data, source: 'gemini' };
+                } catch (err) {
+                    clearTimeout(timeout);
+                    if (err.name === 'AbortError') {
+                        console.warn('Gemini call timed out — usando motor local');
+                    } else {
+                        console.warn('Gemini call failed:', err.message);
+                    }
+                    return null;
                 }
             }
 
@@ -2592,19 +2640,30 @@
 
             async function requestDecomposition(rawText, battery, mode) {
                 btnDecompose.disabled = true;
-                btnDecompose.innerHTML = '<span>⏳ Decompondo com IA...</span>';
+                btnDecompose.innerHTML = '<span>✨ Gerando com IA...</span>';
                 const chosenMode = mode || state.decompMode || 'micro_step';
                 const effortData = {
                     materials: state.effortMaterials || 'ready',
                     scope: state.effortScope || 'direct_update'
                 };
 
-                // Sempre prioriza a geração semântica local rica com calibração de esforço
-                // para evitar respostas genéricas de servidores remotos
                 try {
-                    await new Promise(resolve => setTimeout(resolve, 400)); // Feedback visual suave
-                    const localResult = generateDecompositionOffline(rawText, battery, chosenMode, effortData);
-                    return localResult;
+                    // Tenta primeiro via Gemini Flash (Edge Function segura)
+                    const geminiResult = await callGeminiViaEdgeFunction(rawText, battery, chosenMode, effortData);
+
+                    if (geminiResult && geminiResult.steps && geminiResult.steps.length > 0) {
+                        // Indica ao usuário que a IA gerou os passos
+                        btnDecompose.innerHTML = '<span>✨ Desmembrar em Microetapas</span>';
+                        state._lastDecompSource = 'gemini';
+                        return geminiResult;
+                    }
+
+                    // Fallback: motor local semântico (offline / timeout / erro)
+                    console.info('Usando motor local semântico como fallback');
+                    state._lastDecompSource = 'local';
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    return generateDecompositionOffline(rawText, battery, chosenMode, effortData);
+
                 } finally {
                     btnDecompose.disabled = false;
                     btnDecompose.innerHTML = '<span>✨ Desmembrar em Microetapas</span>';
@@ -2622,6 +2681,19 @@
                 state.currentTaskTitle = result.task_title;
                 state.steps = result.steps;
                 state.currentStepIndex = 0;
+
+                // Indicador de fonte (IA Gemini vs Motor Local)
+                const sourceEl = document.getElementById('review-source-badge');
+                if (sourceEl) {
+                    if (state._lastDecompSource === 'gemini') {
+                        sourceEl.innerHTML = '✨ <strong>Gerado com IA (Gemini Flash)</strong>';
+                        sourceEl.style.color = 'var(--brand-primary)';
+                    } else {
+                        sourceEl.innerHTML = '📱 Motor local (modo offline)';
+                        sourceEl.style.color = 'var(--text-muted)';
+                    }
+                    sourceEl.style.display = 'inline';
+                }
 
                 renderStepsReview();
                 switchView(viewReview);
@@ -3826,6 +3898,7 @@
 
             // Dicionário rápido de termos comuns burocráticos/complexos
             const visualDictionary = {
+                // Trabalho & Gestão
                 'procrastinar': { icon: '⏳', meaning: 'Adiar tarefas difíceis ou chatas devido a sobrecarga mental ou medo de errar.' },
                 'prazo': { icon: '📅', meaning: 'Data e hora limite em que uma entrega deve estar pronta.' },
                 'demanda': { icon: '📋', meaning: 'Um pedido de trabalho, tarefa ou exigência vinda de outra pessoa.' },
@@ -3838,8 +3911,116 @@
                 'escopo': { icon: '📦', meaning: 'O limite do que deve ser feito (e o que NÃO faz parte da tarefa).' },
                 'pendencia': { icon: '📌', meaning: 'Assunto ou tarefa que ainda não foi concluído.' },
                 'metodologia': { icon: '🛠️', meaning: 'O modo ou passos organizados de fazer alguma coisa.' },
-                'conformidade': { icon: '⚖️', meaning: 'Estar dentro das regras, leis ou normas exigidas.' }
+                'conformidade': { icon: '⚖️', meaning: 'Estar dentro das regras, leis ou normas exigidas.' },
+                // Auditoria & Compliance
+                'auditoria': { icon: '🔍', meaning: 'Revisão formal e detalhada de processos, contas ou documentos para checar se estão corretos.' },
+                'roc': { icon: '📑', meaning: 'Relatório de Operação de Controle — documento que registra achados e evidências de uma auditoria.' },
+                'evidencia': { icon: '🗂️', meaning: 'Prova concreta (arquivo, print, log) que comprova que algo aconteceu ou foi feito.' },
+                'laudo': { icon: '📄', meaning: 'Documento técnico com a conclusão de uma análise ou vistoria especializada.' },
+                'parecer': { icon: '⚖️', meaning: 'Opinião técnica ou jurídica fundamentada sobre um caso ou situação.' },
+                'ata': { icon: '📋', meaning: 'Registro formal do que foi discutido e decidido em uma reunião.' },
+                'notificacao': { icon: '📨', meaning: 'Comunicado oficial informando algo importante que precisa de resposta ou ação.' },
+                'diligencia': { icon: '🔎', meaning: 'Investigação ou verificação cuidadosa feita antes de tomar uma decisão.' },
+                'achado': { icon: '🔎', meaning: 'Problema ou irregularidade encontrada durante uma auditoria ou revisão.' },
+                'materialidade': { icon: '📊', meaning: 'O tamanho ou importância de um erro que pode influenciar uma decisão.' },
+                'recomendacao': { icon: '📝', meaning: 'Sugestão formal de melhoria feita após identificar um problema.' },
+                // Projeto & Processo
+                'entregavel': { icon: '📦', meaning: 'Resultado concreto (documento, código, relatório) que deve ser entregue no final de uma etapa.' },
+                'milestone': { icon: '🏁', meaning: 'Marco importante no projeto — um ponto de verificação de progresso.' },
+                'sprint': { icon: '🏃', meaning: 'Período curto e intenso de trabalho focado em entregar algo específico (geralmente 1-2 semanas).' },
+                'backlog': { icon: '📋', meaning: 'Lista de tarefas pendentes e organizadas por prioridade que ainda precisam ser feitas.' },
+                'stakeholder': { icon: '👥', meaning: 'Pessoa ou grupo que é afetado pelo projeto e tem interesse no resultado.' },
+                'escalada': { icon: '📣', meaning: 'Levar um problema para uma pessoa com mais autoridade para resolver.' },
+                'baseline': { icon: '📏', meaning: 'Ponto de referência inicial usado para comparar o progresso ou as mudanças.' },
+                'benchmark': { icon: '📊', meaning: 'Comparar algo com o melhor exemplo do mercado para saber onde melhorar.' },
+                'roadmap': { icon: '🗺️', meaning: 'Mapa visual do plano de desenvolvimento de um produto ou projeto ao longo do tempo.' },
+                'deploy': { icon: '🚀', meaning: 'Publicar ou colocar em funcionamento uma atualização de sistema ou software.' },
+                'rollback': { icon: '↩️', meaning: 'Voltar o sistema para a versão anterior após um problema.' },
+                'bug': { icon: '🐛', meaning: 'Erro ou falha no funcionamento de um sistema ou programa.' },
+                // Comunicação & Escrita
+                'briefing': { icon: '📝', meaning: 'Documento ou conversa que resume o objetivo, contexto e regras de uma tarefa.' },
+                'minuta': { icon: '📄', meaning: 'Rascunho inicial de um documento oficial antes da versão final.' },
+                'pauta': { icon: '📋', meaning: 'Lista de assuntos que serão discutidos em uma reunião.' },
+                'memorando': { icon: '📨', meaning: 'Comunicação interna formal entre pessoas ou setores da mesma organização.' },
+                'oficio': { icon: '📮', meaning: 'Comunicado formal enviado de uma instituição para outra.' },
+                'resolucao': { icon: '📜', meaning: 'Decisão formal registrada em documento, geralmente com número e data.' },
+                'normativa': { icon: '📗', meaning: 'Conjunto de regras e instruções que devem ser seguidas em uma organização.' },
+                // Finanças & Controle
+                'orcamento': { icon: '💰', meaning: 'Planejamento de quanto dinheiro será gasto em cada área ou projeto.' },
+                'provisao': { icon: '🏦', meaning: 'Valor separado antecipadamente para cobrir despesas ou perdas previstas.' },
+                'conciliacao': { icon: '🔄', meaning: 'Comparar dois registros financeiros para garantir que coincidem.' },
+                'inadimplencia': { icon: '⚠️', meaning: 'Quando uma pessoa ou empresa não paga o que deve no prazo combinado.' },
+                'fluxo de caixa': { icon: '💸', meaning: 'Controle de todo o dinheiro que entra e sai em um período.' },
+                'glosa': { icon: '❌', meaning: 'Quando uma despesa ou cobrança é negada ou cortada por não atender às regras.' },
+                'contrato': { icon: '📝', meaning: 'Acordo formal e legal entre duas ou mais partes com obrigações e direitos.' },
+                'aditivo': { icon: '📎', meaning: 'Documento que adiciona ou altera algo em um contrato já existente.' },
+                // Saúde Mental & Produtividade
+                'tdah': { icon: '🧠', meaning: 'Transtorno de Déficit de Atenção com Hiperatividade — afeta concentração, impulsividade e organização.' },
+                'paralisia': { icon: '🧊', meaning: 'Sensação de não conseguir começar ou avançar em uma tarefa, mesmo querendo.' },
+                'sobrecarga': { icon: '⚡', meaning: 'Ter mais tarefas ou responsabilidades do que é possível gerenciar bem.' },
+                'neurodivergente': { icon: '🌈', meaning: 'Pessoa cujo cérebro funciona de forma diferente do padrão típico (TDAH, autismo, dislexia, etc.).' },
+                'hiperfoco': { icon: '🔦', meaning: 'Estado de concentração intensa e prolongada em algo de grande interesse pessoal.' },
+                'burnout': { icon: '🔥', meaning: 'Esgotamento total causado por excesso de trabalho ou pressão por tempo prolongado.' },
+                'autorregulacao': { icon: '🎛️', meaning: 'Capacidade de controlar as próprias emoções, impulsos e comportamentos.' },
+                'gatilho': { icon: '⚡', meaning: 'Algo que desencadeia uma reação emocional ou comportamental intensa.' },
+                'micropausa': { icon: '🌬️', meaning: 'Intervalo de 1 a 5 minutos para respirar e descansar o cérebro entre tarefas.' },
+                'inercial': { icon: '🧲', meaning: 'Estado em que é difícil começar ou mudar de atividade — comum no TDAH.' },
+                // TI & Segurança
+                'vulnerabilidade': { icon: '🔓', meaning: 'Ponto fraco em um sistema que pode ser explorado para causar danos.' },
+                'criptografia': { icon: '🔐', meaning: 'Tecnologia que embaralha dados para que só pessoas autorizadas possam ler.' },
+                'autenticacao': { icon: '🔑', meaning: 'Processo de confirmar que você é quem diz ser (senha, biometria, código).' },
+                'permissao': { icon: '🛡️', meaning: 'Direito de acesso concedido a um usuário para ver ou alterar algo no sistema.' },
+                'log': { icon: '📋', meaning: 'Registro automático de atividades do sistema — como um diário de bordo digital.' },
+                'api': { icon: '🔌', meaning: 'Interface que permite que dois sistemas diferentes conversem entre si.' },
+                'banco de dados': { icon: '🗄️', meaning: 'Sistema organizado para armazenar e consultar grandes quantidades de informação.' },
+                'servidor': { icon: '💻', meaning: 'Computador potente que guarda arquivos e programas acessados por outras máquinas.' },
+                'token': { icon: '🎫', meaning: 'Código temporário de segurança usado para confirmar identidade ou acesso.' },
+                // Geral
+                'hipotese': { icon: '💡', meaning: 'Uma suposição ou ideia a ser testada para entender ou resolver algo.' },
+                'diagnóstico': { icon: '🩺', meaning: 'Análise que identifica a causa raiz de um problema ou situação.' },
+                'sinergico': { icon: '🤝', meaning: 'Quando dois elementos juntos produzem um resultado maior do que separados.' },
+                'iterativo': { icon: '🔁', meaning: 'Processo que repete ciclos curtos de melhoria em vez de tentar fazer tudo de uma vez.' },
+                'proativo': { icon: '🚀', meaning: 'Agir antes que o problema aconteça, sem esperar ser pedido.' },
+                'parametro': { icon: '⚙️', meaning: 'Valor ou condição que define como algo deve funcionar.' },
+                'validar': { icon: '✅', meaning: 'Confirmar que algo está correto, completo e dentro das expectativas.' }
             };
+
+            // Cache de lookups dinâmicos para evitar chamadas repetidas
+            const dictDynamicCache = {};
+
+            async function lookupWordWithGemini(word) {
+                if (dictDynamicCache[word]) return dictDynamicCache[word];
+
+                try {
+                    const controller = new AbortController();
+                    const timeout = setTimeout(() => controller.abort(), 4000);
+
+                    const res = await fetch(EDGE_FUNCTION_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${SUPABASE_KEY}`
+                        },
+                        body: JSON.stringify({
+                            text: `Defina em 1 frase simples (máx. 15 palavras) o termo "${word}" para uma pessoa leiga. Responda apenas JSON: {"icon":"emoji","meaning":"definição"}`,
+                            battery: 'high',
+                            mode: 'checklist',
+                            effort: { materials: 'ready', scope: 'direct_update' },
+                            _action: 'dict_lookup'
+                        }),
+                        signal: controller.signal
+                    });
+
+                    clearTimeout(timeout);
+                    if (!res.ok) return null;
+
+                    // A Edge Function retorna steps[], então não usamos aqui o formato padrão
+                    // Fallback: se não tiver o formato dict, retorna null silenciosamente
+                    return null;
+                } catch {
+                    return null;
+                }
+            }
 
             function cleanComplexTextLocal(text) {
                 // Heurística de descomplicação: quebra em frases, destaca verbos de ação e resume
@@ -3871,6 +4052,58 @@
                 `;
             }
 
+            async function simplifyWithGemini(text) {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 6000);
+
+                try {
+                    const res = await fetch(EDGE_FUNCTION_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${SUPABASE_KEY}`
+                        },
+                        body: JSON.stringify({
+                            text: `Simplifique o texto abaixo em linguagem direta e acessível para uma pessoa com dislexia ou TDAH. 
+Use até 6 tópicos curtos. Cada tópico começa com um verbo de ação no imperativo em negrito.
+Elimine jargões, formalize simples, e vá direto ao ponto.
+Responda como HTML com divs class="simplifier-bullet". Sem markdown, sem código de bloco.
+
+Texto: "${text.substring(0, 2500)}"`,
+                            battery: 'high',
+                            mode: 'checklist',
+                            effort: { materials: 'ready', scope: 'analysis_synthesis' },
+                            _action: 'simplify'
+                        }),
+                        signal: controller.signal
+                    });
+
+                    clearTimeout(timeout);
+                    if (!res.ok) return null;
+
+                    // Edge Function retorna steps[] — extraímos as instruções como tópicos simplificados
+                    const data = await res.json();
+                    if (data.steps && Array.isArray(data.steps) && data.steps.length > 0) {
+                        const bullets = data.steps.map((s, idx) => `
+                            <div class="simplifier-bullet">
+                                <span style="font-weight: 700; color: var(--brand-secondary);">Ponto ${idx + 1}:</span>
+                                <strong>${escapeHtml(s.action_verb || '')}</strong> ${escapeHtml(s.instruction || '')}.
+                            </div>
+                        `).join('');
+                        return `
+                            <div style="margin-bottom: 12px; font-size: 0.95rem;">
+                                <strong>✨ Resumo simplificado com IA:</strong>
+                            </div>
+                            ${bullets}
+                        `;
+                    }
+                    return null;
+                } catch {
+                    clearTimeout(timeout);
+                    return null;
+                }
+            }
+
             btnRunSimplify.addEventListener('click', async () => {
                 const text = simplifierInput.value.trim();
                 if (!text) {
@@ -3879,11 +4112,15 @@
                 }
 
                 btnRunSimplify.disabled = true;
-                btnRunSimplify.innerHTML = '<span>⏳ Simplificando...</span>';
+                btnRunSimplify.innerHTML = '<span>✨ Simplificando com IA...</span>';
 
                 try {
-                    // Fallback imediato e claro
-                    const simplifiedHtml = cleanComplexTextLocal(text);
+                    // Tenta Gemini primeiro, fallback para heurística local
+                    let simplifiedHtml = await simplifyWithGemini(text);
+                    if (!simplifiedHtml) {
+                        btnRunSimplify.innerHTML = '<span>⏳ Usando modo offline...</span>';
+                        simplifiedHtml = cleanComplexTextLocal(text);
+                    }
                     simplifierOutput.innerHTML = simplifiedHtml;
                     simplifierResultContainer.style.display = 'block';
                     simplifierResultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
