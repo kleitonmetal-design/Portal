@@ -231,7 +231,7 @@
     }
 
     .question-text {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 600;
       margin-bottom: 20px;
     }
@@ -254,7 +254,7 @@
       font-weight: 500;
       cursor: pointer;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
       transition: all 0.2s;
     }
@@ -264,15 +264,15 @@
     }
 
     .option-btn.correct {
-      background: #dcfce7;
-      border-color: #22c55e;
-      color: #14532d;
+      background: #dcfce7 !important;
+      border-color: #22c55e !important;
+      color: #14532d !important;
     }
 
     .option-btn.wrong {
-      background: #fee2e2;
-      border-color: #ef4444;
-      color: #7f1d1d;
+      background: #fee2e2 !important;
+      border-color: #ef4444 !important;
+      color: #7f1d1d !important;
     }
 
     /* Feedback Box */
@@ -342,7 +342,7 @@
           <div class="score-lbl">Sequência</div>
         </div>
         <div class="score-item">
-          <div id="val-progress" class="score-val">1/10</div>
+          <div id="val-progress" class="score-val">1/12</div>
           <div class="score-lbl">Progresso</div>
         </div>
       </div>
@@ -376,21 +376,22 @@
   </div>
 
   <script>
-    const quizData = [
+    const rawQuizData = [
       {
         id: 1,
         theme: 'org',
         themeLabel: '🟩 A.5 Organizacional',
         badgeClass: 'badge-org',
         icon: '📋',
-        scenario: 'Definição de Papéis e Responsabilidades',
-        question: 'A empresa precisa garantir que todos os colaboradores saibam quem é responsável por aprovar acessos e proteger os ativos. Qual controle exige isso?',
+        scenario: 'Definição de Responsabilidades de Segurança',
+        question: 'A diretoria precisa garantir que a aprovação de acessos e a proteção de dados críticos tenham proprietários identificados. Qual controle trata especificamente disso?',
         options: [
           { text: 'A.5.2 Papéis e responsabilidades de segurança da informação', correct: true },
-          { text: 'A.7.1 Perímetros físicos de segurança', correct: false },
-          { text: 'A.8.7 Proteção contra malware', correct: false }
+          { text: 'A.5.1 Políticas de segurança da informação', correct: false },
+          { text: 'A.5.3 Segregação de funções', correct: false },
+          { text: 'A.5.15 Controle de acesso', correct: false }
         ],
-        explanation: 'O controle A.5.2 estabelece que os papéis e as responsabilidades de segurança devem ser formalmente definidos e atribuídos.'
+        explanation: 'O controle A.5.2 exige que os papéis e as responsabilidades de segurança sejam formalmente definidos e atribuídos aos responsáveis.'
       },
       {
         id: 2,
@@ -398,14 +399,15 @@
         themeLabel: '🟦 A.6 Pessoas',
         badgeClass: 'badge-pessoas',
         icon: '🎓',
-        scenario: 'Conscientização e Treinamento de Funcionários',
-        question: 'Realizar simulações periódicas de phishing e treinamentos com novos contratados é exigência de qual controle?',
+        scenario: 'Conscientização e Testes de Phishing',
+        question: 'Campanhas periódicas contra engenharia social e treinamento obrigatório na integração de funcionários atendem a qual controle?',
         options: [
           { text: 'A.6.3 Conscientização, educação e treinamento em segurança', correct: true },
-          { text: 'A.5.1 Policiamento de segurança', correct: false },
-          { text: 'A.8.12 Prevenção contra vazamento de dados', correct: false }
+          { text: 'A.6.1 Triagem (Screening)', correct: false },
+          { text: 'A.6.5 Termos de responsabilidade e confidencialidade', correct: false },
+          { text: 'A.6.8 Relato de eventos de segurança da informação', correct: false }
         ],
-        explanation: 'O controle A.6.3 exige que pessoal da organização receba conscientização e treinamento adequados regularmente.'
+        explanation: 'O controle A.6.3 exige treinamentos e atualizações frequentes de conscientização em segurança para o pessoal da organização.'
       },
       {
         id: 3,
@@ -413,14 +415,15 @@
         themeLabel: '🟨 A.7 Físico',
         badgeClass: 'badge-fisico',
         icon: '🏢',
-        scenario: 'Perímetro de Segurança do Data Center',
-        question: 'Instalação de catracas, crachás biométricos e paredes reforçadas para proteger o Data Center atende a qual controle?',
+        scenario: 'Perímetro Físico do Data Center',
+        question: 'A construção de salas de servidores isoladas com cartões biométricos e paredes resistentes a impacto refere-se a qual controle?',
         options: [
           { text: 'A.7.1 Perímetros físicos de segurança', correct: true },
-          { text: 'A.8.2 Acesso privilegiado', correct: false },
-          { text: 'A.5.8 Segurança na gestão de projetos', correct: false }
+          { text: 'A.7.2 Entrada física', correct: false },
+          { text: 'A.7.4 Monitoramento de segurança física', correct: false },
+          { text: 'A.7.10 Mídias de armazenamento', correct: false }
         ],
-        explanation: 'O controle A.7.1 define a criação e proteção de perímetros físicos de segurança para proteger instalações de informação.'
+        explanation: 'O controle A.7.1 exige a definição de barreiras e perímetros físicos de segurança para proteger áreas onde estão dados críticos.'
       },
       {
         id: 4,
@@ -428,14 +431,15 @@
         themeLabel: '🟥 A.8 Tecnológico',
         badgeClass: 'badge-tec',
         icon: '🔑',
-        scenario: 'Múltiplo Fator de Autenticação (MFA)',
-        question: 'Exigir senha forte + token no celular para login dos administradores de sistema reflete qual controle?',
+        scenario: 'Autenticação Multifator (MFA)',
+        question: 'Exigir senha + token no aplicativo móvel para o acesso dos administradores de TI aos servidores cumpre qual controle?',
         options: [
           { text: 'A.8.5 Autenticação segura', correct: true },
-          { text: 'A.7.4 Monitoramento de segurança física', correct: false },
-          { text: 'A.6.5 Termos de confidencialidade', correct: false }
+          { text: 'A.8.2 Acesso privilegiado', correct: false },
+          { text: 'A.8.15 Registros de eventos (Logging)', correct: false },
+          { text: 'A.8.20 Segurança nos serviços de rede', correct: false }
         ],
-        explanation: 'O controle A.8.5 exige práticas de autenticação seguras baseadas em tecnologias adequadas (como MFA).'
+        explanation: 'O controle A.8.5 exige o uso de tecnologias e métodos de autenticação forte (como MFA) baseados na criticidade.'
       },
       {
         id: 5,
@@ -443,14 +447,15 @@
         themeLabel: '🟥 A.8 Tecnológico',
         badgeClass: 'badge-tec',
         icon: '🔒',
-        scenario: 'Criptografia em Repouso e em Trânsito',
-        question: 'Proteger banco de dados com AES-256 e conexões web com TLS 1.3 garante qual controle?',
+        scenario: 'Proteção Criptográfica de Dados',
+        question: 'Aplicar criptografia AES-256 no banco de dados e TLS 1.3 nas conexões web garante qual controle do Anexo A?',
         options: [
           { text: 'A.8.24 Uso de criptografia', correct: true },
-          { text: 'A.5.15 Controle de acesso', correct: false },
-          { text: 'A.7.8 Mesa limpa e tela limpa', correct: false }
+          { text: 'A.8.12 Prevenção contra vazamento de dados (DLP)', correct: false },
+          { text: 'A.8.7 Proteção contra malware', correct: false },
+          { text: 'A.8.11 Mascaramento de dados', correct: false }
         ],
-        explanation: 'O controle A.8.24 define regras para o uso de criptografia e gerenciamento de chaves para proteger a informação.'
+        explanation: 'O controle A.8.24 define a implementação de criptografia e a correta gestão de chaves para resguardar dados.'
       },
       {
         id: 6,
@@ -458,14 +463,15 @@
         themeLabel: '🟩 A.5 Organizacional',
         badgeClass: 'badge-org',
         icon: '🏷️',
-        scenario: 'Classificação e Rotulagem da Informação',
-        question: 'Marcar documentos como "Confidencial", "Restrito" ou "Público" atende a qual controle?',
+        scenario: 'Classificação da Informação',
+        question: 'Categorizar dados como "Confidencial", "Restrito" ou "Público" de acordo com o impacto de vazamento atende a qual controle?',
         options: [
           { text: 'A.5.12 Classificação da informação', correct: true },
-          { text: 'A.8.16 Monitoramento de atividades (Logs)', correct: false },
-          { text: 'A.6.2 Termos de contratação', correct: false }
+          { text: 'A.5.10 Uso aceitável da informação e ativos', correct: false },
+          { text: 'A.5.13 Rotulagem da informação', correct: false },
+          { text: 'A.5.9 Inventário de informação e outros ativos associados', correct: false }
         ],
-        explanation: 'O controle A.5.12 exige que a informação seja classificada de acordo com a necessidade de proteção da organização.'
+        explanation: 'O controle A.5.12 orienta a classificação das informações segundo seu valor, requisitos legais e sensibilidade.'
       },
       {
         id: 7,
@@ -473,14 +479,15 @@
         themeLabel: '🟨 A.7 Físico',
         badgeClass: 'badge-fisico',
         icon: '🧹',
-        scenario: 'Política de Mesa Limpa e Tela Limpa',
-        question: 'Bloquear a tela ao se ausentar e não deixar papéis confidenciais na mesa reflete qual controle?',
+        scenario: 'Mesa Limpa e Tela Limpa',
+        question: 'Evitar papeis com dados confidenciais sobre as mesas e bloqueio automático de tela após inatividade cumprem qual controle?',
         options: [
           { text: 'A.7.7 Política de mesa limpa e tela limpa', correct: true },
-          { text: 'A.8.9 Gestão de configurações', correct: false },
-          { text: 'A.5.3 Segregação de funções', correct: false }
+          { text: 'A.7.8 Posicionamento e proteção dos equipamentos', correct: false },
+          { text: 'A.7.9 Manutenção dos equipamentos', correct: false },
+          { text: 'A.7.3 Proteção contra ameaças físicas e ambientais', correct: false }
         ],
-        explanation: 'O controle A.7.7 estabelece regras de mesa limpa para papéis e mídias e tela limpa para equipamentos.'
+        explanation: 'O controle A.7.7 formaliza a proteção física de mídias/documentos de mesa e o bloqueio de telas não supervisionadas.'
       },
       {
         id: 8,
@@ -489,25 +496,100 @@
         badgeClass: 'badge-tec',
         icon: '📜',
         scenario: 'Registros de Eventos (Logs) e SIEM',
-        question: 'Coletar e auditar logs de acessos para identificar tentativas de invasão é requisito de qual controle?',
+        question: 'A coleta centralizada de registros de logs e monitoramento de atividades suspeitas em servidores refere-se a qual controle?',
         options: [
           { text: 'A.8.15 Registros de eventos (Logging)', correct: true },
-          { text: 'A.6.8 Notificação de eventos de segurança', correct: false },
-          { text: 'A.7.9 Manutenção de equipamentos', correct: false }
+          { text: 'A.8.16 Monitoramento de atividades', correct: false },
+          { text: 'A.8.23 Filtragem de conteúdo web', correct: false },
+          { text: 'A.8.8 Gestão de vulnerabilidades técnicas', correct: false }
         ],
-        explanation: 'O controle A.8.15 exige a geração, armazenamento e análise de registros de eventos (logs).'
+        explanation: 'O controle A.8.15 obriga a produção, retenção e análise auditável de logs de eventos do sistema.'
+      },
+      {
+        id: 9,
+        theme: 'pessoas',
+        themeLabel: '🟦 A.6 Pessoas',
+        badgeClass: 'badge-pessoas',
+        icon: '🕵️‍♂️',
+        scenario: 'Verificação de Antecedentes (Screening)',
+        question: 'Validar histórico acadêmico, referências e antecedentes criminais antes da contratação atende a qual controle?',
+        options: [
+          { text: 'A.6.1 Triagem (Screening)', correct: true },
+          { text: 'A.6.2 Termos de contratação', correct: false },
+          { text: 'A.6.4 Processo disciplinar', correct: false },
+          { text: 'A.6.5 Responsabilidades pós-desligamento', correct: false }
+        ],
+        explanation: 'O controle A.6.1 determina que a triagem de candidatos seja conduzida proporcionalmente ao risco antes da admissão.'
+      },
+      {
+        id: 10,
+        theme: 'org',
+        themeLabel: '🟩 A.5 Organizacional',
+        badgeClass: 'badge-org',
+        icon: '🔀',
+        scenario: 'Segregação de Funções',
+        question: 'Impedir que o mesmo desenvolvedor tenha permissão de aprovar e colocar seu próprio código em produção é exigência de qual controle?',
+        options: [
+          { text: 'A.5.3 Segregação de funções', correct: true },
+          { text: 'A.5.15 Controle de acesso', correct: false },
+          { text: 'A.5.17 Informações de autenticação', correct: false },
+          { text: 'A.5.8 Segurança na gestão de projetos', correct: false }
+        ],
+        explanation: 'O controle A.5.3 exige separar responsabilidades conflitantes para reduzir riscos de erro, fraude ou modificações indevidas.'
+      },
+      {
+        id: 11,
+        theme: 'tec',
+        themeLabel: '🟥 A.8 Tecnológico',
+        badgeClass: 'badge-tec',
+        icon: '💾',
+        scenario: 'Cópias de Segurança (Backup)',
+        question: 'Testar e armazenar cópias periódicas de segurança de dados em local geograficamente distinto atende a qual controle?',
+        options: [
+          { text: 'A.8.13 Cópias de segurança (Backup)', correct: true },
+          { text: 'A.8.14 Redundância dos recursos de informação', correct: false },
+          { text: 'A.8.24 Uso de criptografia', correct: false },
+          { text: 'A.8.9 Gestão de configurações', correct: false }
+        ],
+        explanation: 'O controle A.8.13 trata especificamente da execução, manutenção e teste regular de backups das informações.'
+      },
+      {
+        id: 12,
+        theme: 'tec',
+        themeLabel: '🟥 A.8 Tecnológico',
+        badgeClass: 'badge-tec',
+        icon: '🛡️',
+        scenario: 'Prevenção Contra Vazamento de Dados (DLP)',
+        question: 'Bloquear o envio não autorizado de números de cartão e CPF para e-mails pessoais via rede atende a qual controle?',
+        options: [
+          { text: 'A.8.12 Prevenção contra vazamento de dados', correct: true },
+          { text: 'A.8.23 Filtragem de conteúdo web', correct: false },
+          { text: 'A.8.20 Segurança nos serviços de rede', correct: false },
+          { text: 'A.8.28 Códigos-fonte de sistemas', correct: false }
+        ],
+        explanation: 'O controle A.8.12 estabelece ferramentas e políticas de DLP para monitorar e impedir a exfiltração de dados sensíveis.'
       }
     ];
 
-    let currentQuestions = [...quizData];
+    let currentQuestions = [...rawQuizData];
     let currentIdx = 0;
     let score = 0;
     let streak = 0;
     let answered = false;
+    let activeShuffledOptions = [];
 
     const themes = ['sepia', 'cream', 'dark-soft'];
     let themeIdx = 0;
     let fontIdx = 0;
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
 
     function toggleTheme() {
       themeIdx = (themeIdx + 1) % themes.length;
@@ -524,9 +606,9 @@
       event.target.classList.add('active');
 
       if (theme === 'all') {
-        currentQuestions = [...quizData];
+        currentQuestions = shuffleArray(rawQuizData);
       } else {
-        currentQuestions = quizData.filter(q => q.theme === theme);
+        currentQuestions = shuffleArray(rawQuizData.filter(q => q.theme === theme));
       }
       currentIdx = 0;
       renderQuestion();
@@ -537,6 +619,9 @@
       answered = false;
       const q = currentQuestions[currentIdx];
 
+      // Embaralhar as opções dinamicamente a cada carregamento de pergunta
+      activeShuffledOptions = shuffleArray(q.options);
+
       document.getElementById('val-progress').textContent = `${currentIdx + 1}/${currentQuestions.length}`;
       document.getElementById('q-badge').className = `category-badge ${q.badgeClass}`;
       document.getElementById('q-badge').textContent = q.themeLabel;
@@ -545,9 +630,9 @@
       document.getElementById('q-question').textContent = q.question;
 
       const optsContainer = document.getElementById('q-options');
-      optsContainer.innerHTML = q.options.map((opt, i) => `
+      optsContainer.innerHTML = activeShuffledOptions.map((opt, i) => `
         <button class="option-btn" onclick="selectOption(${i})">
-          <span>${String.fromCharCode(65 + i)})</span>
+          <span style="font-weight:700;">${String.fromCharCode(65 + i)})</span>
           <span>${opt.text}</span>
         </button>
       `).join('');
@@ -563,11 +648,11 @@
       answered = true;
 
       const q = currentQuestions[currentIdx];
-      const selected = q.options[optIdx];
+      const selected = activeShuffledOptions[optIdx];
       const buttons = document.querySelectorAll('.option-btn');
 
       buttons.forEach((btn, i) => {
-        if (q.options[i].correct) {
+        if (activeShuffledOptions[i].correct) {
           btn.classList.add('correct');
         } else if (i === optIdx) {
           btn.classList.add('wrong');
@@ -598,6 +683,8 @@
       renderQuestion();
     }
 
+    // Inicialização com perguntas e opções embaralhadas
+    currentQuestions = shuffleArray(rawQuizData);
     renderQuestion();
   </script>
 </body>
