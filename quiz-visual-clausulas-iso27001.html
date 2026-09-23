@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Visual - Cláusulas 4 a 10 (ISO/IEC 27001:2022)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    .quiz-page-wrapper {
+      --font-stack: 'Lexend', sans-serif;
+      --bg-body: #f4ecd8;
+      --bg-surface: #fbf0d9;
+      --bg-card: #fdf6e2;
+      --text-main: #2d2b28;
+      --text-muted: #57534e;
+      --border-color: #d6c7a1;
+      --accent: #1d4ed8;
+
+      --theme-c4: #1d4ed8;
+      --theme-c4-bg: #eff6ff;
+      --theme-c5: #0284c7;
+      --theme-c5-bg: #f0f9ff;
+      --theme-c6: #b45309;
+      --theme-c6-bg: #fffbeb;
+      --theme-c7: #15803d;
+      --theme-c7-bg: #f0fdf4;
+      --theme-c8: #b91c1c;
+      --theme-c8-bg: #fef2f2;
+      --theme-c9: #6b21a8;
+      --theme-c9-bg: #faf5ff;
+      --theme-c10: #0d9488;
+      --theme-c10-bg: #f0fdfa;
+
+      font-family: var(--font-stack);
+      font-size: var(--font-size-base, 18px);
+      line-height: 1.6;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding-bottom: 80px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .quiz-page-wrapper[data-theme="sepia"] {
+      --bg-body: #f4ecd8;
+      --bg-surface: #fbf0d9;
+      --bg-card: #fdf6e2;
+      --text-main: #2d2b28;
+      --text-muted: #57534e;
+      --border-color: #d6c7a1;
+      --accent: #1d4ed8;
+    }
+
+    .quiz-page-wrapper[data-theme="cream"] {
+      --bg-body: #f7f5ee;
+      --bg-surface: #ffffff;
+      --bg-card: #faf8f5;
+      --text-main: #1f2937;
+      --text-muted: #4b5563;
+      --border-color: #e2ded4;
+      --accent: #2563eb;
+    }
+
+    .quiz-page-wrapper[data-theme="dark-soft"] {
+      --bg-body: #1e2022;
+      --bg-surface: #272a2d;
+      --bg-card: #2d3135;
+      --text-main: #e2e4e7;
+      --text-muted: #9ba1a6;
+      --border-color: #3f4448;
+      --accent: #38bdf8;
+    }
+
+    .quiz-page-wrapper[data-font="opendyslexic"] {
+      --font-stack: 'Comic Sans MS', 'Lexend', sans-serif;
+    }
+
+    /* Header */
+    header.sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background-color: var(--bg-surface);
+      border-bottom: 2px solid var(--border-color);
+      padding: 12px 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .header-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+    }
+
+    .header-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .btn-tool {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Main Container */
+    main.main-content {
+      max-width: 800px;
+      margin: 32px auto 0;
+      padding: 0 20px;
+    }
+
+    /* Scoreboard */
+    .scoreboard {
+      background: var(--bg-surface);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .score-item {
+      text-align: center;
+    }
+
+    .score-val {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .score-lbl {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+
+    .filter-btn {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .filter-btn.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Card Question */
+    .question-card {
+      background: var(--bg-surface);
+      border: 3px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      position: relative;
+    }
+
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .badge-c4 { background: var(--theme-c4-bg); color: var(--theme-c4); border: 1px solid var(--theme-c4); }
+    .badge-c5 { background: var(--theme-c5-bg); color: var(--theme-c5); border: 1px solid var(--theme-c5); }
+    .badge-c6 { background: var(--theme-c6-bg); color: var(--theme-c6); border: 1px solid var(--theme-c6); }
+    .badge-c7 { background: var(--theme-c7-bg); color: var(--theme-c7); border: 1px solid var(--theme-c7); }
+    .badge-c8 { background: var(--theme-c8-bg); color: var(--theme-c8); border: 1px solid var(--theme-c8); }
+    .badge-c9 { background: var(--theme-c9-bg); color: var(--theme-c9); border: 1px solid var(--theme-c9); }
+    .badge-c10 { background: var(--theme-c10-bg); color: var(--theme-c10); border: 1px solid var(--theme-c10); }
+
+    .visual-illustration {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .illustration-icon {
+      font-size: 3.5rem;
+      margin-bottom: 8px;
+    }
+
+    .illustration-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .question-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    /* Options */
+    .options-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .option-btn {
+      text-align: left;
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 2px solid var(--border-color);
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+
+    .option-btn:hover {
+      border-color: var(--accent);
+    }
+
+    .option-btn.correct {
+      background: #dcfce7 !important;
+      border-color: #22c55e !important;
+      color: #14532d !important;
+    }
+
+    .option-btn.wrong {
+      background: #fee2e2 !important;
+      border-color: #ef4444 !important;
+      color: #7f1d1d !important;
+    }
+
+    /* Feedback Box */
+    .feedback-box {
+      display: none;
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+    }
+
+    .feedback-box.show {
+      display: block;
+    }
+
+    .feedback-box.correct-bg {
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      color: #14532d;
+    }
+
+    .feedback-box.wrong-bg {
+      background: #fee2e2;
+      border: 1px solid #fca5a5;
+      color: #7f1d1d;
+    }
+
+    .next-btn {
+      margin-top: 16px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="quiz-app" class="quiz-page-wrapper" data-theme="sepia" data-font="lexend">
+    
+    <header class="sticky-header">
+      <div class="header-container">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <a href="./simulados.html" class="back-link">← Voltar</a>
+          <h1 class="header-title">🏛️ Quiz Visual - Cláusulas 4 a 10 (ISO 27001)</h1>
+        </div>
+        <div>
+          <button class="btn-tool" onclick="toggleTheme()">🎨 Tema</button>
+          <button class="btn-tool" onclick="toggleFont()">🔤 Fonte</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- Placar -->
+      <div class="scoreboard">
+        <div class="score-item">
+          <div id="val-score" class="score-val">0</div>
+          <div class="score-lbl">Pontos</div>
+        </div>
+        <div class="score-item">
+          <div id="val-streak" class="score-val">🔥 0</div>
+          <div class="score-lbl">Sequência</div>
+        </div>
+        <div class="score-item">
+          <div id="val-progress" class="score-val">1/14</div>
+          <div class="score-lbl">Progresso</div>
+        </div>
+      </div>
+
+      <!-- Filtros por Cláusula -->
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="setFilter('all')">Todas (4 a 10)</button>
+        <button class="filter-btn" onclick="setFilter('c4')">Cláusula 4: Contexto</button>
+        <button class="filter-btn" onclick="setFilter('c5')">Cláusula 5: Liderança</button>
+        <button class="filter-btn" onclick="setFilter('c6')">Cláusula 6: Planejamento</button>
+        <button class="filter-btn" onclick="setFilter('c7')">Cláusula 7: Apoio</button>
+        <button class="filter-btn" onclick="setFilter('c8')">Cláusula 8: Operação</button>
+        <button class="filter-btn" onclick="setFilter('c9')">Cláusula 9: Avaliação</button>
+        <button class="filter-btn" onclick="setFilter('c10')">Cláusula 10: Melhoria</button>
+      </div>
+
+      <!-- Card da Pergunta Visual -->
+      <div class="question-card" id="q-card">
+        <div id="q-badge" class="category-badge badge-c4">🟦 Cláusula 4 - Contexto</div>
+        
+        <div class="visual-illustration">
+          <div id="q-icon" class="illustration-icon">🗺️</div>
+          <div id="q-scenario" class="illustration-title">Cenário Prático de Governança</div>
+        </div>
+
+        <div id="q-question" class="question-text">Qual requisito normativo (Cláusulas 4 a 10) trata desse cenário?</div>
+
+        <div id="q-options" class="options-grid"></div>
+
+        <div id="q-feedback" class="feedback-box"></div>
+        <button id="btn-next" class="next-btn" style="display:none;" onclick="nextQuestion()">Próxima Pergunta ➔</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const rawQuizData = [
+      {
+        id: 1,
+        clause: 'c4',
+        clauseLabel: '🟦 Cláusula 4 - Contexto da Organização',
+        badgeClass: 'badge-c4',
+        icon: '🎯',
+        scenario: 'Definição dos Limites Físicos e Organizacionais do SGSI',
+        question: 'A empresa precisa definir formalmente quais filiais, sistemas e processos estarão inclusos na certificação ISO 27001. Qual requisito exige isso?',
+        options: [
+          { text: '4.3 Determinando o escopo do sistema de gestão da segurança da informação', correct: true },
+          { text: '4.1 Entendendo a organização e seu contexto', correct: false },
+          { text: '5.2 Política de segurança da informação', correct: false },
+          { text: '6.1.2 Avaliação de riscos de segurança da informação', correct: false }
+        ],
+        explanation: 'O requisito 4.3 exige que a organização determine os limites e a aplicabilidade do SGSI para estabelecer seu escopo formalmente documentado.'
+      },
+      {
+        id: 2,
+        clause: 'c4',
+        clauseLabel: '🟦 Cláusula 4 - Contexto da Organização',
+        badgeClass: 'badge-c4',
+        icon: '🤝',
+        scenario: 'Mapeamento de Clientes, Reguladores e Leis (LGPD, BACEN)',
+        question: 'Identificar quem são as partes interessadas relevantes e quais são seus requisitos legais e contratuais atende a qual item da norma?',
+        options: [
+          { text: '4.2 Entendendo as necessidades e expectativas de partes interessadas', correct: true },
+          { text: '4.1 Entendendo a organização e seu contexto', correct: false },
+          { text: '7.4 Comunicação', correct: false },
+          { text: '5.3 Papéis, responsabilidades e autoridades organizacionais', correct: false }
+        ],
+        explanation: 'O item 4.2 exige determinar as partes interessadas relevantes para o SGSI e seus respectivos requisitos (legais, regulatórios e contratuais).'
+      },
+      {
+        id: 3,
+        clause: 'c5',
+        clauseLabel: '🟦 Cláusula 5 - Liderança',
+        badgeClass: 'badge-c5',
+        icon: '👔',
+        scenario: 'Garantia de Recursos e Alinhamento Estratégico pela Alta Direção',
+        question: 'A Alta Direção deve demonstrar liderança garantindo a integração da segurança aos processos de negócio e fornecendo recursos. Qual subcláusula cobra esse compromisso?',
+        options: [
+          { text: '5.1 Liderança e comprometimento', correct: true },
+          { text: '5.2 Política', correct: false },
+          { text: '7.1 Recursos', correct: false },
+          { text: '9.3 Análise crítica pela direção', correct: false }
+        ],
+        explanation: 'A subcláusula 5.1 estabelece a responsabilidade direta da Alta Direção em demonstrar liderança e comprometimento com o SGSI.'
+      },
+      {
+        id: 4,
+        clause: 'c5',
+        clauseLabel: '🟦 Cláusula 5 - Liderança',
+        badgeClass: 'badge-c5',
+        icon: '📜',
+        scenario: 'Compromisso Formal com a Melhoria Contínua no Documento Principal',
+        question: 'A elaboração de um documento aprovado pela diretoria contendo o compromisso formal com a melhoria contínua e alinhado aos objetivos do negócio cumpre qual item?',
+        options: [
+          { text: '5.2 Política de segurança da informação', correct: true },
+          { text: '5.3 Papéis organizacionais', correct: false },
+          { text: '6.2 Objetivos de segurança da informação', correct: false },
+          { text: '7.5 Informação documentada', correct: false }
+        ],
+        explanation: 'O item 5.2 exige a criação, manutenção e comunicação formal da Política de Segurança da Informação.'
+      },
+      {
+        id: 5,
+        clause: 'c6',
+        clauseLabel: '🟨 Cláusula 6 - Planejamento',
+        badgeClass: 'badge-c6',
+        icon: '⚖️',
+        scenario: 'Metodologia para Identificar Ameaças, Vulnerabilidades e Impactos',
+        question: 'Definir uma metodologia sistemática para estimar e avaliar os riscos de perda de confidencialidade, integridade e disponibilidade atende a qual requisito?',
+        options: [
+          { text: '6.1.2 Avaliação de riscos de segurança da informação', correct: true },
+          { text: '6.1.3 Tratamento de riscos de segurança da informação', correct: false },
+          { text: '8.2 Avaliação de riscos operacionais', correct: false },
+          { text: '6.2 Objetivos de segurança e planejamento para alcançá-los', correct: false }
+        ],
+        explanation: 'O item 6.1.2 define o processo formal de identificação, análise e avaliação dos riscos de segurança da informação.'
+      },
+      {
+        id: 6,
+        clause: 'c6',
+        clauseLabel: '🟨 Cláusula 6 - Planejamento',
+        badgeClass: 'badge-c6',
+        icon: '🛡️',
+        scenario: 'Declaração de Aplicabilidade (SoA) e Seleção de Controles do Anexo A',
+        question: 'Produzir a Declaração de Aplicabilidade (SoA) justificando inclusões e exclusões dos controles do Anexo A faz parte de qual processo?',
+        options: [
+          { text: '6.1.3 Tratamento de riscos de segurança da informação', correct: true },
+          { text: '6.1.2 Avaliação de riscos de segurança da informação', correct: false },
+          { text: '8.3 Tratamento de riscos operacionais', correct: false },
+          { text: '4.3 Escopo do SGSI', correct: false }
+        ],
+        explanation: 'O item 6.1.3 exige formular o plano de tratamento de riscos e produzir a Declaração de Aplicabilidade (Statement of Applicability - SoA).'
+      },
+      {
+        id: 7,
+        clause: 'c7',
+        clauseLabel: '🟩 Cláusula 7 - Apoio',
+        badgeClass: 'badge-c7',
+        icon: '🧠',
+        scenario: 'Comprovação de Qualificação e Treinamento Técnico da Equipe',
+        question: 'Garantir que os profissionais do SGSI tenham a educação, treinamento e experiência necessários (com registros mantidos) atende a qual requisito?',
+        options: [
+          { text: '7.2 Competência', correct: true },
+          { text: '7.3 Conscientização', correct: false },
+          { text: '7.1 Recursos', correct: false },
+          { text: '6.2 Objetivos de segurança', correct: false }
+        ],
+        explanation: 'O requisito 7.2 exige determinar a competência necessária das pessoas e tomar ações para que adquiram ou comprovem essa competência.'
+      },
+      {
+        id: 8,
+        clause: 'c7',
+        clauseLabel: '🟩 Cláusula 7 - Apoio',
+        badgeClass: 'badge-c7',
+        icon: '📁',
+        scenario: 'Controle de Versão, Aprovação e Proteção de Documentos',
+        question: 'Criar padrões para identificação, atualização, aprovação e retenção de procedimentos e políticas atende a qual requisito?',
+        options: [
+          { text: '7.5 Informação documentada', correct: true },
+          { text: '7.4 Comunicação', correct: false },
+          { text: '5.2 Política de segurança da informação', correct: false },
+          { text: '8.1 Planejamento e controle operacional', correct: false }
+        ],
+        explanation: 'O item 7.5 estabelece as regras para criação, atualização e controle da informação documentada exigida pelo SGSI.'
+      },
+      {
+        id: 9,
+        clause: 'c8',
+        clauseLabel: '🟥 Cláusula 8 - Operação',
+        badgeClass: 'badge-c8',
+        icon: '⚙️',
+        scenario: 'Execução do Plano de Tratamento de Riscos e Controle de Mudanças',
+        question: 'Garantir a execução na prática dos processos planejados e controlar mudanças operacionais não planejadas reflete qual item da norma?',
+        options: [
+          { text: '8.1 Planejamento e controle operacional', correct: true },
+          { text: '6.1 Ações para abordar riscos e oportunidades', correct: false },
+          { text: '9.1 Monitoramento, medição, análise e avaliação', correct: false },
+          { text: '10.1 Melhoria contínua', correct: false }
+        ],
+        explanation: 'O requisito 8.1 trata de planejar, implementar e controlar os processos necessários para atender aos requisitos de segurança e executar o plano de tratamento de riscos.'
+      },
+      {
+        id: 10,
+        clause: 'c9',
+        clauseLabel: '🟪 Cláusula 9 - Avaliação do Desempenho',
+        badgeClass: 'badge-c9',
+        icon: '🔍',
+        scenario: 'Verificação Imparcial da Conformidade por Auditores Qualificados',
+        question: 'Conduzir exames planejados e independentes para verificar se o SGSI está conforme com os requisitos da norma e da organização refere-se a:',
+        options: [
+          { text: '9.2 Auditoria interna', correct: true },
+          { text: '9.1 Monitoramento, medição, análise e avaliação', correct: false },
+          { text: '9.3 Análise crítica pela direção', correct: false },
+          { text: '10.2 Não conformidade e ação corretiva', correct: false }
+        ],
+        explanation: 'O item 9.2 estabelece a obrigatoriedade de realizar auditorias internas em intervalos planejados para avaliar a conformidade e eficácia do SGSI.'
+      },
+      {
+        id: 11,
+        clause: 'c9',
+        clauseLabel: '🟪 Cláusula 9 - Avaliação do Desempenho',
+        badgeClass: 'badge-c9',
+        icon: '📊',
+        scenario: 'Reunião Periódica da Diretoria para Avaliar Resultados do SGSI',
+        question: 'Reunião formal em que a administração revisa resultados de auditorias, métricas, feedback de partes interessadas e riscos é exigência de:',
+        options: [
+          { text: '9.3 Análise crítica pela direção', correct: true },
+          { text: '9.1 Monitoramento, medição, análise e avaliação', correct: false },
+          { text: '5.1 Liderança e comprometimento', correct: false },
+          { text: '10.1 Melhoria contínua', correct: false }
+        ],
+        explanation: 'O item 9.3 exige que a Alta Direção realize a análise crítica do SGSI em intervalos planejados para assegurar sua contínua adequação e eficácia.'
+      },
+      {
+        id: 12,
+        clause: 'c10',
+        clauseLabel: '🪸 Cláusula 10 - Melhoria',
+        badgeClass: 'badge-c10',
+        icon: '🛠️',
+        scenario: 'Análise de Causa Raiz após Falha Identificada em Auditoria',
+        question: 'Quando ocorre uma não conformidade, a organização deve reagir, avaliar a causa raiz para evitar a reincidência e implementar correções. Qual item exige isso?',
+        options: [
+          { text: '10.2 Não conformidade e ação corretiva', correct: true },
+          { text: '10.1 Melhoria contínua', correct: false },
+          { text: '6.1.2 Avaliação de riscos', correct: false },
+          { text: '9.2 Auditoria interna', correct: false }
+        ],
+        explanation: 'O requisito 10.2 trata do gerenciamento formal de não conformidades, investigação da causa raiz e implementação de ações corretivas.'
+      },
+      {
+        id: 13,
+        clause: 'c10',
+        clauseLabel: '🪸 Cláusula 10 - Melhoria',
+        badgeClass: 'badge-c10',
+        icon: '📈',
+        scenario: 'Aumento Contínuo da Adequação, Suficiência e Eficácia do SGSI',
+        question: 'A elevação constante do desempenho global da segurança da informação através dos resultados de análises e auditorias cumpre qual diretriz?',
+        options: [
+          { text: '10.1 Melhoria contínua', correct: true },
+          { text: '10.2 Não conformidade e ação corretiva', correct: false },
+          { text: '6.2 Objetivos de segurança da informação', correct: false },
+          { text: '8.1 Planejamento e controle operacional', correct: false }
+        ],
+        explanation: 'O item 10.1 estabelece que a organização deve melhorar continuamente a adequação, suficiência e eficácia do SGSI.'
+      },
+      {
+        id: 14,
+        clause: 'c7',
+        clauseLabel: '🟩 Cláusula 7 - Apoio',
+        badgeClass: 'badge-c7',
+        icon: '📢',
+        scenario: 'Definição de O que, Quando, Com quem e Quem comunica',
+        question: 'Determinar a necessidade de comunicações internas e externas relevantes para a segurança da informação é exigência de qual item?',
+        options: [
+          { text: '7.4 Comunicação', correct: true },
+          { text: '7.3 Conscientização', correct: false },
+          { text: '4.2 Partes interessadas', correct: false },
+          { text: '7.5 Informação documentada', correct: false }
+        ],
+        explanation: 'O item 7.4 determina que a organização deve definir as comunicações internas e externas pertinentes ao SGSI (o que, quando, com quem, como e quem comunica).'
+      }
+    ];
+
+    let currentQuestions = [...rawQuizData];
+    let currentIdx = 0;
+    let score = 0;
+    let streak = 0;
+    let answered = false;
+    let activeShuffledOptions = [];
+
+    const themes = ['sepia', 'cream', 'dark-soft'];
+    let themeIdx = 0;
+    let fontIdx = 0;
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function toggleTheme() {
+      themeIdx = (themeIdx + 1) % themes.length;
+      document.getElementById('quiz-app').setAttribute('data-theme', themes[themeIdx]);
+    }
+
+    function toggleFont() {
+      fontIdx = (fontIdx + 1) % 2;
+      document.getElementById('quiz-app').setAttribute('data-font', fontIdx === 1 ? 'opendyslexic' : 'lexend');
+    }
+
+    function setFilter(clause) {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      if (clause === 'all') {
+        currentQuestions = shuffleArray(rawQuizData);
+      } else {
+        currentQuestions = shuffleArray(rawQuizData.filter(q => q.clause === clause));
+      }
+      currentIdx = 0;
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      if (currentQuestions.length === 0) return;
+      answered = false;
+      const q = currentQuestions[currentIdx];
+
+      // Embaralhar as opções a cada questão
+      activeShuffledOptions = shuffleArray(q.options);
+
+      document.getElementById('val-progress').textContent = `${currentIdx + 1}/${currentQuestions.length}`;
+      document.getElementById('q-badge').className = `category-badge ${q.badgeClass}`;
+      document.getElementById('q-badge').textContent = q.clauseLabel;
+      document.getElementById('q-icon').textContent = q.icon;
+      document.getElementById('q-scenario').textContent = q.scenario;
+      document.getElementById('q-question').textContent = q.question;
+
+      const optsContainer = document.getElementById('q-options');
+      optsContainer.innerHTML = activeShuffledOptions.map((opt, i) => `
+        <button class="option-btn" onclick="selectOption(${i})">
+          <span style="font-weight:700;">${String.fromCharCode(65 + i)})</span>
+          <span>${opt.text}</span>
+        </button>
+      `).join('');
+
+      const fb = document.getElementById('q-feedback');
+      fb.className = 'feedback-box';
+      fb.style.display = 'none';
+      document.getElementById('btn-next').style.display = 'none';
+    }
+
+    function selectOption(optIdx) {
+      if (answered) return;
+      answered = true;
+
+      const q = currentQuestions[currentIdx];
+      const selected = activeShuffledOptions[optIdx];
+      const buttons = document.querySelectorAll('.option-btn');
+
+      buttons.forEach((btn, i) => {
+        if (activeShuffledOptions[i].correct) {
+          btn.classList.add('correct');
+        } else if (i === optIdx) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      const fb = document.getElementById('q-feedback');
+      fb.style.display = 'block';
+
+      if (selected.correct) {
+        score += 10;
+        streak += 1;
+        fb.className = 'feedback-box correct-bg show';
+        fb.innerHTML = `<strong>✨ Correto!</strong> ${q.explanation}`;
+      } else {
+        streak = 0;
+        fb.className = 'feedback-box wrong-bg show';
+        fb.innerHTML = `<strong>❌ Incorreto.</strong> ${q.explanation}`;
+      }
+
+      document.getElementById('val-score').textContent = score;
+      document.getElementById('val-streak').textContent = `🔥 ${streak}`;
+      document.getElementById('btn-next').style.display = 'block';
+    }
+
+    function nextQuestion() {
+      currentIdx = (currentIdx + 1) % currentQuestions.length;
+      renderQuestion();
+    }
+
+    // Inicialização
+    currentQuestions = shuffleArray(rawQuizData);
+    renderQuestion();
+  </script>
+</body>
+</html>

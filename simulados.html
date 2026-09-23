@@ -485,6 +485,13 @@
                     .order('ordem', { ascending: true });
 
                 let lista = (!error && data) ? [...data] : [];
+                const quizClausulas = {
+                    categoria: 'Simulados ISO 27001',
+                    titulo: '🏛️ Quiz Visual — Cláusulas 4 a 10 (ISO 27001)',
+                    descricao: 'Memorização e fixação visual dos temas abordados em cada uma das Cláusulas de 4 a 10 da norma.',
+                    url: './quiz-visual-clausulas-iso27001.html',
+                    icone: '🏛️'
+                };
                 const quizVisual = {
                     categoria: 'Simulados ISO 27001',
                     titulo: '🧩 Quiz Visual — Controles ISO 27001:2022',
@@ -499,8 +506,11 @@
                     url: './plano-estudos-iso27001-li.html',
                     icone: '🛡️'
                 };
+                if (!lista.some(l => l.url === quizClausulas.url)) {
+                    lista.unshift(quizClausulas);
+                }
                 if (!lista.some(l => l.url === quizVisual.url)) {
-                    lista.unshift(quizVisual);
+                    lista.push(quizVisual);
                 }
                 if (!lista.some(l => l.url === planoEstudos.url)) {
                     lista.push(planoEstudos);
