@@ -111,10 +111,13 @@
       text-decoration: none;
       font-weight: 600;
       font-size: 0.9rem;
-      padding: 4px 8px;
+      padding: 6px 12px;
       border-radius: 6px;
       border: 1px solid var(--border-color);
       background: var(--bg-card);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .back-link:hover {
@@ -175,7 +178,7 @@
     /* Main container */
     main.main-content {
       max-width: 900px;
-      margin: 32px auto 0;
+      margin: 24px auto 0;
       padding: 0 20px;
     }
 
@@ -185,7 +188,7 @@
       border: 2px solid var(--border-color);
       border-radius: 12px;
       padding: 16px 20px;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -210,6 +213,40 @@
     .timer-actions {
       display: flex;
       gap: 8px;
+    }
+
+    /* Module Navigation Tabs */
+    .module-nav-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 24px;
+      background: var(--bg-surface);
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .tab-btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--accent);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
     }
 
     /* Legend Bar */
@@ -249,6 +286,11 @@
       padding: 24px;
       margin-bottom: 36px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+      display: none;
+    }
+
+    .module-card.active-module {
+      display: block;
     }
 
     .completed-badge {
@@ -359,6 +401,52 @@
     .feedback-correct { background: #dcfce7; color: #14532d; border: 1px solid #86efac; }
     .feedback-wrong { background: #fee2e2; color: #7f1d1d; border: 1px solid #fca5a5; }
 
+    /* Module Navigation Footer Bar */
+    .module-footer-nav {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 2px dashed var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-nav-mod {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.2s;
+    }
+
+    .btn-nav-mod:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-exit {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     /* TTS Floating Bar */
     .tts-floating-bar {
       position: fixed;
@@ -406,7 +494,7 @@
     <header class="sticky-header">
       <div class="header-container">
         <div class="header-title-group">
-          <a href="./simulados.html" class="back-link">← Voltar ao Portal</a>
+          <a href="./simulados.html" class="back-link">🚪 Sair do Plano</a>
           <h1 class="header-title">🛡️ ISO/IEC 27001 Lead Implementer</h1>
         </div>
         <div class="tools-group">
@@ -439,7 +527,19 @@
         </div>
       </div>
 
-      <!-- Barra de Legendas das Rotas Visuais -->
+      <!-- Barra de Navegação por Abas (Módulos 1 a 8) -->
+      <div class="module-nav-tabs">
+        <button class="tab-btn active" onclick="switchModule(1)">Módulo 1</button>
+        <button class="tab-btn" onclick="switchModule(2)">Módulo 2</button>
+        <button class="tab-btn" onclick="switchModule(3)">Módulo 3</button>
+        <button class="tab-btn" onclick="switchModule(4)">Módulo 4</button>
+        <button class="tab-btn" onclick="switchModule(5)">Módulo 5</button>
+        <button class="tab-btn" onclick="switchModule(6)">Módulo 6</button>
+        <button class="tab-btn" onclick="switchModule(7)">Módulo 7</button>
+        <button class="tab-btn" onclick="switchModule(8)">Módulo 8</button>
+      </div>
+
+      <!-- Barra de Legendas -->
       <div class="legend-bar">
         <span style="font-weight: bold;">Rotas Visuais:</span>
         <span class="legend-tag tag-clausula">🟦 Cláusulas e Requisitos (4 a 10)</span>
@@ -449,7 +549,7 @@
       </div>
 
       <!-- MÓDULO 1 -->
-      <article class="module-card" id="mod1">
+      <article class="module-card active-module" id="mod1">
         <div class="completed-badge">✅ Concluído</div>
         <div class="module-header">
           <h2 class="module-title">Módulo 1: Fundamentos, Vocabulário e Tríade CIA</h2>
@@ -487,6 +587,12 @@
             </div>
             <div id="q1-fb" class="quiz-feedback"></div>
           </div>
+        </div>
+
+        <div class="module-footer-nav">
+          <button class="btn-nav-mod" disabled>⬅ Anterior</button>
+          <a href="./simulados.html" class="btn-exit">🚪 Sair do Plano</a>
+          <button class="btn-nav-mod" onclick="switchModule(2)">Módulo 2 ➡</button>
         </div>
       </article>
 
@@ -534,8 +640,14 @@
               <button class="quiz-opt-btn" onclick="handleQuizAnswer(2, true, 'q2-fb', 'Correto! O escopo parcial é válido desde que documentado.')">B) O escopo parcial é válido desde que documentado.</button>
               <button class="quiz-opt-btn" onclick="handleQuizAnswer(2, false, 'q2-fb', 'Incorreto. Cláusulas 4 a 10 são obrigatórias.')">C) Válido se excluir a cláusula 9.</button>
             </div>
-            <div id="q2-fb" className="quiz-feedback"></div>
+            <div id="q2-fb" class="quiz-feedback"></div>
           </div>
+        </div>
+
+        <div class="module-footer-nav">
+          <button class="btn-nav-mod" onclick="switchModule(1)">⬅ Módulo 1</button>
+          <a href="./simulados.html" class="btn-exit">🚪 Sair do Plano</a>
+          <button class="btn-nav-mod" onclick="switchModule(3)">Módulo 3 ➡</button>
         </div>
       </article>
 
@@ -548,19 +660,148 @@
         </div>
         <div id="mod3-content">
           <ul class="visual-bullets">
-            <li class="clausula"><span><strong>5.1 Liderança:</strong> Compromisso da Alta Direção.</span></li>
+            <li class="clausula"><span><strong>5.1 Liderança:</strong> Compromisso direto e demonstrado da Alta Direção.</span></li>
             <li class="clausula"><span><strong>5.2 Política de Segurança:</strong> Obrigatório incluir compromisso expresso com a melhoria contínua.</span></li>
-            <li class="org"><span><strong>5.3 Papéis:</strong> Atribuídos e formalmente comunicados.</span></li>
+            <li class="org"><span><strong>5.3 Papéis e Responsabilidades:</strong> Atribuídos e formalmente comunicados por toda a empresa.</span></li>
           </ul>
           <div class="quiz-card">
             <div class="quiz-title">🎯 Simulado Rápido 3</div>
-            <div class="quiz-question">Qual compromisso formal é de inclusão mandatória na Política de Segurança?</div>
+            <div class="quiz-question">Qual compromisso formal é de inclusão mandatória na Política de Segurança da Informação?</div>
             <div class="quiz-options">
               <button class="quiz-opt-btn" onclick="handleQuizAnswer(3, false, 'q3-fb', 'Incorreto.')">A) Comprar antivírus anualmente.</button>
               <button class="quiz-opt-btn" onclick="handleQuizAnswer(3, true, 'q3-fb', 'Correto! O comprometimento com a melhoria contínua é obrigatório.')">B) Comprometimento formal com a melhoria contínua.</button>
             </div>
             <div id="q3-fb" class="quiz-feedback"></div>
           </div>
+        </div>
+
+        <div class="module-footer-nav">
+          <button class="btn-nav-mod" onclick="switchModule(2)">⬅ Módulo 2</button>
+          <a href="./simulados.html" class="btn-exit">🚪 Sair do Plano</a>
+          <button class="btn-nav-mod" onclick="switchModule(4)">Módulo 4 ➡</button>
+        </div>
+      </article>
+
+      <!-- MÓDULO 4 -->
+      <article class="module-card" id="mod4">
+        <div class="completed-badge">✅ Concluído</div>
+        <div class="module-header">
+          <h2 class="module-title">Módulo 4: Planejamento e Gestão de Riscos (Cláusula 6)</h2>
+          <button class="tts-btn" onclick="speakText('mod4-content')">🔊 Ouvir</button>
+        </div>
+        <div id="mod4-content">
+          <ul class="visual-bullets">
+            <li class="tec"><span><strong>6.1.2 Avaliação de Riscos:</strong> Identificar riscos de perda de Confidencialidade, Integridade e Disponibilidade.</span></li>
+            <li class="tec"><span><strong>6.1.3 Tratamento de Riscos & SoA:</strong> Selecionar controles e elaborar a Declaração de Aplicabilidade (SoA).</span></li>
+            <li class="clausula"><span><strong>6.2 Objetivos de Segurança:</strong> Devem ser mensuráveis e alinhados à política.</span></li>
+          </ul>
+          <div class="quiz-card">
+            <div class="quiz-title">🎯 Simulado Rápido 4</div>
+            <div class="quiz-question">Onde são justificadas formalmente todas as inclusões e exclusões dos controles do Anexo A?</div>
+            <div class="quiz-options">
+              <button class="quiz-opt-btn" onclick="handleQuizAnswer(4, true, 'q4-fb', 'Correto! A Declaração de Aplicabilidade (SoA) detalha as justificativas.')">A) Declaração de Aplicabilidade (SoA)</button>
+              <button class="quiz-opt-btn" onclick="handleQuizAnswer(4, false, 'q4-fb', 'Incorreto. A política é geral.')">B) Política Geral de Privacidade</button>
+            </div>
+            <div id="q4-fb" class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="module-footer-nav">
+          <button class="btn-nav-mod" onclick="switchModule(3)">⬅ Módulo 3</button>
+          <a href="./simulados.html" class="btn-exit">🚪 Sair do Plano</a>
+          <button class="btn-nav-mod" onclick="switchModule(5)">Módulo 5 ➡</button>
+        </div>
+      </article>
+
+      <!-- MÓDULO 5 -->
+      <article class="module-card" id="mod5">
+        <div class="completed-badge">✅ Concluído</div>
+        <div class="module-header">
+          <h2 class="module-title">Módulo 5: Apoio, Competência e Conscientização (Cláusula 7)</h2>
+          <button class="tts-btn" onclick="speakText('mod5-content')">🔊 Ouvir</button>
+        </div>
+        <div id="mod5-content">
+          <ul class="visual-bullets">
+            <li class="org"><span><strong>7.2 Competência:</strong> Garantir qualificação do pessoal com base em educação, treinamento e experiência.</span></li>
+            <li class="org"><span><strong>7.3 Conscientização:</strong> Pessoal deve entender a política de segurança e as implicações do não cumprimento.</span></li>
+            <li class="clausula"><span><strong>7.5 Informação Documentada:</strong> Regras de criação, aprovação, distribuição e retenção de documentos.</span></li>
+          </ul>
+          <div class="quiz-card">
+            <div class="quiz-title">🎯 Simulado Rápido 5</div>
+            <div class="quiz-question">Qual item da Cláusula 7 exige a comprovação formal da qualificação técnica da equipe do SGSI?</div>
+            <div class="quiz-options">
+              <button class="quiz-opt-btn" onclick="handleQuizAnswer(5, true, 'q5-fb', 'Correto! 7.2 trata da competência necessária.')">A) 7.2 Competência</button>
+              <button class="quiz-opt-btn" onclick="handleQuizAnswer(5, false, 'q5-fb', 'Incorreto. 7.4 trata de comunicação.')">B) 7.4 Comunicação</button>
+            </div>
+            <div id="q5-fb" class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="module-footer-nav">
+          <button class="btn-nav-mod" onclick="switchModule(4)">⬅ Módulo 4</button>
+          <a href="./simulados.html" class="btn-exit">🚪 Sair do Plano</a>
+          <button class="btn-nav-mod" onclick="switchModule(6)">Módulo 6 ➡</button>
+        </div>
+      </article>
+
+      <!-- MÓDULO 6 -->
+      <article class="module-card" id="mod6">
+        <div class="completed-badge">✅ Concluído</div>
+        <div class="module-header">
+          <h2 class="module-title">Módulo 6: Operação e Aplicação de Controles (Cláusula 8 & Anexo A)</h2>
+          <button class="tts-btn" onclick="speakText('mod6-content')">🔊 Ouvir</button>
+        </div>
+        <div id="mod6-content">
+          <ul class="visual-bullets">
+            <li class="clausula"><span><strong>8.1 Controle Operacional:</strong> Planejar e controlar processos para atender aos requisitos de segurança.</span></li>
+            <li class="tec"><span><strong>Anexo A (Controles):</strong> 93 controles divididos em Organizacionais, Pessoas, Físicos e Tecnológicos.</span></li>
+          </ul>
+          <div class="quiz-card">
+            <div class="quiz-title">🎯 Simulado Rápido 6</div>
+            <div class="quiz-question">Quantos temas principais agrupam os 93 controles na versão ISO 27001:2022?</div>
+            <div class="quiz-options">
+              <button class="quiz-opt-btn" onclick="handleQuizAnswer(6, true, 'q6-fb', 'Correto! São 4 temas: Organizacional, Pessoas, Físico e Tecnológico.')">A) 4 Temas</button>
+              <button class="quiz-opt-btn" onclick="handleQuizAnswer(6, false, 'q6-fb', 'Incorreto.')">B) 14 Domínios</button>
+            </div>
+            <div id="q6-fb" class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="module-footer-nav">
+          <button class="btn-nav-mod" onclick="switchModule(5)">⬅ Módulo 5</button>
+          <a href="./simulados.html" class="btn-exit">🚪 Sair do Plano</a>
+          <button class="btn-nav-mod" onclick="switchModule(7)">Módulo 7 ➡</button>
+        </div>
+      </article>
+
+      <!-- MÓDULO 7 -->
+      <article class="module-card" id="mod7">
+        <div class="completed-badge">✅ Concluído</div>
+        <div class="module-header">
+          <h2 class="module-title">Módulo 7: Avaliação do Desempenho e Auditoria (Cláusula 9)</h2>
+          <button class="tts-btn" onclick="speakText('mod7-content')">🔊 Ouvir</button>
+        </div>
+        <div id="mod7-content">
+          <ul class="visual-bullets">
+            <li class="clausula"><span><strong>9.1 Monitoramento e Métricas:</strong> Avaliar o desempenho e a eficácia do SGSI.</span></li>
+            <li class="clausula"><span><strong>9.2 Auditoria Interna:</strong> Avaliações imparciais em intervalos planejados.</span></li>
+            <li class="org"><span><strong>9.3 Análise Crítica pela Direção:</strong> Revisão executiva periódica do estado do SGSI.</span></li>
+          </ul>
+          <div class="quiz-card">
+            <div class="quiz-title">🎯 Simulado Rápido 7</div>
+            <div class="quiz-question">Qual item exige exames imparciais e planejados para comprovar se o SGSI está em conformidade?</div>
+            <div class="quiz-options">
+              <button class="quiz-opt-btn" onclick="handleQuizAnswer(7, true, 'q7-fb', 'Correto! 9.2 Auditoria Interna.')">A) 9.2 Auditoria Interna</button>
+              <button class="quiz-opt-btn" onclick="handleQuizAnswer(7, false, 'q7-fb', 'Incorreto.')">B) 9.3 Análise pela Direção</button>
+            </div>
+            <div id="q7-fb" class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="module-footer-nav">
+          <button class="btn-nav-mod" onclick="switchModule(6)">⬅ Módulo 6</button>
+          <a href="./simulados.html" class="btn-exit">🚪 Sair do Plano</a>
+          <button class="btn-nav-mod" onclick="switchModule(8)">Módulo 8 ➡</button>
         </div>
       </article>
 
@@ -573,6 +814,7 @@
         </div>
         <div id="mod8-content">
           <ul class="visual-bullets">
+            <li class="clausula"><span><strong>10.1 Melhoria Contínua:</strong> Aumentar a eficácia do SGSI continuamente.</span></li>
             <li class="clausula"><span><strong>10.2 Ação Corretiva:</strong> Tratar a causa raiz (com 5 Porquês ou Ishikawa) para evitar reincidência.</span></li>
           </ul>
           <div class="quiz-card">
@@ -584,6 +826,12 @@
             </div>
             <div id="q8-fb" class="quiz-feedback"></div>
           </div>
+        </div>
+
+        <div class="module-footer-nav">
+          <button class="btn-nav-mod" onclick="switchModule(7)">⬅ Módulo 7</button>
+          <a href="./simulados.html" class="btn-exit">🚪 Sair do Plano</a>
+          <button class="btn-nav-mod" disabled>Próximo ➡</button>
         </div>
       </article>
 
@@ -608,6 +856,7 @@
     let themeIdx = 0;
     let fontIdx = 0;
     let fontSize = 18;
+    let activeModuleId = 1;
 
     const pomodoroCycle = [
       { name: 'Bloco 1: Foco Visual e Conceito', duration: 25 * 60 },
@@ -626,6 +875,23 @@
     let completedModules = new Set();
     let ttsState = 'idle'; // 'idle' | 'playing' | 'paused'
     let synth = window.speechSynthesis || null;
+
+    // Module Switcher Logic
+    function switchModule(modId) {
+      if (modId < 1 || modId > 8) return;
+      activeModuleId = modId;
+
+      document.querySelectorAll('.module-card').forEach(card => card.classList.remove('active-module'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+      const activeCard = document.getElementById(`mod${modId}`);
+      if (activeCard) activeCard.classList.add('active-module');
+
+      const activeTab = document.querySelectorAll('.tab-btn')[modId - 1];
+      if (activeTab) activeTab.classList.add('active');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
     // Theme & Font Toggle
     function toggleTheme() {
@@ -697,7 +963,6 @@
     }
 
     function handleCycleComplete() {
-      // Audio Alert
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (AudioCtx) {
@@ -715,7 +980,6 @@
       timeLeft = pomodoroCycle[cycleIdx].duration;
       updateTimerUI();
 
-      // Toast Notification
       const toast = document.createElement('div');
       toast.className = 'toast-complete';
       toast.innerText = `Fase concluída! Iniciando: ${pomodoroCycle[cycleIdx].name}`;
