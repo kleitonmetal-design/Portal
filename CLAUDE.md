@@ -67,8 +67,19 @@ ROC PCI DSS v4.0.1 da CSU Digital S/A, atualizado a cada 30s via `fetch()`.
 2. Testar visualmente antes de commitar — abrir o arquivo local no navegador
    ou usar a skill `run`/Playwright. Nunca commitar mudança de CSS/JS sem ver
    rodando primeiro.
-3. Commit direto em `main` (não há PR review neste projeto — é site de uso próprio).
-4. Push. Deploy é automático.
+3. Apresentar ao usuário um resumo de alto nível da mudança, no formato de
+   descrição de PR, e aguardar aprovação explícita antes de commitar:
+   - **O que muda** (bullets, direto ao ponto)
+   - **Arquivo(s) afetado(s)**
+   - **Por quê** (motivação, se não for óbvio)
+   Vale para qualquer mudança em arquivo versionado, inclusive correções
+   pequenas — não só para features grandes. Não existe PR real neste
+   projeto (deploy é direto em `main`), então essa é a aprovação que
+   substitui a revisão de PR: só commitar depois que o usuário confirmar
+   (ex: "pode commitar", "ok", "manda").
+4. Commit direto em `main` (não há PR review neste projeto — é site de uso
+   próprio; o passo 3 acima faz esse papel na conversa).
+5. Push. Deploy é automático.
 
 ## Armadilhas conhecidas
 - **`.nav-categories` tem `overflow-x: auto`** → isso força `overflow-y: auto`
