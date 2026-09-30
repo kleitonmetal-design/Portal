@@ -307,12 +307,14 @@
 
         <!-- Controls Bar -->
         <div class="controls-bar">
-            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar ameaças, CVEs ou palavras-chave..." oninput="filtrarNoticias()">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar IA, GRC, regulamentação, CVEs ou palavras-chave..." oninput="filtrarNoticias()">
             <div class="filter-tags" id="filterContainer">
                 <button class="filter-btn active" onclick="filtrarCategoria('Todos', this)">Todos</button>
-                <button class="filter-btn" onclick="filtrarCategoria('Vulnerabilidade Crítica', this)">Vulnerabilidades</button>
-                <button class="filter-btn" onclick="filtrarCategoria('Ransomware & Malware', this)">Ransomware</button>
-                <button class="filter-btn" onclick="filtrarCategoria('Engenharia Social', this)">Phishing & IA</button>
+                <button class="filter-btn" onclick="filtrarCategoria('IA & Regulamentação Global', this)">🤖 IA & Regulamentação</button>
+                <button class="filter-btn" onclick="filtrarCategoria('GRC & Conformidade', this)">📋 GRC & Riscos</button>
+                <button class="filter-btn" onclick="filtrarCategoria('Vulnerabilidade Crítica', this)">🛡️ Vulnerabilidades</button>
+                <button class="filter-btn" onclick="filtrarCategoria('Ransomware & Malware', this)">☣️ Ransomware</button>
+                <button class="filter-btn" onclick="filtrarCategoria('Engenharia Social', this)">🎯 Phishing & Social</button>
             </div>
         </div>
 
