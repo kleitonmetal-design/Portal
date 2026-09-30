@@ -192,7 +192,7 @@
         .news-card {
             background: var(--bg-card);
             border-radius: 14px;
-            padding: 22px;
+            overflow: hidden;
             border: 1px solid rgba(255, 179, 102, 0.15);
             box-shadow: var(--shadow-md);
             display: flex;
@@ -203,6 +203,33 @@
         .news-card:hover {
             transform: translateY(-4px);
             border-color: rgba(255, 179, 102, 0.4);
+        }
+
+        .card-image-wrapper {
+            width: 100%;
+            height: 170px;
+            overflow: hidden;
+            background: #18181b;
+            position: relative;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .news-card:hover .card-img {
+            transform: scale(1.05);
+        }
+
+        .card-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
         }
 
         .card-top {
@@ -350,6 +377,36 @@
             }
         }
 
+        function obterImagemNoticia(item) {
+            if (item.imagem_url) return item.imagem_url;
+
+            const t = (item.titulo + ' ' + (item.categoria || '') + ' ' + (item.fonte || '')).toLowerCase();
+            
+            if (t.includes('ai act') || t.includes('união europeia')) {
+                return 'https://images.unsplash.com/photo-1677442136019-21780efad99a?w=800&auto=format&fit=crop&q=80';
+            }
+            if (t.includes('nist') || t.includes('rmf')) {
+                return 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80';
+            }
+            if (t.includes('anpd') || t.includes('lgpd') || t.includes('dados')) {
+                return 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&auto=format&fit=crop&q=80';
+            }
+            if (t.includes('aliança') || t.includes('llm') || t.includes('inteligência artificial') || t.includes('ia')) {
+                return 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=80';
+            }
+            if (t.includes('tomcat') || t.includes('cve') || t.includes('vulnerabilidade')) {
+                return 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&auto=format&fit=crop&q=80';
+            }
+            if (t.includes('ransomware') || t.includes('malware') || t.includes('financeiro')) {
+                return 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&auto=format&fit=crop&q=80';
+            }
+            if (t.includes('phishing') || t.includes('engenharia social')) {
+                return 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80';
+            }
+
+            return 'https://images.unsplash.com/photo-1510511459019-5dda7724fd87?w=800&auto=format&fit=crop&q=80';
+        }
+
         function renderizarNoticias(noticias) {
             const grid = document.getElementById('newsGrid');
 
@@ -363,19 +420,26 @@
                     ? new Date(item.publicado_em).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
                     : 'Recente';
 
+                const imgUrl = obterImagemNoticia(item);
+
                 return `
                     <div class="news-card">
-                        <div class="card-top">
-                            <div class="card-tags">
-                                <span class="badge-source">${escapeHtml(item.fonte || 'CyberSec')}</span>
-                                <span class="badge-category">${escapeHtml(item.categoria || 'Alerta')}</span>
-                            </div>
-                            <h2 class="card-title">${escapeHtml(item.titulo)}</h2>
-                            <p class="card-summary">${escapeHtml(item.resumo || '')}</p>
+                        <div class="card-image-wrapper">
+                            <img class="card-img" src="${imgUrl}" alt="${escapeHtml(item.titulo)}" loading="lazy">
                         </div>
-                        <div class="card-footer">
-                            <span>🕒 ${dataFormatada}</span>
-                            <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener" class="news-link">Ler Notícia ↗</a>
+                        <div class="card-content">
+                            <div class="card-top">
+                                <div class="card-tags">
+                                    <span class="badge-source">${escapeHtml(item.fonte || 'CyberSec')}</span>
+                                    <span class="badge-category">${escapeHtml(item.categoria || 'Alerta')}</span>
+                                </div>
+                                <h2 class="card-title">${escapeHtml(item.titulo)}</h2>
+                                <p class="card-summary">${escapeHtml(item.resumo || '')}</p>
+                            </div>
+                            <div class="card-footer">
+                                <span>🕒 ${dataFormatada}</span>
+                                <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener" class="news-link">Ler Notícia ↗</a>
+                            </div>
                         </div>
                     </div>
                 `;
