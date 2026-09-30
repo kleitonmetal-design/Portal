@@ -792,7 +792,7 @@
                         <span class="section-badge">${porCategoria[categoria].length}</span>
                     </div>
                     <div class="services-grid">
-                        ${porCategoria[categoria].map(cardHtml).join('')}
+                        ${porCategoria[categoria].map(item => cardHtml(item, false)).join('')}
                     </div>
                 </section>
             `).join('');
