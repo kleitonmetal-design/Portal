@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Diagnóstico ISO/IEC 27001 — Preparação PECB Lead Implementer</title>
+<style>
+  :root{
+    --bg:#f4f6fa; --card:#ffffff; --ink:#1b2430; --muted:#4b5563; --border:#d5dae3;
+    --primary:#2b3a8f; --primary-2:#3b4db8; --good:#166534; --good-bg:#dcfce7;
+    --bad:#991b1b; --bad-bg:#fee2e2; --warn:#92400e; --warn-bg:#fef3c7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Verdana,Geneva,sans-serif;font-size:17px;line-height:1.6;text-align:left}
+  .shell{max-width:780px;margin:0 auto;padding:16px 16px 64px}
+  .back{display:inline-flex;align-items:center;gap:8px;background:rgba(43,58,143,.1);color:var(--primary);padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:700;font-size:.9rem;border:1px solid #c7d0f5;margin-bottom:16px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:16px}
+  h1{font-size:1.45rem;line-height:1.35;margin:0 0 8px}
+  h2{font-size:1.1rem;margin:0 0 10px;color:var(--primary)}
+  p{margin:0 0 12px}
+  .sub{color:var(--muted);font-size:.92rem}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:12px 22px;border-radius:10px;border:2px solid var(--primary);background:var(--primary);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+  .btn:hover{background:var(--primary-2)}
+  .btn:focus-visible,.opt:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
+  .btn.secondary{background:#fff;color:var(--primary)}
+  .btn.secondary:hover{background:#eef1ff}
+  .btn[disabled]{opacity:.5;cursor:not-allowed}
+  .row{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+  .mode{border:2px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+  .mode.rec{border-color:var(--primary);background:#f5f7ff}
+  .mode h3{margin:0 0 6px;font-size:1.02rem}
+  .tag{display:inline-block;background:var(--primary);color:#fff;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:700;margin-bottom:6px}
+  label.field{display:block;font-weight:700;margin-bottom:6px}
+  input[type=text]{width:100%;min-height:46px;padding:10px 12px;border:2px solid var(--border);border-radius:10px;font:inherit}
+  .progress{height:12px;background:var(--border);border-radius:999px;overflow:hidden;margin:8px 0 4px}
+  .progress > div{height:100%;background:var(--primary);transition:width .2s}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.88rem;color:var(--muted)}
+  .chip{background:#eef1ff;color:var(--primary);border-radius:999px;padding:2px 10px;font-weight:700;font-size:.8rem}
+  .qtext{font-size:1.1rem;font-weight:700;margin:14px 0 18px}
+  .opt{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;background:#fff;color:var(--ink);font:inherit;border:2px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:12px;cursor:pointer}
+  .opt:hover:not([disabled]){border-color:var(--primary);background:#f5f7ff}
+  .opt .letter{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:#eef1ff;color:var(--primary);font-weight:700;display:flex;align-items:center;justify-content:center}
+  .opt[disabled]{cursor:default}
+  .opt.correta{border-color:var(--good);background:var(--good-bg)}
+  .opt.errada{border-color:var(--bad);background:var(--bad-bg)}
+  .opt .badge{display:block;font-size:.8rem;font-weight:700;margin-top:4px}
+  .opt.correta .badge{color:var(--good)} .opt.errada .badge{color:var(--bad)}
+  .feedback{border-radius:12px;padding:16px;margin-top:6px}
+  .feedback.ok{background:var(--good-bg);border:2px solid var(--good)}
+  .feedback.no{background:var(--bad-bg);border:2px solid var(--bad)}
+  .feedback h2{margin:0 0 8px}
+  .feedback.ok h2{color:var(--good)} .feedback.no h2{color:var(--bad)}
+  .score{font-size:2.4rem;font-weight:700;line-height:1.2}
+  .pill{display:inline-block;border-radius:999px;padding:3px 12px;font-size:.82rem;font-weight:700}
+  .pill.good{background:var(--good-bg);color:var(--good)} .pill.bad{background:var(--bad-bg);color:var(--bad)} .pill.warn{background:var(--warn-bg);color:var(--warn)}
+  .bar-row{margin-bottom:14px}
+  .bar-label{display:flex;justify-content:space-between;gap:8px;font-size:.88rem;margin-bottom:4px}
+  .bar-track{height:16px;background:var(--border);border-radius:999px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:999px}
+  details{border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:10px;background:#fff}
+  summary{cursor:pointer;font-weight:700}
+  ul.hist{list-style:none;margin:0;padding:0}
+  ul.hist li{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--border);font-size:.92rem}
+  ul.hist li:last-child{border-bottom:none}
+  .notice{background:var(--warn-bg);border:1px solid #f59e0b;border-radius:10px;padding:10px 14px;font-size:.9rem;margin-bottom:14px}
+  @media (max-width:520px){ body{font-size:16px} .card{padding:18px} .btn{width:100%} }
+</style>
+<!-- Cloudflare Web Analytics -->
+<script type='module' src='https://static.cloudflaresinsights.com/beacon.min.js' data-cf-beacon='{"token": "41d48844df404fe999e4f71e7400a61"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</head>
+<body>
+<div class="shell">
+  <a class="back" href="./index.html">← Voltar ao Painel Principal</a>
+  <div id="app" aria-live="polite"></div>
+  <noscript><div class="card">Esta página precisa de JavaScript para funcionar.</div></noscript>
+</div>
+<script>
+/* Diagnóstico adaptativo ISO/IEC 27001 (preparação PECB Lead Implementer).
+   Questões vêm do Supabase (iso27001_questoes); resultados vão para
+   iso27001_tentativas e iso27001_respostas. */
+const SUPABASE_URL = 'https://zprzmhavbjiggqfzzzbt.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_zucE5w9pyxnkXU0r3A8LYQ_ERuwax9r';
+const ALUNO_ID_KEY = 'guardian:simulado:aluno_id';
+const ALUNO_NOME_KEY = 'guardian:simulado:aluno_nome';
+const SESSAO_PREFIXO = 'guardian:iso27001:sessao:';
+const LETRAS = 'abcdef';
+const META_APROVACAO = 70, LIMITE_AVANCAR = 80, LIMITE_REPETIR = 60, TAMANHO_REFORCO = 20;
+
+const DOMINIOS = {
+  D1: 'D1 · Fundamentos',
+  D2: 'D2 · Requisitos do SGSI',
+  D3: 'D3 · Planejamento',
+  D4: 'D4 · Implementação dos controles',
+  D5: 'D5 · Monitoramento e medição',
+  D6: 'D6 · Melhoria contínua',
+  D7: 'D7 · Preparação para auditoria de certificação'
+};
+const MODOS = {
+  nivel1:  { titulo: 'Nível 1 · Fundamentos', desc: 'Cláusulas 4 a 10 e Anexo A. Testa se você conhece o que a norma exige.', nivel: 1 },
+  nivel2:  { titulo: 'Nível 2 · Cenários', desc: 'Situações reais de implementação. Testa a sua decisão como Lead Implementer.', nivel: 2 },
+  reforco: { titulo: 'Reforço dos pontos fracos', desc: 'Só questões dos domínios em que o seu último resultado ficou abaixo de ' + META_APROVACAO + '%.', nivel: null }
+};
+
+const app = document.getElementById('app');
+let BANCO = null;
+let HISTORICO = null;
+let S = null;           // sessão atual
+let registro = null;    // estado da gravação do resultado
+
+/* ---------- utilidades ---------- */
+function lsGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+function lsSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+function lsDel(k){ try { localStorage.removeItem(k); } catch(e){} }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+function mulberry32(a){ return function(){ a |= 0; a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function hashStr(s){ var h = 2166136261; for (var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function novaSeed(){ return Math.floor(Math.random() * 2147483646) + 1; }
+function embaralhar(arr, rnd){ var a = arr.slice(); for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(rnd() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function pct(a, b){ return b ? Math.round((a / b) * 10000) / 100 : 0; }
+function pctInt(a, b){ return b ? Math.round((a / b) * 100) : 0; }
+function cor(p){ return p >= LIMITE_AVANCAR ? '#16a34a' : (p >= META_APROVACAO ? '#65a30d' : (p >= LIMITE_REPETIR ? '#d97706' : '#dc2626')); }
+function chaveSessao(modo){ return SESSAO_PREFIXO + modo; }
+
+/* ---------- aluno ---------- */
+function alunoId(){
+  var id = lsGet(ALUNO_ID_KEY);
+  if (!id){
+    id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('anon-' + Date.now() + '-' + Math.floor(Math.random() * 1e9));
+    lsSet(ALUNO_ID_KEY, id);
+  }
+  return id;
+}
+function alunoNome(){ return lsGet(ALUNO_NOME_KEY) || ''; }
+
+/* ---------- acesso ao Supabase ---------- */
+function cab(extra){
+  var h = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY };
+  if (extra) Object.keys(extra).forEach(function(k){ h[k] = extra[k]; });
+  return h;
+}
+async function api(caminho, opcoes){
+  var r = await fetch(SUPABASE_URL + '/rest/v1/' + caminho, opcoes || { headers: cab() });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  var txt = await r.text();
+  return txt ? JSON.parse(txt) : null;
+}
+async function carregarBanco(){
+  if (BANCO) return BANCO;
+  var linhas = await api('iso27001_questoes?select=id,codigo,nivel,dominio_pecb,clausula,tema,enunciado,opcoes,resposta_correta,justificativa,fonte&ativo=eq.true&order=codigo.asc&limit=1000', { headers: cab() });
+  if (!Array.isArray(linhas) || !linhas.length) throw new Error('banco vazio');
+  var mapa = {};
+  linhas.forEach(function(q){ mapa[q.codigo] = q; });
+  BANCO = mapa;
+  return BANCO;
+}
+async function carregarHistorico(){
+  try {
+    HISTORICO = await api('iso27001_tentativas?select=id,nivel,modo,acertos,total_questoes,percentual,aprovado,por_dominio,finalizado_em&aluno_id=eq.' + encodeURIComponent(alunoId()) + '&order=finalizado_em.desc&limit=30', { headers: cab() });
+    if (!Array.isArray(HISTORICO)) HISTORICO = [];
+  } catch(e){ HISTORICO = null; }
+}
+
+/* ---------- lógica adaptativa ---------- */
+function dominiosFracos(hist){
+  var visto = {}, fracos = [];
+  (hist || []).forEach(function(t){
+    var pd = t.por_dominio || {};
+    Object.keys(pd).forEach(function(d){
+      if (visto[d]) return;
+      visto[d] = true;
+      if (pd[d] && pd[d].total > 0 && pd[d].percentual < META_APROVACAO) fracos.push(d);
+    });
+  });
+  return fracos.sort();
+}
+function ultimaDoNivel(hist, nivel){
+  var lista = (hist || []).filter(function(t){ return t.modo === 'nivel' + nivel; });
+  return lista.length ? lista[0] : null;
+}
+function recomendar(hist){
+  if (hist === null) return { modo: null, texto: '' };
+  var n1 = ultimaDoNivel(hist, 1), n2 = ultimaDoNivel(hist, 2), fracos = dominiosFracos(hist);
+  if (!n1) return { modo: 'nivel1', texto: 'Você ainda não fez o Nível 1. Comece por ele para mapear seus pontos fortes e fracos.' };
+  var p1 = Number(n1.percentual);
+  if (p1 < LIMITE_REPETIR) return { modo: 'nivel1', texto: 'Seu último Nível 1 ficou em ' + Math.round(p1) + '%. Refaça o Nível 1: a ordem das questões e das alternativas muda a cada tentativa.' };
+  if (p1 < LIMITE_AVANCAR && fracos.length) return { modo: 'reforco', texto: 'Seu último Nível 1 ficou em ' + Math.round(p1) + '%. Faça o Reforço nos domínios fracos: ' + fracos.join(', ') + '.' };
+  if (!n2) return { modo: 'nivel2', texto: 'Você foi bem no Nível 1 (' + Math.round(p1) + '%). O próximo passo é o Nível 2, com cenários.' };
+  var p2 = Number(n2.percentual);
+  if (p2 < LIMITE_REPETIR) return { modo: 'nivel2', texto: 'Seu último Nível 2 ficou em ' + Math.round(p2) + '%. Refaça o Nível 2 com cenários novos na ordem.' };
+  if (p2 < LIMITE_AVANCAR && fracos.length) return { modo: 'reforco', texto: 'Seu último Nível 2 ficou em ' + Math.round(p2) + '%. Faça o Reforço nos domínios fracos: ' + fracos.join(', ') + '.' };
+  return { modo: null, texto: 'Você está bem nos dois níveis (Nível 1: ' + Math.round(p1) + '%, Nível 2: ' + Math.round(p2) + '%). Refaça de tempos em tempos para manter o ritmo.' };
+}
+function montarCodigos(modo, seed){
+  var rnd = mulberry32(seed), todos = Object.keys(BANCO), lista;
+  if (modo === 'reforco'){
+    var fracos = dominiosFracos(HISTORICO);
+    lista = todos.filter(function(c){ return fracos.indexOf(BANCO[c].dominio_pecb) >= 0; });
+    return embaralhar(lista.sort(), rnd).slice(0, TAMANHO_REFORCO);
+  }
+  var nivel = MODOS[modo].nivel;
+  lista = todos.filter(function(c){ return BANCO[c].nivel === nivel; });
+  return embaralhar(lista.sort(), rnd);
+}
+function preparar(q, seed){
+  var rnd = mulberry32((seed ^ hashStr(q.codigo)) >>> 0);
+  var ops = embaralhar(q.opcoes, rnd).map(function(o, i){ return { id: o.id, texto: o.texto, letra: LETRAS[i] }; });
+  return { q: q, ops: ops };
+}
+
+/* ---------- sessão salva ---------- */
+function lerSessao(modo){
+  var raw = lsGet(chaveSessao(modo));
+  if (!raw) return null;
+  try {
+    var d = JSON.parse(raw);
+    if (!d || d.v !== 1 || !Array.isArray(d.codigos) || !d.seed) return null;
+    return d;
+  } catch(e){ return null; }
+}
+function salvarSessao(){
+  if (!S) return;
+  try { lsSet(chaveSessao(S.modo), JSON.stringify({ v: 1, modo: S.modo, seed: S.seed, codigos: S.codigos, respostas: S.respostas, idx: S.idx, iniciadoEm: S.iniciadoEm })); } catch(e){}
+}
+
+/* ---------- telas ---------- */
+function telaCarregando(msg){ app.innerHTML = '<div class="card"><p>' + esc(msg) + '</p></div>'; }
+function telaErro(msg){
+  app.innerHTML = '<div class="card"><h1>Não foi possível carregar</h1><p>' + esc(msg) + '</p><div class="row"><button class="btn" data-acao="recarregar">Tentar de novo</button></div></div>';
+}
+
+function telaIntro(){
+  S = null;
+  var rec = recomendar(HISTORICO);
+  var html = '<div class="card"><h1>Diagnóstico ISO/IEC 27001</h1>'
+    + '<p class="sub">Preparação para a certificação PECB Lead Implementer. Você responde e vê a explicação na hora, com a cláusula da norma.</p>'
+    + '<label class="field" for="nome">Seu nome ou apelido (para guardar o seu histórico)</label>'
+    + '<input id="nome" type="text" maxlength="60" autocomplete="nickname" value="' + esc(alunoNome()) + '" placeholder="Anônimo"></div>';
+  if (rec.texto) html += '<div class="card" style="border-color:var(--primary)"><h2>Próximo passo recomendado</h2><p>' + esc(rec.texto) + '</p></div>';
+  if (HISTORICO === null) html += '<div class="notice">Não foi possível ler o seu histórico agora. Você pode fazer o diagnóstico normalmente.</div>';
+
+  ['nivel1', 'nivel2', 'reforco'].forEach(function(m){
+    var info = MODOS[m], sess = lerSessao(m);
+    var total = m === 'reforco' ? Math.min(TAMANHO_REFORCO, contarReforco()) : contarNivel(info.nivel);
+    var bloqueado = (m === 'reforco' && total === 0);
+    html += '<div class="mode' + (rec.modo === m ? ' rec' : '') + '">'
+      + (rec.modo === m ? '<span class="tag">Recomendado</span>' : '')
+      + '<h3>' + esc(info.titulo) + '</h3><p class="sub">' + esc(info.desc) + '</p>';
+    if (bloqueado){
+      html += '<p class="sub">' + (HISTORICO && HISTORICO.length ? 'Nenhum domínio fraco no seu último resultado.' : 'Disponível depois do seu primeiro diagnóstico.') + '</p>';
+    } else {
+      html += '<p class="sub">' + total + ' questões.</p><div class="row" style="margin-top:6px">';
+      if (sess){
+        var feitas = Object.keys(sess.respostas || {}).length;
+        html += '<button class="btn" data-acao="continuar" data-modo="' + m + '">Continuar (' + feitas + ' de ' + sess.codigos.length + ')</button>'
+          + '<button class="btn secondary" data-acao="iniciar" data-modo="' + m + '">Começar do zero</button>';
+      } else {
+        html += '<button class="btn" data-acao="iniciar" data-modo="' + m + '">Começar</button>';
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+  });
+
+  if (HISTORICO && HISTORICO.length){
+    html += '<div class="card"><h2>Suas últimas tentativas</h2>' + listaHistorico(HISTORICO.slice(0, 8)) + '</div>';
+  }
+  app.innerHTML = html;
+}
+function contarNivel(n){ return Object.keys(BANCO).filter(function(c){ return BANCO[c].nivel === n; }).length; }
+function contarReforco(){
+  var fracos = dominiosFracos(HISTORICO);
+  return Object.keys(BANCO).filter(function(c){ return fracos.indexOf(BANCO[c].dominio_pecb) >= 0; }).length;
+}
+function listaHistorico(lista){
+  return '<ul class="hist">' + lista.map(function(t){
+    var d = new Date(t.finalizado_em);
+    var data = isNaN(d) ? '' : d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    return '<li><span>' + esc(data) + ' · ' + esc((MODOS[t.modo] || MODOS.nivel1).titulo.split(' · ')[0]) + '</span><strong>' + esc(t.acertos) + '/' + esc(t.total_questoes) + ' (' + Math.round(Number(t.percentual)) + '%)</strong></li>';
+  }).join('') + '</ul>';
+}
+
+function iniciar(modo, retomar){
+  var nome = (document.getElementById('nome') || {}).value;
+  if (nome !== undefined){ nome = nome.trim().slice(0, 60); lsSet(ALUNO_NOME_KEY, nome || 'Anônimo'); }
+  var salvo = retomar ? lerSessao(modo) : null;
+  if (retomar && !salvo) retomar = false;
+  var seed, codigos, respostas, idx, iniciadoEm;
+  if (retomar){
+    seed = salvo.seed;
+    codigos = salvo.codigos.filter(function(c){ return BANCO[c]; });
+    respostas = salvo.respostas || {};
+    idx = Math.min(salvo.idx || 0, Math.max(codigos.length - 1, 0));
+    iniciadoEm = salvo.iniciadoEm || Date.now();
+  } else {
+    lsDel(chaveSessao(modo));
+    seed = novaSeed();
+    codigos = montarCodigos(modo, seed);
+    respostas = {}; idx = 0; iniciadoEm = Date.now();
+  }
+  if (!codigos.length){ telaIntro(); return; }
+  S = { modo: modo, seed: seed, codigos: codigos, respostas: respostas, idx: idx, iniciadoEm: iniciadoEm, t0: Date.now() };
+  telaQuestao();
+}
+
+function telaQuestao(){
+  var codigo = S.codigos[S.idx];
+  var p = preparar(BANCO[codigo], S.seed);
+  var q = p.q, resp = S.respostas[codigo];
+  var total = S.codigos.length, feitas = Object.keys(S.respostas).length;
+  var html = '<div class="card">'
+    + '<div class="meta"><span class="chip">' + esc(MODOS[S.modo].titulo) + '</span><span>Questão ' + (S.idx + 1) + ' de ' + total + '</span><span>' + esc(DOMINIOS[q.dominio_pecb] || q.dominio_pecb) + '</span></div>'
+    + '<div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="' + total + '" aria-valuenow="' + feitas + '"><div style="width:' + pctInt(feitas, total) + '%"></div></div>'
+    + '<div class="qtext">' + esc(q.enunciado) + '</div>';
+  p.ops.forEach(function(o){
+    var cls = 'opt', badge = '';
+    if (resp){
+      if (o.id === q.resposta_correta){ cls += ' correta'; badge = '<span class="badge">✔ Resposta correta</span>'; }
+      else if (o.id === resp.r){ cls += ' errada'; badge = '<span class="badge">✘ Sua resposta</span>'; }
+    }
+    html += '<button class="' + cls + '" data-acao="responder" data-opcao="' + esc(o.id) + '"' + (resp ? ' disabled' : '') + '>'
+      + '<span class="letter">' + o.letra.toUpperCase() + '</span><span>' + esc(o.texto) + badge + '</span></button>';
+  });
+  if (resp){
+    var acertou = resp.r === q.resposta_correta;
+    html += '<div class="feedback ' + (acertou ? 'ok' : 'no') + '"><h2>' + (acertou ? '✔ Você acertou' : '✘ Não foi dessa vez') + '</h2>'
+      + '<p><strong>Por quê:</strong> ' + esc(q.justificativa) + '</p>'
+      + '<p class="sub" style="margin:0"><strong>Onde está na norma:</strong> ' + esc(q.fonte || q.clausula) + '</p></div>'
+      + '<div class="row"><button class="btn" data-acao="proxima" id="btn-proxima">' + (S.idx + 1 >= total ? 'Ver resultado' : 'Próxima questão →') + '</button></div>';
+  }
+  html += '<div class="row"><button class="btn secondary" data-acao="pausar">Pausar e sair</button></div></div>';
+  app.innerHTML = html;
+  S.t0 = Date.now();
+  var alvo = document.getElementById('btn-proxima');
+  if (alvo) alvo.focus();
+  window.scrollTo(0, 0);
+}
+
+function responder(opcao){
+  var codigo = S.codigos[S.idx];
+  if (S.respostas[codigo]) return;
+  S.respostas[codigo] = { r: opcao, t: Math.max(0, Math.round((Date.now() - S.t0) / 1000)) };
+  salvarSessao();
+  telaQuestao();
+}
+function proxima(){
+  if (S.idx + 1 >= S.codigos.length){ finalizar(); return; }
+  S.idx++;
+  salvarSessao();
+  telaQuestao();
+}
+
+/* ---------- resultado ---------- */
+function calcular(){
+  var total = S.codigos.length, acertos = 0, por = {}, tempo = 0, erradas = [];
+  S.codigos.forEach(function(c){
+    var q = BANCO[c], r = S.respostas[c], ok = !!r && r.r === q.resposta_correta;
+    var d = por[q.dominio_pecb] = por[q.dominio_pecb] || { acertos: 0, total: 0, percentual: 0 };
+    d.total++;
+    if (ok){ d.acertos++; acertos++; } else { erradas.push(c); }
+    if (r) tempo += r.t || 0;
+  });
+  Object.keys(por).forEach(function(d){ por[d].percentual = pct(por[d].acertos, por[d].total); });
+  return { total: total, acertos: acertos, percentual: pct(acertos, total), por: por, tempo: tempo, erradas: erradas };
+}
+
+async function finalizar(){
+  var res = calcular();
+  var modo = S.modo, seed = S.seed, iniciadoEm = S.iniciadoEm;
+  var snapshot = { codigos: S.codigos.slice(), respostas: JSON.parse(JSON.stringify(S.respostas)) };
+  lsDel(chaveSessao(modo));
+  registro = { estado: 'gravando' };
+  telaFinal(res, modo, snapshot);
+  try {
+    var tent = await api('iso27001_tentativas', {
+      method: 'POST',
+      headers: cab({ 'Content-Type': 'application/json', 'Prefer': 'return=representation' }),
+      body: JSON.stringify({
+        aluno_id: alunoId(), aluno_nome: alunoNome() || 'Anônimo',
+        nivel: MODOS[modo].nivel || 1, modo: modo, seed: seed,
+        total_questoes: res.total, acertos: res.acertos, percentual: res.percentual,
+        aprovado: res.percentual >= META_APROVACAO, tempo_gasto_segundos: res.tempo,
+        por_dominio: res.por, iniciado_em: new Date(iniciadoEm).toISOString()
+      })
+    });
+    var id = Array.isArray(tent) ? tent[0].id : tent.id;
+    var linhas = snapshot.codigos.map(function(c){
+      var q = BANCO[c], r = snapshot.respostas[c];
+      return { tentativa_id: id, questao_id: q.id, resposta: r ? r.r : '-', correta: !!r && r.r === q.resposta_correta, tempo_segundos: r ? r.t : null };
+    });
+    await api('iso27001_respostas', { method: 'POST', headers: cab({ 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }), body: JSON.stringify(linhas) });
+    registro = { estado: 'ok' };
+    await carregarHistorico();
+  } catch(e){
+    registro = { estado: 'erro' };
+  }
+  atualizarRegistro();
+}
+function atualizarRegistro(){
+  var el = document.getElementById('registro');
+  if (!el) return;
+  if (registro.estado === 'gravando') el.innerHTML = '<span class="sub">Gravando o seu resultado…</span>';
+  else if (registro.estado === 'ok'){
+    el.innerHTML = '<span class="sub">✔ Resultado gravado no seu histórico.</span>'
+      + (HISTORICO && HISTORICO.length ? '<h2 style="margin-top:14px">Suas últimas tentativas</h2>' + listaHistorico(HISTORICO.slice(0, 8)) : '');
+  } else el.innerHTML = '<div class="notice">Não foi possível gravar este resultado no banco. A nota acima está correta, mas não entrou no histórico.</div>';
+}
+
+function telaFinal(res, modo, snapshot){
+  var aprovado = res.percentual >= META_APROVACAO;
+  var html = '<div class="card"><h1>Resultado · ' + esc(MODOS[modo].titulo) + '</h1>'
+    + '<div class="score">' + res.acertos + ' de ' + res.total + ' · ' + Math.round(res.percentual) + '%</div>'
+    + '<p><span class="pill ' + (aprovado ? 'good' : 'bad') + '">' + (aprovado ? 'Acima da meta de ' : 'Abaixo da meta de ') + META_APROVACAO + '%</span></p>'
+    + '<div id="registro"></div></div>';
+
+  html += '<div class="card"><h2>Desempenho por domínio PECB</h2>';
+  Object.keys(DOMINIOS).forEach(function(d){
+    var x = res.por[d];
+    if (!x) return;
+    var p = Math.round(x.percentual);
+    html += '<div class="bar-row"><div class="bar-label"><span>' + esc(DOMINIOS[d]) + '</span><span>' + x.acertos + '/' + x.total + ' · ' + p + '%</span></div>'
+      + '<div class="bar-track"><div class="bar-fill" style="width:' + p + '%;background:' + cor(p) + '"></div></div></div>';
+  });
+  var fracos = Object.keys(res.por).filter(function(d){ return res.por[d].percentual < META_APROVACAO; }).sort();
+  html += fracos.length
+    ? '<p><strong>Para reforçar:</strong> ' + fracos.map(function(d){ return esc(DOMINIOS[d]); }).join('; ') + '.</p>'
+    : '<p><strong>Todos os domínios ficaram acima da meta.</strong></p>';
+  html += '</div>';
+
+  if (res.erradas.length){
+    html += '<div class="card"><h2>Questões para rever (' + res.erradas.length + ')</h2>';
+    res.erradas.forEach(function(c){
+      var q = BANCO[c], r = snapshot.respostas[c];
+      function textoDe(id){ var o = q.opcoes.filter(function(x){ return x.id === id; })[0]; return o ? o.texto : '(sem resposta)'; }
+      html += '<details><summary>' + esc(q.clausula) + ' · ' + esc(q.tema || q.enunciado.slice(0, 60)) + '</summary>'
+        + '<p>' + esc(q.enunciado) + '</p>'
+        + '<p><strong>Sua resposta:</strong> ' + esc(r ? textoDe(r.r) : '(sem resposta)') + '</p>'
+        + '<p><strong>Resposta correta:</strong> ' + esc(textoDe(q.resposta_correta)) + '</p>'
+        + '<p><strong>Por quê:</strong> ' + esc(q.justificativa) + '</p>'
+        + '<p class="sub"><strong>Fonte:</strong> ' + esc(q.fonte || q.clausula) + '</p></details>';
+    });
+    html += '</div>';
+  }
+  html += '<div class="row"><button class="btn" data-acao="inicio">Ver próximo passo</button>'
+    + '<button class="btn secondary" data-acao="iniciar" data-modo="' + esc(modo) + '">Refazer com nova ordem</button></div>';
+  app.innerHTML = html;
+  atualizarRegistro();
+  window.scrollTo(0, 0);
+}
+
+/* ---------- eventos ---------- */
+app.addEventListener('click', async function(ev){
+  var el = ev.target.closest('[data-acao]');
+  if (!el || el.disabled) return;
+  var a = el.getAttribute('data-acao'), modo = el.getAttribute('data-modo');
+  if (a === 'iniciar') iniciar(modo, false);
+  else if (a === 'continuar') iniciar(modo, true);
+  else if (a === 'responder') responder(el.getAttribute('data-opcao'));
+  else if (a === 'proxima') proxima();
+  else if (a === 'pausar'){ salvarSessao(); telaIntro(); }
+  else if (a === 'inicio'){ telaCarregando('Atualizando…'); await carregarHistorico(); telaIntro(); }
+  else if (a === 'recarregar') arrancar();
+});
+document.addEventListener('keydown', function(ev){
+  if (!S || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+  var tag = (ev.target.tagName || '').toLowerCase();
+  if (tag === 'input') return;
+  var codigo = S.codigos[S.idx];
+  if (!S.respostas[codigo]){
+    var i = '1234'.indexOf(ev.key);
+    if (i < 0) i = 'abcd'.indexOf(ev.key.toLowerCase());
+    if (i >= 0){
+      var btns = app.querySelectorAll('button.opt');
+      if (btns[i]) btns[i].click();
+    }
+  }
+});
+
+async function arrancar(){
+  telaCarregando('Carregando as questões…');
+  try {
+    await carregarBanco();
+    await carregarHistorico();
+    telaIntro();
+  } catch(e){
+    telaErro('Não consegui buscar as questões no banco. Verifique a internet e tente de novo.');
+  }
+}
+arrancar();
+</script>
+</body>
+</html>
